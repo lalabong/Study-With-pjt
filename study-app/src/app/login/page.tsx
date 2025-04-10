@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { HiArrowLeft } from 'react-icons/hi';
 
-import LoginForm from '../../components/Login/LoginForm';
-import SocialLogin from '../../components/Login/SocialLogin';
+import LoginForm from '../../components/loginPage/LoginForm';
+import SocialLogin from '../../components/loginPage/SocialLogin';
 
 const LoginPage = (): React.ReactNode => {
   const router = useRouter();
