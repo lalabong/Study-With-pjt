@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
 import ImageSlider from '../components/landingPage/ImageSlider';
 
@@ -52,20 +53,7 @@ const Home = (): React.ReactNode => {
             {/* 스터디 그룹 */}
             <div className="p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-2">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-blue-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
+                <HiPlus className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2 break-keep">함께 공부하는 스터디룸</h3>
               <p className="text-gray-600 break-keep">
@@ -76,20 +64,7 @@ const Home = (): React.ReactNode => {
             {/* 일정 관리 */}
             <div className="p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-2">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-green-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <HiCalendar className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2 break-keep">계획부터 기록까지</h3>
               <p className="text-gray-600 break-keep">
@@ -100,20 +75,7 @@ const Home = (): React.ReactNode => {
             {/* 실시간 소통 */}
             <div className="p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-2">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-purple-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-                  />
-                </svg>
+                <HiChat className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2 break-keep">실시간 소통 가능</h3>
               <p className="text-gray-600 break-keep">
