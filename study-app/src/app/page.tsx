@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import ImageSlider from './components/landingPage/ImageSlider';
+import ImageSlider from '../landingPage/ImageSlider';
 
 const Home = (): React.ReactNode => {
   const currentYear = new Date().getFullYear();
