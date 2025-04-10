@@ -37,7 +37,7 @@ const LoginPage = (): React.ReactNode => {
         {/* 구분선 */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
-          <span className="mx-4 text-sm text-gray-500">다른 방법으로 로그인하기</span>
+          <span className="mx-4 text-sm text-gray-500">다른 방법으로 이용하기</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 

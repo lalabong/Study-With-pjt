@@ -3,7 +3,7 @@ interface IconProps {
   className?: string;
 }
 
-const GoogleIcon = ({ className }: IconProps) => (
+const GoogleIcon = ({ className }: IconProps): React.ReactElement => (
   <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className={className}>
     <path
       fill="#EA4335"
@@ -25,7 +25,7 @@ const GoogleIcon = ({ className }: IconProps) => (
   </svg>
 );
 
-const NaverIcon = ({ className }: IconProps) => (
+const NaverIcon = ({ className }: IconProps): React.ReactElement => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className={className}>
     <g fill="none">
       <path fill="#FFFFFF" d="M0 0h20v20H0z" />
@@ -37,7 +37,7 @@ const NaverIcon = ({ className }: IconProps) => (
   </svg>
 );
 
-const KakaoIcon = ({ className }: IconProps) => (
+const KakaoIcon = ({ className }: IconProps): React.ReactElement => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 22" className={className}>
     <rect width="24" height="22" fill="#FEE500" />
     <path
