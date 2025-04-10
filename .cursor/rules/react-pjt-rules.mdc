@@ -1,0 +1,121 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## React 컴포넌트 작성 규칙
+
+### 컴포넌트 선언 규칙
+- 모든 컴포넌트는 화살표 함수로 선언합니다.
+- 컴포넌트 이름은 파스칼 케이스(PascalCase)로 작성합니다.
+- 의미 있고 설명적인 이름을 사용합니다.
+- 약어나 축약어는 널리 이해되는 경우가 아니라면 사용하지 않습니다.
+
+```jsx
+// 좋은 예
+const UserProfile = () => {
+  return ...;
+};
+
+// 나쁜 예
+const usrProf = () => {
+  return ...;
+};
+```
+
+### Props 명명 규칙
+- Props 이름은 카멜 케이스(camelCase)로 작성합니다.
+- 설명적이고 명확한 이름을 사용합니다.
+- 불리언 값의 경우 `is`, `has`, `should` 등의 접두사를 사용합니다.
+
+```jsx
+// 좋은 예
+const UserCard = ({ user, isActive, hasPermission }) => {
+  return ...;
+};
+
+// 나쁜 예
+const UserCard = ({ u, active, perm }) => {
+  return ...;
+};
+```
+
+### 컴포넌트 재사용성
+- 하나의 컴포넌트는 하나의 기능만 담당하도록 합니다.
+- 큰 컴포넌트는 더 작은 컴포넌트로 분리합니다.
+- 중복 코드는 공통 컴포넌트로 추출합니다.
+
+```jsx
+// 재사용 가능한 버튼 컴포넌트
+const IconButton = ({ onClick, iconClass }) => {
+  return (
+    
+      
+    
+  );
+};
+
+// 여러 버튼을 매핑하여 사용
+const SocialButtons = () => {
+  const buttons = ['facebook', 'twitter', 'youtube'];
+  
+  return (
+    
+      {buttons.map((button) => (
+         handleSocialClick(button)} 
+          iconClass={button} 
+        />
+      ))}
+    
+  );
+};
+```
+
+## Next.js 프로젝트 구조
+
+### 서버 컴포넌트와 클라이언트 컴포넌트
+- 기본적으로 `app/` 디렉토리의 모든 컴포넌트는 서버 컴포넌트입니다.
+- 클라이언트 컴포넌트는 파일 상단에 `'use client'` 지시어를 추가합니다.
+- 데이터베이스 접근이나 API 호출은 서버 컴포넌트에서 수행합니다.
+
+```jsx
+// 서버 컴포넌트 예시
+import { db } from '@/lib/db';
+
+const PostsPage = async () => {
+  const posts = await db.post.findMany();
+  
+  return (
+    
+      Posts Page
+      
+        {posts.map((post) => (
+          {post.name}
+        ))}
+      
+    
+  );
+};
+
+export default PostsPage;
+```
+
+```jsx
+// 클라이언트 컴포넌트 예시
+'use client'
+
+import { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+  
+  return (
+    
+      Count: {count}
+       setCount(count + 1)}>Increment
+    
+  );
+};
+
+export default Counter;
+```

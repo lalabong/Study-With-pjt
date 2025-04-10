@@ -1,0 +1,235 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## 타입 정의 규칙
+
+### 기본 타입 사용
+- 변수, 매개변수, 반환 값에 명시적으로 타입을 지정합니다.
+- 암시적 any 타입 사용을 피합니다.
+
+```typescript
+// 좋은 예
+const count: number = 0;
+const name: string = "TypeScript";
+const isActive: boolean = true;
+
+// 나쁜 예
+const count = 0; // 타입 추론이 가능한 경우는 허용
+const data: any = fetchData(); // any 타입 사용 지양
+```
+
+### 인터페이스와 타입 별칭
+- 객체 구조를 정의할 때는 `interface`를 우선적으로 사용합니다.
+- 유니온 타입이나 교차 타입과 같은 복잡한 타입을 정의할 때는 `type`을 사용합니다.
+- 인터페이스 이름은 대문자로 시작하고, 접두사 'I'를 사용하지 않습니다.
+
+```typescript
+// 좋은 예
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+type Status = 'pending' | 'active' | 'inactive';
+
+// 나쁜 예
+interface IUser { // 접두사 I 사용 지양
+  id: number;
+  name: string;
+  email: string;
+}
+```
+
+### 타입 단언 사용
+- 타입 단언(`as`)은 최소한으로 사용합니다.
+- 가능하면 타입 가드를 사용하여 타입을 좁히는 것이 좋습니다.
+
+```typescript
+// 좋은 예 (타입 가드 사용)
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function processValue(value: string | number) {
+  if (isString(value)) {
+    return value.toUpperCase();
+  }
+  return value * 2;
+}
+
+// 나쁜 예 (타입 단언 남용)
+function processValue(value: string | number) {
+  if (typeof value === 'string') {
+    return (value as string).toUpperCase();
+  }
+  return (value as number) * 2;
+}
+```
+
+## 코드 스타일 규칙
+
+### 명명 규칙
+- **변수, 함수**: 카멜 케이스(camelCase)를 사용합니다.
+- **클래스, 인터페이스, 타입, 열거형**: 파스칼 케이스(PascalCase)를 사용합니다.
+- **상수**: 대문자 스네이크 케이스(UPPER_SNAKE_CASE)를 사용합니다.
+
+```typescript
+// 변수, 함수 (camelCase)
+const userName = "John";
+function getUserData() { /* ... */ }
+
+// 클래스, 인터페이스, 타입, 열거형 (PascalCase)
+class UserService { /* ... */ }
+interface UserProfile { /* ... */ }
+type UserRole = 'admin' | 'user';
+enum HttpStatus { OK, NotFound }
+
+// 상수 (UPPER_SNAKE_CASE)
+const MAX_RETRY_COUNT = 3;
+```
+
+### 함수 선언
+- 화살표 함수를 일관되게 사용합니다.
+- 함수 매개변수와 반환 타입을 명시적으로 지정합니다.
+
+```typescript
+// 좋은 예
+const add = (a: number, b: number): number => {
+  return a + b;
+};
+
+// 단일 표현식인 경우 중괄호와 return 생략 가능
+const multiply = (a: number, b: number): number => a * b;
+```
+
+### 비동기 코드
+- Promise보다 async/await를 우선적으로 사용합니다.
+- 비동기 함수의 반환 타입을 명시적으로 지정합니다.
+
+```typescript
+// 좋은 예
+const fetchUser = async (id: number): Promise => {
+  const response = await fetch(`/api/users/${id}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch user');
+  }
+  return response.json();
+};
+
+// 나쁜 예
+const fetchUser = (id: number) => {
+  return fetch(`/api/users/${id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user');
+      }
+      return response.json();
+    });
+};
+```
+
+## 타입 안전성 향상 규칙
+
+### null과 undefined 처리
+- `strictNullChecks` 옵션을 활성화하고 null과 undefined 값을 명시적으로 처리합니다.
+- 옵셔널 체이닝(`?.`)과 null 병합 연산자(`??`)를 적극 활용합니다.
+
+```typescript
+// 좋은 예
+const getUserName = (user?: User): string => {
+  return user?.name ?? 'Anonymous';
+};
+
+// 나쁜 예
+const getUserName = (user: User): string => {
+  return user.name; // user가 undefined일 경우 런타임 에러 발생
+};
+```
+
+### 타입 가드 활용
+- 유니온 타입을 사용할 때는 타입 가드를 활용하여 타입을 좁힙니다.
+- `typeof`, `instanceof`, 사용자 정의 타입 가드를 적절히 활용합니다.
+
+```typescript
+// 사용자 정의 타입 가드
+const isUser = (value: any): value is User => {
+  return value && 
+    typeof value === 'object' && 
+    'id' in value && 
+    'name' in value;
+};
+
+// 타입 가드 활용
+const processEntity = (entity: User | Product): void => {
+  if (isUser(entity)) {
+    console.log(entity.name); // User 타입으로 좁혀짐
+  } else {
+    console.log(entity.title); // Product 타입으로 좁혀짐
+  }
+};
+```
+
+### 제네릭 활용
+- 재사용 가능한 컴포넌트나 함수에는 제네릭을 활용합니다.
+- 제네릭 타입 매개변수에는 의미 있는 이름을 사용합니다(T, U보다 구체적인 이름).
+
+```typescript
+// 좋은 예
+const getFirstItem = (array: ItemType[]): ItemType | undefined => {
+  return array.length > 0 ? array[0] : undefined;
+};
+
+// 나쁜 예
+const getFirstItem = (array: T[]): T | undefined => {
+  return array.length > 0 ? array[0] : undefined;
+};
+```
+
+## 모듈 및 파일 구조
+
+### 모듈 가져오기/내보내기
+- 명명된 내보내기(named exports)를 사용합니다.
+- 기본 내보내기(default exports)는 최소화합니다.
+- 가져오기 구문은 알파벳 순으로 정렬합니다.
+
+```typescript
+// 좋은 예
+export interface User {
+  id: number;
+  name: string;
+}
+
+export const createUser = (name: string): User => {
+  return { id: Date.now(), name };
+};
+
+// 다른 파일에서 가져오기
+import { User, createUser } from './user';
+```
+
+### 파일 구조
+- 한 파일에는 하나의 개념만 담습니다.
+- 파일 이름은 내용을 명확하게 반영해야 합니다.
+- 인터페이스와 타입은 관련 구현체와 같은 파일에 위치시키거나, 별도의 types.ts 파일에 모아둡니다.
+
+```
+src/
+├── components/
+│   ├── Button/
+│   │   ├── Button.tsx
+│   │   ├── Button.test.tsx
+│   │   └── index.ts
+│   └── ...
+├── hooks/
+│   ├── useUser.ts
+│   └── ...
+├── types/
+│   ├── user.types.ts
+│   └── ...
+└── utils/
+    ├── string.utils.ts
+    └── ...
+```
