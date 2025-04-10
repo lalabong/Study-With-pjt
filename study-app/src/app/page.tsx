@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import ImageSlider from '../landingPage/ImageSlider';
+import ImageSlider from '../components/landingPage/ImageSlider';
 
 const Home = (): React.ReactNode => {
   const currentYear = new Date().getFullYear();
@@ -10,7 +10,7 @@ const Home = (): React.ReactNode => {
     <div className="min-h-screen bg-white">
       {/* 헤더 */}
       <header className="w-full px-6 py-6 flex justify-between items-center">
-        <Image src="/images/swith-logo.png" alt="SWith Logo" width={140} height={100} />
+        <Image src="/images/swith-logo.png" alt="SWith Logo" width={140} height={39} />
         <div className="flex space-x-4">
           <Link href="/login" className="px-4 py-3 text-gray-600 hover:text-gray-900">
             로그인
