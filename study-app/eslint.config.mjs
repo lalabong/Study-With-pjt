@@ -18,6 +18,7 @@ const eslintConfig = [
     'plugin:react-hooks/recommended',
     'prettier',
     'plugin:prettier/recommended',
+    'plugin:react/jsx-runtime',
   ),
   {
     rules: {
@@ -46,7 +47,8 @@ const eslintConfig = [
       'import/no-unresolved': 'error', // 잘못된 import 경로 방지
       'no-console': ['warn', { allow: ['warn', 'error'] }], // console.log 사용 경고
       'no-debugger': 'error', // debugger 사용 방지
-      'react/jsx-uses-react': 'error', // React JSX 사용 확인
+      'react/react-in-jsx-scope': 'off', // JSX 내 리액트 사용 확인
+      'react/jsx-uses-react': 'off', // JSX 내 리액트 사용 확인
       'react/jsx-uses-vars': 'error', // JSX 내 변수/컴포넌트 사용 확인
     },
   },
