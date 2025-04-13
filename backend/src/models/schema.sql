@@ -1,0 +1,69 @@
+-- 데이터베이스 생성 (없는 경우)
+CREATE DATABASE IF NOT EXISTS study_db;
+USE study_db;
+
+-- 사용자 테이블
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(50) UNIQUE NOT NULL,
+    profileImg VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 스터디룸 테이블
+CREATE TABLE IF NOT EXISTS room (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    ownerId INT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ownerId) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- 룸-사용자 관계 테이블
+CREATE TABLE IF NOT EXISTS room_user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    roomId INT NOT NULL,
+    userId INT NOT NULL,
+    joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (roomId, userId),
+    FOREIGN KEY (roomId) REFERENCES room(id) ON DELETE CASCADE,
+    FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- 일정 테이블
+CREATE TABLE IF NOT EXISTS schedule (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    roomId INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    startTime DATETIME NOT NULL,
+    endTime DATETIME NOT NULL,
+    status ENUM('대기중', '진행중', '완료', '취소') DEFAULT '대기중',
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (roomId) REFERENCES room(id) ON DELETE CASCADE
+);
+
+-- 시간 로그 테이블
+CREATE TABLE IF NOT EXISTS time_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    roomId INT NOT NULL,
+    totalTime TIME NOT NULL,
+    date DATE NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (roomId) REFERENCES room(id) ON DELETE CASCADE
+);
+
+-- 친구 관계 테이블
+CREATE TABLE IF NOT EXISTS friend (
+    userId INT NOT NULL,
+    friendId INT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (userId, friendId),
+    FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (friendId) REFERENCES user(id) ON DELETE CASCADE
+);
