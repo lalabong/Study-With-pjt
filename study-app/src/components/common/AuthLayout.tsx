@@ -35,7 +35,7 @@ const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps): React.Reac
           <Image src="/images/swith-logo.png" alt="SWith Logo" width={200} height={55} priority />
         </div>
 
-        {/* 메인 콘텐츠 (children) */}
+        {/* 메인 콘텐츠(로그인/회원가입 폼) */}
         {children}
 
         {/* 구분선 */}
@@ -52,7 +52,7 @@ const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps): React.Reac
         {showRegisterLink && (
           <div className="mt-6 text-center text-sm">
             <span className="text-gray-600">계정이 없으신가요?</span>
-            <Link href="/register" className="ml-2 font-bold text-blue-600 hover:underline">
+            <Link href="/signup" className="ml-2 font-bold text-blue-600 hover:underline">
               회원가입
             </Link>
           </div>
