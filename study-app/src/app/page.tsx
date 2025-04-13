@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
-import ImageSlider from '../components/landingPage/ImageSlider';
+import ImageSlider from '../components/landing/ImageSlider';
 
 const Home = (): React.ReactNode => {
   const currentYear = new Date().getFullYear();
