@@ -26,7 +26,7 @@ const LoginForm = (): React.ReactNode => {
           아이디
         </label>
         <div className="relative mt-2 rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
             <HiIdentification className="size-6" />
           </div>
           <input
@@ -48,7 +48,7 @@ const LoginForm = (): React.ReactNode => {
           비밀번호
         </label>
         <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <HiLockClosed className="size-5" />
           </div>
           <input
