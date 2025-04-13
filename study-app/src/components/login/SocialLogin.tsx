@@ -2,7 +2,7 @@
 
 import { GoogleIcon, NaverIcon, KakaoIcon } from '../common/SocialIcons';
 
-const SocialLogin = (): React.ReactNode => {
+const SocialLogin = () => {
   const handleSocialLogin = (provider: string): void => {
     // 소셜 로그인 로직 구현
     console.warn(`${provider} 로그인 시도`);

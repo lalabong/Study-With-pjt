@@ -4,7 +4,7 @@ import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
 import ImageSlider from '../components/landing/ImageSlider';
 
-const Home = (): React.ReactNode => {
+const Home = () => {
   const currentYear = new Date().getFullYear();
 
   return (

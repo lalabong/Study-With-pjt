@@ -13,7 +13,7 @@ interface AuthLayoutProps {
   showRegisterLink?: boolean;
 }
 
-const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps): React.ReactNode => {
+const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps) => {
   const router = useRouter();
 
   return (
