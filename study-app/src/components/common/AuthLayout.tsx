@@ -18,9 +18,7 @@ const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps): React.Reac
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-white">
-      {/* 카드 */}
       <div className="relative z-10 w-[400px] rounded-2xl bg-white p-8 shadow-lg">
-        {/* 뒤로 가기 버튼 */}
         <HiArrowLeft
           className="absolute top-4 left-4 size-6 cursor-pointer text-gray-400"
           onClick={() => router.back()}
@@ -30,25 +28,20 @@ const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps): React.Reac
           aria-label="뒤로 가기"
         />
 
-        {/* 로고 */}
         <div className="flex justify-center mb-6">
           <Image src="/images/swith-logo.png" alt="SWith Logo" width={200} height={55} priority />
         </div>
 
-        {/* 메인 콘텐츠(로그인/회원가입 폼) */}
         {children}
 
-        {/* 구분선 */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="mx-4 text-sm text-gray-500">다른 방법으로 이용하기</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        {/* 소셜 로그인 */}
         <SocialLogin />
 
-        {/* 회원가입 링크 */}
         {showRegisterLink && (
           <div className="mt-6 text-center text-sm">
             <span className="text-gray-600">계정이 없으신가요?</span>
