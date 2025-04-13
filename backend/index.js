@@ -3,8 +3,8 @@ import cors from 'cors';
 import express from 'express';
 
 import { testConnection } from '#db';
-import errorHandler from '#middlewares/errorHandler.js';
-import routes from '#routes/index.js';
+import errorHandler from '#middlewares/errorHandler';
+import routes from '#routes/index';
 
 const app = express();
 const PORT = process.env.PORT || 4000;

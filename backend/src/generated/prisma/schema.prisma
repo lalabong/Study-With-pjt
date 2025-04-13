@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int        @id @default(autoincrement())
+  userId      String     @unique @db.VarChar(50)
+  password    String     @db.VarChar(255)
+  nickname    String     @unique @db.VarChar(50)
+  profileImg  String?    @db.VarChar(255)
+  createdAt   DateTime?  @default(now()) @db.Timestamp(0)
+  rooms       Room[]     @relation("RoomOwner")
+  roomUsers   RoomUser[]
+  schedules   Schedule[]
+  timeLogs    TimeLog[]
+  friendsTo   Friend[]   @relation("UserToFriend")
+  friendsFrom Friend[]   @relation("FriendToUser")
+
+  @@map("user")
+}
+
+model Room {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(100)
+  ownerId   Int
+  createdAt DateTime?  @default(now()) @db.Timestamp(0)
+  owner     User       @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  roomUsers RoomUser[]
+  schedules Schedule[]
+  timeLogs  TimeLog[]
+
+  @@map("room")
+}
+
+model RoomUser {
+  id       Int       @id @default(autoincrement())
+  roomId   Int
+  userId   Int
+  joinedAt DateTime? @default(now()) @db.Timestamp(0)
+  room     Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@map("room_user")
+}
+
+model Schedule {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  title     String    @db.VarChar(255)
+  startTime DateTime  @db.DateTime(0)
+  endTime   DateTime  @db.DateTime(0)
+  status    String    @default("대기중") @db.VarChar(10)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@map("schedule")
+}
+
+model TimeLog {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  totalTime DateTime  @db.Time(0)
+  date      DateTime  @db.Date
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@map("time_log")
+}
+
+model Friend {
+  userId    Int
+  friendId  Int
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  user      User      @relation("UserToFriend", fields: [userId], references: [id], onDelete: Cascade)
+  friend    User      @relation("FriendToUser", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@id([userId, friendId])
+  @@map("friend")
+}
