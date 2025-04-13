@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-icons/hi';
 
-const SignUpForm = (): React.ReactNode => {
+const SignUpForm = () => {
   const [userId, setUserId] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -17,7 +17,7 @@ const SignUpForm = (): React.ReactNode => {
     confirmPassword?: string;
   }>({});
 
-  const handleTogglePassword = (field: 'password' | 'confirmPassword'): void => {
+  const handleTogglePassword = (field: 'password' | 'confirmPassword') => {
     if (field === 'password') {
       setShowPassword(!showPassword);
     } else {
@@ -55,7 +55,7 @@ const SignUpForm = (): React.ReactNode => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = (e: React.FormEvent): void => {
+  const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {

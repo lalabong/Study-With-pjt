@@ -3,7 +3,7 @@
 import AuthLayout from '../../components/common/AuthLayout';
 import SignUpForm from '../../components/signUp/SignUpForm';
 
-const SignUpPage = (): React.ReactNode => {
+const SignUpPage = () => {
   return (
     <AuthLayout showRegisterLink={false}>
       <SignUpForm />

@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
 
-const LoginForm = (): React.ReactNode => {
+const LoginForm = () => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleTogglePassword = (): void => {
+  const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = (e: React.FormEvent): void => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // 로그인 로직 구현
     console.warn('로그인 시도:', { userId, password });
