@@ -6,6 +6,7 @@
   "imports": {
     "#root/*": "./index.js",
     "#src/*": "./src/*.js",
+    "#lib/*": "./src/lib/*.js",
     "#controllers/*": "./src/controllers/*.js",
     "#middlewares/*": "./src/middlewares/*.js",
     "#models/*": "./src/models/*.js",
@@ -33,7 +34,6 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
-    "mysql2": "^3.14.0",
     "prettier": "^3.5.3"
   },
   "devDependencies": {

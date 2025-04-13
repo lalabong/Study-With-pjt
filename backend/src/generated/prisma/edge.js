@@ -212,11 +212,12 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "mysql://root:dusghdvo12@localhost:3306/study_db"
+        "value": null
       }
     }
   },

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { pool } from '#db';
+import prisma from '#lib/prisma';
 
 const login = async (req, res, next) => {
   try {
@@ -9,17 +9,17 @@ const login = async (req, res, next) => {
 
     console.log('로그인 시도:', { userId, passwordProvided: !!password });
 
-    const [users] = await pool.query('SELECT * FROM user WHERE userId = ?', [userId]);
+    const user = await prisma.user.findUnique({
+      where: { userId }
+    });
 
-    if (users.length === 0) {
+    if (!user) {
       console.log('사용자를 찾을 수 없음:', userId);
       return res.status(401).json({
         status: 'error',
         message: '사용자명 또는 비밀번호가 올바르지 않습니다.',
       });
     }
-
-    const user = users[0];
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -70,18 +70,22 @@ const signup = async (req, res, next) => {
       });
     }
 
-    const [existingUsers] = await pool.query('SELECT * FROM user WHERE userId = ?', [userId]);
-    if (existingUsers.length > 0) {
+    const existingUserId = await prisma.user.findUnique({
+      where: { userId }
+    });
+    
+    if (existingUserId) {
       return res.status(400).json({
         status: 'error',
         message: '이미 사용 중인 아이디입니다.',
       });
     }
 
-    const [existingNicknames] = await pool.query('SELECT * FROM user WHERE nickname = ?', [
-      nickname,
-    ]);
-    if (existingNicknames.length > 0) {
+    const existingNickname = await prisma.user.findUnique({
+      where: { nickname }
+    });
+    
+    if (existingNickname) {
       return res.status(400).json({
         status: 'error',
         message: '이미 사용 중인 닉네임입니다.',
@@ -90,16 +94,17 @@ const signup = async (req, res, next) => {
 
     const hashedPassword = await hashPassword(password);
 
-    const [result] = await pool.query(
-      'INSERT INTO user (userId, password, nickname) VALUES (?, ?, ?)',
-      [userId, hashedPassword, nickname]
-    );
-
-    const newUserId = result.insertId;
+    const newUser = await prisma.user.create({
+      data: {
+        userId,
+        password: hashedPassword,
+        nickname
+      }
+    });
 
     const token = jwt.sign(
       {
-        id: newUserId,
+        id: newUser.id,
         userId,
         nickname,
       },
@@ -112,7 +117,7 @@ const signup = async (req, res, next) => {
       message: '회원가입이 완료되었습니다.',
       token,
       user: {
-        id: newUserId,
+        id: newUser.id,
         userId,
         nickname,
       },
