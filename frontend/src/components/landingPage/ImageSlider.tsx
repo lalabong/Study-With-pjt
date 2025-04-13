@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
-const ImageSlider = (): React.ReactElement => {
+const ImageSlider = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const imageCount = 3; // 이미지 갯수를 변수로 지정
   const images: string[] = Array.from(

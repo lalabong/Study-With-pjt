@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
 
-const LoginForm = (): React.ReactNode => {
+const LoginForm = () => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleTogglePassword = (): void => {
+  const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = (e: React.FormEvent): void => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // 로그인 로직 구현
     console.warn('로그인 시도:', { userId, password });
@@ -20,7 +20,6 @@ const LoginForm = (): React.ReactNode => {
 
   return (
     <form onSubmit={handleLogin} className="space-y-4">
-      {/* 아이디 입력 필드 */}
       <div className="space-y-2">
         <label htmlFor="userId" className="block text-sm font-bold text-gray-700">
           아이디
@@ -42,7 +41,6 @@ const LoginForm = (): React.ReactNode => {
         </div>
       </div>
 
-      {/* 비밀번호 입력 필드 */}
       <div className="space-y-2">
         <label htmlFor="password" className="block text-sm font-bold text-gray-700">
           비밀번호
@@ -71,7 +69,6 @@ const LoginForm = (): React.ReactNode => {
         </div>
       </div>
 
-      {/* 로그인 버튼 */}
       <button
         type="submit"
         className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"

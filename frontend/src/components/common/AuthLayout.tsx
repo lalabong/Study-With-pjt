@@ -1,5 +1,9 @@
 'use client';
 
+<<<<<<< HEAD:frontend/src/components/common/AuthLayout.tsx
+<<<<<<<< HEAD:frontend/src/components/common/AuthLayout.tsx
+=======
+>>>>>>> aa501ef020dc15b2181f7e3bfcbb5da9a470a185:study-app/src/components/common/AuthLayout.tsx
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -15,8 +19,19 @@ interface AuthLayoutProps {
 
 const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps) => {
   const router = useRouter();
+<<<<<<< HEAD:frontend/src/components/common/AuthLayout.tsx
+========
+import AuthLayout from '@components/common/AuthLayout';
+import LoginForm from '@components/login/LoginForm';
+>>>>>>>> aa501ef020dc15b2181f7e3bfcbb5da9a470a185:study-app/src/app/login/page.tsx
+
+const LoginPage = () => {
+  return (
+<<<<<<<< HEAD:frontend/src/components/common/AuthLayout.tsx
+=======
 
   return (
+>>>>>>> aa501ef020dc15b2181f7e3bfcbb5da9a470a185:study-app/src/components/common/AuthLayout.tsx
     <main className="relative flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-white">
       <div className="relative z-10 w-[400px] rounded-2xl bg-white p-8 shadow-lg">
         <HiArrowLeft
@@ -52,6 +67,14 @@ const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps) => {
         )}
       </div>
     </main>
+<<<<<<< HEAD:frontend/src/components/common/AuthLayout.tsx
+========
+    <AuthLayout showRegisterLink={true}>
+      <LoginForm />
+    </AuthLayout>
+>>>>>>>> aa501ef020dc15b2181f7e3bfcbb5da9a470a185:study-app/src/app/login/page.tsx
+=======
+>>>>>>> aa501ef020dc15b2181f7e3bfcbb5da9a470a185:study-app/src/components/common/AuthLayout.tsx
   );
 };
 
