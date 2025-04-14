@@ -1,22 +1,23 @@
 {
   "name": "study-with",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
   "imports": {
-    "#root/*": "./index.js",
-    "#src/*": "./src/*.js",
-    "#lib/*": "./src/lib/*.js",
-    "#controllers/*": "./src/controllers/*.js",
-    "#middlewares/*": "./src/middlewares/*.js",
-    "#models/*": "./src/models/*.js",
-    "#routes/*": "./src/routes/*.js",
-    "#db": "./src/db.js"
+    "#root/*": "./dist/index.js",
+    "#src/*": "./dist/src/*.js",
+    "#lib/*": "./dist/src/lib/*.js",
+    "#controllers/*": "./dist/src/controllers/*.js",
+    "#middlewares/*": "./dist/src/middlewares/*.js",
+    "#models/*": "./dist/src/models/*.js",
+    "#routes/*": "./dist/src/routes/*.js",
+    "#db": "./dist/src/db.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
@@ -38,10 +39,18 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.14.1",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-import": "^2.31.0",
     "nodemon": "^3.1.9",
-    "prisma": "^6.6.0"
+    "prisma": "^6.6.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
   }
 }

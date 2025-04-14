@@ -1,4 +1,15 @@
-const errorHandler = (err, req, res, _next) => {
+import { Request, Response, NextFunction } from 'express';
+
+interface AppError extends Error {
+  statusCode?: number;
+}
+
+const errorHandler = (
+  err: AppError, 
+  req: Request, 
+  res: Response, 
+  _next: NextFunction
+): void => {
   console.error('Error:', err.message);
   console.error('Stack:', err.stack);
 
@@ -12,4 +23,4 @@ const errorHandler = (err, req, res, _next) => {
   });
 };
 
-export default errorHandler;
+export default errorHandler; 

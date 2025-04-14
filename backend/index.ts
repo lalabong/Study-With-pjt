@@ -1,10 +1,11 @@
 import 'dotenv/config';
 import cors from 'cors';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import { Server } from 'http';
 
-import { prisma, testConnection } from '#db';
-import errorHandler from '#middlewares/errorHandler';
-import routes from '#routes/index';
+import { prisma, testConnection } from './src/db.js';
+import errorHandler from './src/middlewares/errorHandler.js';
+import routes from './src/routes/index.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -17,11 +18,11 @@ testConnection();
 
 app.use('/api', routes);
 
-app.get('/', (req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'SWith API Server' });
 });
 
-app.use((req, res) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({
     status: 'error',
     message: '요청한 페이지를 찾을 수 없습니다.',
@@ -30,7 +31,7 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-const server = app.listen(PORT, () => {
+const server: Server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
