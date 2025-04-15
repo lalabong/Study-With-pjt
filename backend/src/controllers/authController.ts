@@ -3,35 +3,12 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 import prisma from '../lib/prisma.js';
-import { ControllerFn, UserPayload, SafeUser, ApiResponse, User } from '../types/index.js';
+import { ControllerFn, UserPayload, SafeUser, User } from '../types/index.js';
+import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
 
 declare module 'jsonwebtoken' {
   export interface JwtPayload extends UserPayload {}
 }
-
-const createErrorResponse = (res: Response, status: number, message: string): void => {
-  const errorResponse: ApiResponse<null> = {
-    status: 'error',
-    message,
-  };
-  res.status(status).json(errorResponse);
-};
-
-const createSuccessResponse = <T>(
-  res: Response,
-  status: number,
-  data?: T,
-  message?: string,
-  extras: Record<string, any> = {}
-): void => {
-  const response: ApiResponse<T, typeof extras> = {
-    status: 'success',
-    ...(data !== undefined && { data }),
-    ...(message !== undefined && { message }),
-    ...extras,
-  };
-  res.status(status).json(response);
-};
 
 const generateToken = (payload: UserPayload): string => {
   const jwtSecret = process.env.JWT_SECRET;
