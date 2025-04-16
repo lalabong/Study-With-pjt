@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import cors from 'cors';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import { Server } from 'http';
 
 import { prisma, testConnection } from './src/db.js';
