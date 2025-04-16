@@ -19,7 +19,7 @@
       "#db": ["./src/db.ts"]
     },
     "declaration": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true, // 외부 라이브러리 타입 검사 생략해 컴파일 속도 높임 -> 배포 전에 false로 변경
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*", "index.ts"],
