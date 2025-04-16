@@ -166,6 +166,14 @@ exports.Prisma.FriendScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -192,6 +200,10 @@ exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
   status: 'status'
 };
 
+exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
+  token: 'token'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
@@ -199,7 +211,8 @@ exports.Prisma.ModelName = {
   RoomUser: 'RoomUser',
   Schedule: 'Schedule',
   TimeLog: 'TimeLog',
-  Friend: 'Friend'
+  Friend: 'Friend',
+  RefreshToken: 'RefreshToken'
 };
 
 /**

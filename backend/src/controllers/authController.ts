@@ -1,19 +1,24 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 import prisma from '../lib/prisma.js';
-import { ControllerFn, UserPayload, SafeUser, User } from '../types/index.js';
+import {
+  ControllerFn,
+  UserPayload,
+  SafeUser,
+  User,
+  LoginRequest,
+  SignupRequest,
+} from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
 import { AUTH_ERROR, AUTH_SUCCESS } from '../constants/index.js';
-
-const generateToken = (payload: UserPayload): string => {
-  const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret) {
-    throw new Error(AUTH_ERROR.JWT_SECRET_MISSING);
-  }
-  return jwt.sign(payload, jwtSecret);
-};
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  saveRefreshToken,
+  verifyRefreshToken,
+  deleteRefreshToken,
+} from '../utils/tokenUtils.js';
 
 const toSafeUser = (user: User): SafeUser => ({
   id: user.id,
@@ -21,15 +26,6 @@ const toSafeUser = (user: User): SafeUser => ({
   nickname: user.nickname,
   profileImg: user.profileImg,
 });
-
-const checkUserExists = async (field: 'userId' | 'nickname', value: string): Promise<boolean> => {
-  const where = field === 'userId' ? { userId: value } : { nickname: value };
-
-  const user = await prisma.user.findUnique({
-    where,
-  });
-  return !!user;
-};
 
 const verifyPassword = async (
   userId: string,
@@ -53,7 +49,7 @@ const login: ControllerFn = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { userId, password } = req.body as { userId: string; password: string };
+    const { userId, password } = req.body as LoginRequest;
 
     console.log('로그인 시도:', { userId, passwordProvided: !!password });
 
@@ -71,19 +67,87 @@ const login: ControllerFn = async (
       nickname: user.nickname,
     };
 
-    const token = generateToken(tokenPayload);
+    const accessToken = generateAccessToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
+
+    await saveRefreshToken(user.id, refreshToken);
+
     console.log('로그인 성공:', userId);
 
     const safeUser = toSafeUser(user);
 
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
+    });
+
     createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.LOGIN_SUCCESS, {
-      token,
+      accessToken,
       user: safeUser,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('로그인 에러:', error);
     next(error);
   }
+};
+
+const refreshAccessToken: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      createErrorResponse(res, 401, AUTH_ERROR.TOKEN_REQUIRED);
+      return;
+    }
+
+    const payload = await verifyRefreshToken(refreshToken);
+
+    if (!payload) {
+      createErrorResponse(res, 401, AUTH_ERROR.INVALID_REFRESH_TOKEN);
+      return;
+    }
+
+    const accessToken = generateAccessToken(payload);
+
+    createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.TOKEN_REFRESHED, {
+      accessToken,
+    });
+  } catch (error: unknown) {
+    console.error('토큰 갱신 에러:', error);
+    next(error);
+  }
+};
+
+const logout: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (refreshToken) {
+      await deleteRefreshToken(refreshToken);
+    }
+
+    res.clearCookie('refreshToken');
+
+    createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.LOGOUT_SUCCESS);
+  } catch (error: unknown) {
+    console.error('로그아웃 에러:', error);
+    next(error);
+  }
+};
+
+const hashPassword = async (password: string): Promise<string> => {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
 };
 
 const signup: ControllerFn = async (
@@ -92,26 +156,28 @@ const signup: ControllerFn = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { userId, password, nickname } = req.body as {
-      userId: string;
-      password: string;
-      nickname: string;
-    };
+    const { userId, password, nickname } = req.body as SignupRequest;
 
     if (!userId || !password || !nickname) {
       createErrorResponse(res, 400, AUTH_ERROR.REQUIRED_FIELDS);
       return;
     }
 
-    const userIdExists = await checkUserExists('userId', userId);
-    if (userIdExists) {
-      createErrorResponse(res, 400, AUTH_ERROR.USER_ID_EXISTS);
+    const existingUserId = await prisma.user.findUnique({
+      where: { userId },
+    });
+
+    if (existingUserId) {
+      createErrorResponse(res, 409, AUTH_ERROR.USER_ID_EXISTS);
       return;
     }
 
-    const nicknameExists = await checkUserExists('nickname', nickname);
-    if (nicknameExists) {
-      createErrorResponse(res, 400, AUTH_ERROR.NICKNAME_EXISTS);
+    const existingNickname = await prisma.user.findUnique({
+      where: { nickname },
+    });
+
+    if (existingNickname) {
+      createErrorResponse(res, 409, AUTH_ERROR.NICKNAME_EXISTS);
       return;
     }
 
@@ -127,26 +193,31 @@ const signup: ControllerFn = async (
 
     const tokenPayload: UserPayload = {
       id: newUser.id,
-      userId,
-      nickname,
+      userId: newUser.userId,
+      nickname: newUser.nickname,
     };
 
-    const token = generateToken(tokenPayload);
+    const accessToken = generateAccessToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
+
+    await saveRefreshToken(newUser.id, refreshToken);
+
     const safeUser = toSafeUser(newUser);
 
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
+    });
+
     createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE, {
-      token,
+      accessToken,
       user: safeUser,
     });
-  } catch (error) {
-    console.error('회원가입 에러:', error);
+  } catch (error: unknown) {
     next(error);
   }
 };
 
-const hashPassword = async (password: string): Promise<string> => {
-  const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt);
-};
-
-export { login, signup, hashPassword };
+export { login, signup, refreshAccessToken, logout, hashPassword };

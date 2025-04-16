@@ -9,18 +9,19 @@ datasource db {
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
-  userId      String     @unique @db.VarChar(50)
-  password    String     @db.VarChar(255)
-  nickname    String     @unique @db.VarChar(50)
-  profileImg  String?    @db.VarChar(255)
-  createdAt   DateTime?  @default(now()) @db.Timestamp(0)
-  rooms       Room[]     @relation("RoomOwner")
-  roomUsers   RoomUser[]
-  schedules   Schedule[]
-  timeLogs    TimeLog[]
-  friendsTo   Friend[]   @relation("UserToFriend")
-  friendsFrom Friend[]   @relation("FriendToUser")
+  id            Int            @id @default(autoincrement())
+  userId        String         @unique @db.VarChar(50)
+  password      String         @db.VarChar(255)
+  nickname      String         @unique @db.VarChar(50)
+  profileImg    String?        @db.VarChar(255)
+  createdAt     DateTime?      @default(now()) @db.Timestamp(0)
+  rooms         Room[]         @relation("RoomOwner")
+  roomUsers     RoomUser[]
+  schedules     Schedule[]
+  timeLogs      TimeLog[]
+  friendsTo     Friend[]       @relation("UserToFriend")
+  friendsFrom   Friend[]       @relation("FriendToUser")
+  refreshTokens RefreshToken[]
 
   @@map("user")
 }
@@ -87,4 +88,15 @@ model Friend {
 
   @@id([userId, friendId])
   @@map("friend")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique @db.VarChar(255)
+  userId    Int
+  expiresAt DateTime @db.DateTime(0)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_token")
 }

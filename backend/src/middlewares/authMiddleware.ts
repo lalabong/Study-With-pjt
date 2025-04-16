@@ -25,7 +25,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): void =
       return;
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as UserPayload;
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string) as UserPayload;
 
     (req as AuthRequest).user = decoded;
 

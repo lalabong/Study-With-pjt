@@ -74,3 +74,13 @@ export type ApiResponse<T, E extends Record<string, unknown> = Record<string, un
 
 // 컨트롤러 타입
 export type ControllerFn = RequestHandler;
+
+export interface LoginRequest {
+  userId: string;
+  password: string;
+}
+
+export interface SignupRequest extends LoginRequest {
+  nickname: string;
+}
+
