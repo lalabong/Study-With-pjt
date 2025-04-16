@@ -1,7 +1,7 @@
 'use client';
 
-import AuthLayout from '@components/common/AuthLayout';
-import LoginForm from '@/components/auth/LoginForm';
+import AuthLayout from '@/components/user/AuthLayout';
+import LoginForm from '@/components/user/LoginForm';
 
 const LoginPage = () => {
   return (

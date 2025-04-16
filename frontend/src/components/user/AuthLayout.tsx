@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
 import { HiArrowLeft } from 'react-icons/hi';
 
-import SocialLogin from '@/components/auth/SocialLogin';
+import SocialLogin from '@/components/user/SocialLogin';
 
 interface AuthLayoutProps {
   children: ReactNode;

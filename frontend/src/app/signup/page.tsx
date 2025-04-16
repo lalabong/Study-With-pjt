@@ -1,7 +1,7 @@
 'use client';
 
-import SignUpForm from '@components/auth/SignupForm';
-import AuthLayout from '@components/common/AuthLayout';
+import SignUpForm from '@/components/user/SignupForm';
+import AuthLayout from '@/components/user/AuthLayout';
 
 const SignUpPage = (): React.ReactNode => {
   return (
