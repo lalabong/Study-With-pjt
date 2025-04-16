@@ -1,8 +1,9 @@
 import { AxiosResponse } from 'axios';
 
 import { TOKEN_STORAGE } from '@/utils/auth';
+import { AUTH_ENDPOINTS } from '@/constants/api';
 
-import { apiClient } from '../client';
+import { axiosInstance } from '../axiosInstance';
 
 export interface SignupRequest {
   userId: string;
@@ -25,7 +26,7 @@ export interface SignupResponse {
 
 export const postSignup = async (data: SignupRequest): Promise<SignupResponse> => {
   try {
-    const response: AxiosResponse<SignupResponse> = await apiClient.post('/api/signup', data);
+    const response: AxiosResponse<SignupResponse> = await axiosInstance.post(AUTH_ENDPOINTS.SIGNUP, data);
 
     const { accessToken } = response.data.data;
     TOKEN_STORAGE.setAccessToken(accessToken);

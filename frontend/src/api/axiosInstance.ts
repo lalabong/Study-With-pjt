@@ -1,12 +1,13 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 import { TOKEN_STORAGE } from '@/utils/auth';
+import { AUTH_ENDPOINTS } from '@/constants/api';
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-export const apiClient = axios.create({
+export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ const handleResponseError = async (error: AxiosError) => {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/refresh`,
+        `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.REFRESH_TOKEN}`,
         {},
         { withCredentials: true },
       );
@@ -69,5 +70,5 @@ const handleResponseError = async (error: AxiosError) => {
   return Promise.reject(error);
 };
 
-apiClient.interceptors.request.use(handleRequestSuccess, handleRequestError);
-apiClient.interceptors.response.use(handleResponseSuccess, handleResponseError);
+axiosInstance.interceptors.request.use(handleRequestSuccess, handleRequestError);
+axiosInstance.interceptors.response.use(handleResponseSuccess, handleResponseError);
