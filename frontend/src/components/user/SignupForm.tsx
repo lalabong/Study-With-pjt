@@ -1,9 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-icons/hi';
 
+import { postSignup } from '@/api/user/postSignup';
+
 const SignUpForm = (): React.ReactNode => {
+  const router = useRouter();
   const [userId, setUserId] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -55,12 +59,14 @@ const SignUpForm = (): React.ReactNode => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = (e: React.FormEvent): void => {
+  const handleSignUp = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     if (validateForm()) {
-      // 회원가입 로직 구현
       console.warn('회원가입 시도:', { userId, nickname, password });
+
+      await postSignup({ userId, nickname, password });
+      router.push('/login');
     }
   };
 

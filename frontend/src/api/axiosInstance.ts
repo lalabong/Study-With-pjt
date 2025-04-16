@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
-import { TOKEN_STORAGE } from '@/utils/auth';
 import { AUTH_ENDPOINTS } from '@/constants/api';
+import { TOKEN_STORAGE } from '@/utils/auth';
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
