@@ -5,15 +5,12 @@ import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma.js';
 import { ControllerFn, UserPayload, SafeUser, User } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
-
-declare module 'jsonwebtoken' {
-  export interface JwtPayload extends UserPayload {}
-}
+import { AUTH_ERROR, AUTH_SUCCESS } from '../constants/index.js';
 
 const generateToken = (payload: UserPayload): string => {
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {
-    throw new Error('JWT_SECRET이 설정되지 않았습니다.');
+    throw new Error(AUTH_ERROR.JWT_SECRET_MISSING);
   }
   return jwt.sign(payload, jwtSecret);
 };
@@ -64,7 +61,7 @@ const login: ControllerFn = async (
 
     if (!user || !isValid) {
       console.log(user ? '비밀번호 불일치:' : '사용자를 찾을 수 없음:', userId);
-      createErrorResponse(res, 401, '사용자명 또는 비밀번호가 올바르지 않습니다.');
+      createErrorResponse(res, 401, AUTH_ERROR.INVALID_CREDENTIALS);
       return;
     }
 
@@ -79,7 +76,10 @@ const login: ControllerFn = async (
 
     const safeUser = toSafeUser(user);
 
-    createSuccessResponse(res, 200, undefined, undefined, { token, user: safeUser });
+    createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.LOGIN_SUCCESS, {
+      token,
+      user: safeUser,
+    });
   } catch (error) {
     console.error('로그인 에러:', error);
     next(error);
@@ -99,19 +99,19 @@ const signup: ControllerFn = async (
     };
 
     if (!userId || !password || !nickname) {
-      createErrorResponse(res, 400, '모든 필수 정보를 입력해주세요.');
+      createErrorResponse(res, 400, AUTH_ERROR.REQUIRED_FIELDS);
       return;
     }
 
     const userIdExists = await checkUserExists('userId', userId);
     if (userIdExists) {
-      createErrorResponse(res, 400, '이미 사용 중인 아이디입니다.');
+      createErrorResponse(res, 400, AUTH_ERROR.USER_ID_EXISTS);
       return;
     }
 
     const nicknameExists = await checkUserExists('nickname', nickname);
     if (nicknameExists) {
-      createErrorResponse(res, 400, '이미 사용 중인 닉네임입니다.');
+      createErrorResponse(res, 400, AUTH_ERROR.NICKNAME_EXISTS);
       return;
     }
 
@@ -134,7 +134,7 @@ const signup: ControllerFn = async (
     const token = generateToken(tokenPayload);
     const safeUser = toSafeUser(newUser);
 
-    createSuccessResponse(res, 201, undefined, '회원가입이 완료되었습니다.', {
+    createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE, {
       token,
       user: safeUser,
     });

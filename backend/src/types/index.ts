@@ -66,7 +66,7 @@ export interface Friend {
   createdAt?: Date | null;
 }
 
-export type ApiResponse<T, E extends Record<string, unknown> = {}> = {
+export type ApiResponse<T, E extends Record<string, unknown> = Record<string, unknown>> = {
   status: 'success' | 'error';
   message?: string;
   data?: T;

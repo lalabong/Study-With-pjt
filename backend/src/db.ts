@@ -11,4 +11,4 @@ const testConnection = async (): Promise<boolean> => {
   }
 };
 
-export { prisma, testConnection }; 
+export { prisma, testConnection };

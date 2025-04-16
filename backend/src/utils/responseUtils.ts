@@ -26,7 +26,7 @@ export const createSuccessResponse = <T>(
   status: number,
   data?: T,
   message?: string,
-  extras: Record<string, any> = {}
+  extras: Record<string, unknown> = {}
 ): void => {
   const response: ApiResponse<T, typeof extras> = {
     status: 'success',
