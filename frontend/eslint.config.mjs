@@ -23,9 +23,7 @@ const eslintConfig = [
   {
     rules: {
       'prettier/prettier': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'off', // 함수 반환 타입 명시 비활성화
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], // 사용하지 않는 변수 비활성화(_로 시작하면 무시)
-      '@typescript-eslint/explicit-module-boundary-types': 'warn', // 함수 명시적 타입을 요구
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {

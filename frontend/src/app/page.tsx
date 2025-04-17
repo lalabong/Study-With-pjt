@@ -2,14 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
-import ImageSlider from '../components/landingPage/ImageSlider';
+import ImageSlider from '@components/landing/ImageSlider';
 
-const Home = (): React.ReactNode => {
+const Home = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <div className="min-h-screen bg-white">
-      {/* 헤더 */}
       <header className="w-full px-6 py-6 flex justify-between items-center">
         <Image src="/images/swith-logo.png" alt="SWith Logo" width={140} height={39} />
         <div className="flex space-x-4">
@@ -24,7 +23,6 @@ const Home = (): React.ReactNode => {
         </div>
       </header>
 
-      {/* 메인 히어로 섹션 */}
       <section className="relative w-full h-[600px] overflow-hidden">
         <ImageSlider />
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
@@ -43,14 +41,12 @@ const Home = (): React.ReactNode => {
         </div>
       </section>
 
-      {/* 특징 섹션 */}
       <section id="features" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 break-keep">
             SWITH에서는 이런 것들이 가능해요.
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* 스터디 그룹 */}
             <div className="p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-2">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                 <HiPlus className="h-6 w-6 text-blue-600" />
@@ -61,7 +57,6 @@ const Home = (): React.ReactNode => {
               </p>
             </div>
 
-            {/* 일정 관리 */}
             <div className="p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-2">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <HiCalendar className="h-6 w-6 text-green-600" />
@@ -72,7 +67,6 @@ const Home = (): React.ReactNode => {
               </p>
             </div>
 
-            {/* 실시간 소통 */}
             <div className="p-6 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-2">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <HiChat className="h-6 w-6 text-purple-600" />
@@ -86,7 +80,6 @@ const Home = (): React.ReactNode => {
         </div>
       </section>
 
-      {/* 푸터 */}
       <footer className="bg-gray-100 py-6 px-4">
         <div className="max-w-6xl mx-auto pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
           <p>&copy; {currentYear} SWith. All rights reserved.</p>
