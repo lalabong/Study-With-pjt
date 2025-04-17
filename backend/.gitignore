@@ -47,3 +47,12 @@ logs/
 .env.development.local
 .env.test.local
 .env.production.local 
+
+# MySQL data
+mysql-data/
+
+# Docker Compose files
+docker-compose.yml
+
+# Docker environment variables
+docker.env
