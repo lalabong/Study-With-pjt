@@ -68,9 +68,23 @@ const login: ControllerFn = async (
     };
 
     const accessToken = generateAccessToken(tokenPayload);
-    const refreshToken = generateRefreshToken(tokenPayload);
+    
 
-    await saveRefreshToken(user.id, refreshToken);
+    const existingRefreshToken = req.cookies.refreshToken;
+    let refreshToken = null;
+    
+    if (existingRefreshToken) {
+      const { payload: existingPayload } = await verifyRefreshToken(existingRefreshToken);
+      // 기존 토큰이 유효하고 동일 사용자인 경우 그대로 사용
+      if (existingPayload && existingPayload.id === user.id) {
+        refreshToken = existingRefreshToken;
+      }
+    }
+    
+    if (!refreshToken) {
+      refreshToken = generateRefreshToken(tokenPayload);
+      await saveRefreshToken(user.id, refreshToken);
+    }
 
     console.log('로그인 성공:', userId);
 
@@ -106,7 +120,7 @@ const refreshAccessToken: ControllerFn = async (
       return;
     }
 
-    const payload = await verifyRefreshToken(refreshToken);
+    const { payload, newToken } = await verifyRefreshToken(refreshToken);
 
     if (!payload) {
       createErrorResponse(res, 401, AUTH_ERROR.INVALID_REFRESH_TOKEN);
@@ -114,6 +128,15 @@ const refreshAccessToken: ControllerFn = async (
     }
 
     const accessToken = generateAccessToken(payload);
+
+    if (newToken) {
+      res.cookie('refreshToken', newToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
+      });
+    }
 
     createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.TOKEN_REFRESHED, {
       accessToken,
@@ -199,7 +222,6 @@ const signup: ControllerFn = async (
 
     const accessToken = generateAccessToken(tokenPayload);
     const refreshToken = generateRefreshToken(tokenPayload);
-
     await saveRefreshToken(newUser.id, refreshToken);
 
     const safeUser = toSafeUser(newUser);
