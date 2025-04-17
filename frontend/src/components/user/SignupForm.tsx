@@ -1,11 +1,14 @@
 'use client';
 
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-icons/hi';
+import { toast } from 'react-toastify';
 
 import { postSignup } from '@/api/user/postSignup';
 import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
 
 const SignUpForm = (): React.ReactNode => {
   const router = useRouter();
@@ -71,8 +74,16 @@ const SignUpForm = (): React.ReactNode => {
     if (validateForm()) {
       console.warn('회원가입 시도:', { userId, nickname, password });
 
-      await postSignup({ userId, nickname, password });
-      router.push('/login');
+      try {
+        await postSignup({ userId, nickname, password });
+        toast.success(USER_SUCCESS_MESSAGES.SIGNUP_SUCCESS);
+        router.push('/login');
+      } catch (error) {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const errorMessage =
+          axiosError.response?.data?.message || USER_ERROR_MESSAGES.SIGNUP_FAILED;
+        toast.error(errorMessage);
+      }
     }
   };
 
