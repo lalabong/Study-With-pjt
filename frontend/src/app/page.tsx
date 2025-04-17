@@ -1,7 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
+import { Button, Header } from '@/components/common';
 import ImageSlider from '@components/landing/ImageSlider';
 
 const Home = () => {
@@ -9,19 +8,14 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full px-6 py-6 flex justify-between items-center">
-        <Image src="/images/swith-logo.png" alt="SWith Logo" width={140} height={39} />
-        <div className="flex space-x-4">
-          <Link href="/login" className="px-4 py-3 text-gray-600 hover:text-gray-900">
-            로그인
-          </Link>
-          <Link href="/signup">
-            <div className="px-6 py-3 bg-blue-500 text-white font-bold rounded-md hover:bg-blue-700 transition-colors duration-300">
-              회원가입
-            </div>
-          </Link>
-        </div>
-      </header>
+      <Header>
+        <Button href="/login" variant="text" size="md">
+          로그인
+        </Button>
+        <Button href="/signup" variant="primary" size="md">
+          회원가입
+        </Button>
+      </Header>
 
       <section className="relative w-full h-[600px] overflow-hidden">
         <ImageSlider />
@@ -32,12 +26,9 @@ const Home = () => {
           <p className="text-xl text-white mb-8 max-w-2xl text-shadow-lg break-keep">
             SWITH에서 하루를 설계하고, 사람들과 함께 목표를 향해 나아가보세요.
           </p>
-          <Link
-            href="/signup"
-            className="px-8 py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
-          >
+          <Button href="/signup" variant="primary" size="md">
             지금 시작하기
-          </Link>
+          </Button>
         </div>
       </section>
 
