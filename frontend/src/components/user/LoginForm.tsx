@@ -1,22 +1,20 @@
 'use client';
 
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
-import { postLogin } from '@/api/user/postLogin';
 import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
 import { useValidateForm } from '@/hooks/useValidateForm';
+import { useAuthStore } from '@/stores/authStore';
 
 const LoginForm = () => {
   const router = useRouter();
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const { errors, validateForm } = useValidateForm({
     userId: { value: userId, validate: true },
     password: { value: password, validate: true },
@@ -31,15 +29,20 @@ const LoginForm = () => {
 
     if (validateForm()) {
       console.warn('로그인 시도:', { userId, password });
-
+      const data = { userId, password };
       try {
-        await postLogin({ userId, password });
-        toast.success(USER_SUCCESS_MESSAGES.LOGIN_SUCCESS);
-        router.push('/mypage');
+        await useAuthStore.getState().login(
+          data,
+          () => {
+            toast.success(USER_SUCCESS_MESSAGES.LOGIN_SUCCESS);
+            router.push('/mypage');
+          },
+          (errorMsg) => {
+            toast.error(errorMsg);
+          },
+        );
       } catch (error) {
-        const axiosError = error as AxiosError<{ message: string }>;
-        const errorMessage = axiosError.response?.data?.message || USER_ERROR_MESSAGES.LOGIN_FAILED;
-        toast.error(errorMessage);
+        console.error(USER_ERROR_MESSAGES.LOGIN_FAILED, error);
       }
     }
   };

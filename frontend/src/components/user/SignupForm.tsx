@@ -1,15 +1,13 @@
 'use client';
 
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
-import { postSignup } from '@/api/user/postSignup';
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
 import { useValidateForm } from '@/hooks/useValidateForm';
+import { useAuthStore } from '@/stores/authStore';
 
 const SignUpForm = () => {
   const router = useRouter();
@@ -42,14 +40,20 @@ const SignUpForm = () => {
       console.warn('회원가입 시도:', { userId, nickname, password });
 
       try {
-        await postSignup({ userId, nickname, password });
-        toast.success(USER_SUCCESS_MESSAGES.SIGNUP_SUCCESS);
-        router.push('/login');
+        await useAuthStore.getState().signup(
+          { userId, nickname, password },
+
+          () => {
+            toast.success(USER_SUCCESS_MESSAGES.SIGNUP_SUCCESS);
+            router.push('/login');
+          },
+
+          (errorMessage) => {
+            toast.error(errorMessage);
+          },
+        );
       } catch (error) {
-        const axiosError = error as AxiosError<{ message: string }>;
-        const errorMessage =
-          axiosError.response?.data?.message || USER_ERROR_MESSAGES.SIGNUP_FAILED;
-        toast.error(errorMessage);
+        console.error('회원가입 중 오류 발생:', error);
       }
     }
   };

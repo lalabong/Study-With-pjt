@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 
 import { AUTH_ENDPOINTS } from '@/constants/api';
 import { AUTH_ERROR_MESSAGES, API_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { TOKEN_STORAGE } from '@/utils/auth';
+import { useAuthStore } from '@/stores/authStore';
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -17,9 +17,20 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+const logErrorByStatus = (status: number, error: AxiosError): void => {
+  const statusToMessageMap: Record<number, string> = {
+    400: API_ERROR_MESSAGES.BAD_REQUEST,
+    403: API_ERROR_MESSAGES.FORBIDDEN,
+    404: API_ERROR_MESSAGES.NOT_FOUND,
+  };
+
+  const errorMessage = statusToMessageMap[status] || API_ERROR_MESSAGES.REQUEST_FAILED;
+  console.error(errorMessage, error);
+};
+
 // 요청 인터셉터
 const handleRequestSuccess = (config: InternalAxiosRequestConfig) => {
-  const accessToken = TOKEN_STORAGE.getAccessToken();
+  const accessToken = useAuthStore.getState().accessToken;
 
   if (accessToken) {
     config.headers = config.headers || {};
@@ -38,17 +49,6 @@ const handleResponseSuccess = (response: AxiosResponse) => {
   return response;
 };
 
-const logErrorByStatus = (status: number, error: AxiosError): void => {
-  const statusToMessageMap: Record<number, string> = {
-    400: API_ERROR_MESSAGES.BAD_REQUEST,
-    403: API_ERROR_MESSAGES.FORBIDDEN,
-    404: API_ERROR_MESSAGES.NOT_FOUND,
-  };
-
-  const errorMessage = statusToMessageMap[status] || API_ERROR_MESSAGES.REQUEST_FAILED;
-  console.error(errorMessage, error);
-};
-
 const handleResponseError = async (error: AxiosError) => {
   const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
@@ -64,7 +64,7 @@ const handleResponseError = async (error: AxiosError) => {
 
       const { accessToken } = response.data;
 
-      TOKEN_STORAGE.setAccessToken(accessToken);
+      useAuthStore.getState().setAccessToken(accessToken);
 
       if (originalRequest.headers) {
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -74,7 +74,7 @@ const handleResponseError = async (error: AxiosError) => {
         withCredentials: true,
       });
     } catch (refreshError) {
-      TOKEN_STORAGE.clearTokens();
+      useAuthStore.getState().logout();
 
       console.error(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_FAILED, refreshError);
       return Promise.reject(refreshError);
