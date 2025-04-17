@@ -23,11 +23,6 @@ export const AUTH_ERROR_MESSAGES = {
   REFRESH_TOKEN_FAILED: '자동 로그인에 실패했습니다. 다시 로그인해주세요.',
 };
 
-export const FORM_VALIDATION_ERROR_MESSAGES = {
-  REQUIRED_FIELD: '필수 입력 항목입니다.',
-  INVALID_FORMAT: '유효한 형식이 아닙니다.',
-};
-
 export const API_ERROR_MESSAGES = {
   REQUEST_FAILED: '요청 처리에 실패했습니다.',
   BAD_REQUEST: '잘못된 요청입니다.',

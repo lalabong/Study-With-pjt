@@ -1,21 +1,47 @@
 'use client';
 
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
+import { toast } from 'react-toastify';
+
+import { postLogin } from '@/api/user/postLogin';
+import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
+import { useValidateForm } from '@/hooks/useValidateForm';
 
 const LoginForm = () => {
+  const router = useRouter();
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const handleTogglePassword = () => {
+  const { errors, validateForm } = useValidateForm({
+    userId: { value: userId, validate: true },
+    password: { value: password, validate: true },
+  });
+
+  const handleTogglePassword = (): void => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    // 로그인 로직 구현
-    console.warn('로그인 시도:', { userId, password });
+
+    if (validateForm()) {
+      console.warn('로그인 시도:', { userId, password });
+
+      try {
+        await postLogin({ userId, password });
+        toast.success(USER_SUCCESS_MESSAGES.LOGIN_SUCCESS);
+        router.push('/mypage');
+      } catch (error) {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const errorMessage = axiosError.response?.data?.message || USER_ERROR_MESSAGES.LOGIN_FAILED;
+        toast.error(errorMessage);
+      }
+    }
   };
 
   return (
@@ -33,12 +59,14 @@ const LoginForm = () => {
             type="text"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className={`w-full rounded-lg border ${
+              errors.userId ? 'border-red-500' : 'border-gray-300'
+            } px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
             placeholder="아이디를 입력하세요"
             maxLength={20}
-            required
           />
         </div>
+        {errors.userId && <p className="mt-1 text-sm text-red-500">{errors.userId}</p>}
       </div>
 
       <div className="space-y-2">
@@ -54,9 +82,10 @@ const LoginForm = () => {
             type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className={`w-full rounded-lg border ${
+              errors.password ? 'border-red-500' : 'border-gray-300'
+            } px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
             placeholder="비밀번호를 입력하세요"
-            required
           />
           <button
             type="button"
@@ -67,6 +96,7 @@ const LoginForm = () => {
             {showPassword ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
           </button>
         </div>
+        {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
       </div>
 
       <button

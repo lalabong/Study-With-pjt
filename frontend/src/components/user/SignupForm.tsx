@@ -9,8 +9,9 @@ import { toast } from 'react-toastify';
 import { postSignup } from '@/api/user/postSignup';
 import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
+import { useValidateForm } from '@/hooks/useValidateForm';
 
-const SignUpForm = (): React.ReactNode => {
+const SignUpForm = () => {
   const router = useRouter();
   const [userId, setUserId] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
@@ -18,12 +19,13 @@ const SignUpForm = (): React.ReactNode => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{
-    userId?: string;
-    nickname?: string;
-    password?: string;
-    confirmPassword?: string;
-  }>({});
+
+  const { errors, validateForm } = useValidateForm({
+    userId: { value: userId, validate: true },
+    password: { value: password, validate: true },
+    nickname: { value: nickname, validate: true },
+    confirmPassword: { value: confirmPassword, validate: true },
+  });
 
   const handleTogglePassword = (field: 'password' | 'confirmPassword'): void => {
     if (field === 'password') {
@@ -31,41 +33,6 @@ const SignUpForm = (): React.ReactNode => {
     } else {
       setShowConfirmPassword(!showConfirmPassword);
     }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: {
-      userId?: string;
-      nickname?: string;
-      password?: string;
-      confirmPassword?: string;
-    } = {};
-
-    if (userId.length < 4) {
-      newErrors.userId = USER_ERROR_MESSAGES.ID_MIN_LENGTH;
-    }
-
-    if (nickname.length < 2) {
-      newErrors.nickname = USER_ERROR_MESSAGES.NICKNAME_MIN_LENGTH;
-    }
-
-    if (password.length < 8) {
-      newErrors.password = USER_ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
-    }
-
-    const isPasswordLengthValid = password.length >= 8;
-    const isPasswordFormatValid = /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
-
-    if (isPasswordLengthValid && !isPasswordFormatValid) {
-      newErrors.password = USER_ERROR_MESSAGES.PASSWORD_FORMAT;
-    }
-
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = USER_ERROR_MESSAGES.PASSWORD_MISMATCH;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleSignUp = async (e: React.FormEvent): Promise<void> => {
@@ -107,7 +74,6 @@ const SignUpForm = (): React.ReactNode => {
             } px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
             placeholder="아이디를 입력하세요"
             maxLength={20}
-            required
           />
         </div>
         {errors.userId && <p className="mt-1 text-sm text-red-500">{errors.userId}</p>}
@@ -131,7 +97,6 @@ const SignUpForm = (): React.ReactNode => {
             } px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
             placeholder="닉네임을 입력하세요"
             maxLength={10}
-            required
           />
         </div>
         {errors.nickname && <p className="mt-1 text-sm text-red-500">{errors.nickname}</p>}
@@ -154,7 +119,6 @@ const SignUpForm = (): React.ReactNode => {
               errors.password ? 'border-red-500' : 'border-gray-300'
             } px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
             placeholder="비밀번호를 입력하세요"
-            required
           />
           <button
             type="button"
@@ -185,7 +149,6 @@ const SignUpForm = (): React.ReactNode => {
               errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
             } px-4 py-2 pl-11 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200`}
             placeholder="비밀번호를 한번 더 입력하세요"
-            required
           />
           <button
             type="button"
