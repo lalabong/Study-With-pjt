@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 import { AUTH_ENDPOINTS } from '@/constants/api';
+import { AUTH_ERROR_MESSAGES, API_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { TOKEN_STORAGE } from '@/utils/auth';
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -37,6 +38,17 @@ const handleResponseSuccess = (response: AxiosResponse) => {
   return response;
 };
 
+const logErrorByStatus = (status: number, error: AxiosError): void => {
+  const statusToMessageMap: Record<number, string> = {
+    400: API_ERROR_MESSAGES.BAD_REQUEST,
+    403: API_ERROR_MESSAGES.FORBIDDEN,
+    404: API_ERROR_MESSAGES.NOT_FOUND,
+  };
+
+  const errorMessage = statusToMessageMap[status] || API_ERROR_MESSAGES.REQUEST_FAILED;
+  console.error(errorMessage, error);
+};
+
 const handleResponseError = async (error: AxiosError) => {
   const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
@@ -63,8 +75,14 @@ const handleResponseError = async (error: AxiosError) => {
       });
     } catch (refreshError) {
       TOKEN_STORAGE.clearTokens();
+
+      console.error(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_FAILED, refreshError);
       return Promise.reject(refreshError);
     }
+  }
+
+  if (error.response) {
+    logErrorByStatus(error.response.status, error);
   }
 
   return Promise.reject(error);

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-icons/hi';
 
 import { postSignup } from '@/api/user/postSignup';
+import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 const SignUpForm = (): React.ReactNode => {
   const router = useRouter();
@@ -38,21 +39,26 @@ const SignUpForm = (): React.ReactNode => {
     } = {};
 
     if (userId.length < 4) {
-      newErrors.userId = '아이디는 4자 이상이어야 합니다.';
+      newErrors.userId = USER_ERROR_MESSAGES.ID_MIN_LENGTH;
     }
 
     if (nickname.length < 2) {
-      newErrors.nickname = '닉네임은 2자 이상이어야 합니다.';
+      newErrors.nickname = USER_ERROR_MESSAGES.NICKNAME_MIN_LENGTH;
     }
 
     if (password.length < 8) {
-      newErrors.password = '비밀번호는 8자 이상이어야 합니다.';
-    } else if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
-      newErrors.password = '비밀번호는 문자와 숫자를 모두 포함해야 합니다.';
+      newErrors.password = USER_ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
+    }
+
+    const isPasswordLengthValid = password.length >= 8;
+    const isPasswordFormatValid = /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
+
+    if (isPasswordLengthValid && !isPasswordFormatValid) {
+      newErrors.password = USER_ERROR_MESSAGES.PASSWORD_FORMAT;
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+      newErrors.confirmPassword = USER_ERROR_MESSAGES.PASSWORD_MISMATCH;
     }
 
     setErrors(newErrors);

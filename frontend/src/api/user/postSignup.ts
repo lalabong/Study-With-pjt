@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 
 import { AUTH_ENDPOINTS } from '@/constants/api';
+import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { TOKEN_STORAGE } from '@/utils/auth';
 
 import { axiosInstance } from '../axiosInstance';
@@ -35,7 +36,7 @@ export const postSignup = async (data: SignupRequest): Promise<SignupResponse> =
 
     return response.data;
   } catch (error) {
-    console.error('회원가입 에러:', error);
+    console.error(USER_ERROR_MESSAGES.SIGNUP_FAILED, error);
     throw error;
   }
 };
