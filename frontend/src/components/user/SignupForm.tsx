@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
-import { Input } from '@/components/common';
+import { Button, Input } from '@/components/common';
 import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
 import { useValidateForm } from '@/hooks/useValidateForm';
 import { useAuthStore } from '@/stores/authStore';
@@ -139,12 +139,9 @@ const SignUpForm = () => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
-      >
+      <Button type="submit" variant="primary" size="md" fullWidth>
         회원가입
-      </button>
+      </Button>
     </form>
   );
 };

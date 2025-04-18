@@ -3,20 +3,24 @@
 import Link from 'next/link';
 
 interface ButtonProps {
+  type?: 'button' | 'submit';
   children: React.ReactNode;
   href?: string;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'text';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  fullWidth?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
+  type = 'button',
   children,
   href,
   onClick,
   variant = 'primary',
   size = 'md',
+  fullWidth = false,
   className = '',
 }) => {
   const variantClasses = {
@@ -31,9 +35,9 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'px-8 py-4 text-lg',
   };
 
-  const baseClasses = 'font-medium rounded-md transition-colors duration-300';
+  const baseClasses = 'font-medium rounded-md transition-colors duration-300 cursor-pointer';
 
-  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className} ${fullWidth ? 'w-full' : ''}`;
 
   if (href) {
     return (
@@ -44,7 +48,7 @@ const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <button onClick={onClick} className={buttonClasses} type="button">
+    <button onClick={onClick} className={buttonClasses} type={type}>
       {children}
     </button>
   );
