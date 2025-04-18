@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
+import localFont from 'next/font/local';
 import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
+
+const dotSans = localFont({
+  src: '../../public/fonts/42dotSans-Regular.woff2',
+  display: 'block',
+});
 
 export const metadata: Metadata = {
   title: 'Study-With',
@@ -11,7 +17,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <body>
+      <body className={dotSans.className}>
         {children}
         <ToastContainer
           position="top-center"
