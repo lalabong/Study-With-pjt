@@ -1,6 +1,6 @@
 export const AUTH_ERROR = {
-  INVALID_CREDENTIALS: '사용자명 또는 비밀번호가 올바르지 않습니다.',
-  REQUIRED_FIELDS: '모든 필수 정보를 입력해주세요.',
+  INVALID_CREDENTIALS: '아이디 또는 비밀번호가 올바르지 않습니다.',
+  REQUIRED_FIELDS: '모든 필수 항목를 입력해주세요.',
   USER_ID_EXISTS: '이미 사용 중인 아이디입니다.',
   NICKNAME_EXISTS: '이미 사용 중인 닉네임입니다.',
   UNAUTHORIZED: '로그인이 필요한 서비스입니다.',
