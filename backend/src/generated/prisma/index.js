@@ -230,7 +230,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "mysql://root:dusghdvo12@localhost:3306/study_db"
+        "value": "mysql://swith:swith1234@localhost:3306/study_db"
       }
     }
   },

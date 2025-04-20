@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { prisma, testConnection } from './src/db.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import routes from './src/routes/index.js';
+import { setupSwagger } from './src/utils/swagger.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -23,6 +24,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Swagger 설정
+setupSwagger(app);
 
 testConnection();
 
