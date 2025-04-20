@@ -1,5 +1,3 @@
-'use client';
-
 import AuthLayout from '@/components/user/AuthLayout';
 import LoginForm from '@/components/user/LoginForm';
 
