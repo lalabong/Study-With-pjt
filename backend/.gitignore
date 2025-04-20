@@ -16,6 +16,9 @@ dist/
 build/
 coverage/
 
+# Prisma
+src/generated/
+
 # IDE and editor files
 .idea/
 .vscode/
