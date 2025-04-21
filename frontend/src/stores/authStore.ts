@@ -11,6 +11,7 @@ export interface User {
   userId: string;
   nickname: string;
   profileImage?: string | null;
+  createdAt: string;
 }
 
 interface AuthState {
@@ -109,7 +110,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      isAuthenticated: () => !!get().accessToken,
+      isAuthenticated: () => !!get().accessToken && !!get().user,
     }),
     {
       name: 'auth-storage',
