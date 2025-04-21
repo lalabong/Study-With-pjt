@@ -24,7 +24,11 @@ const ProfileSection = () => {
   return (
     <div className="rounded-lg mb-7 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <UserProfile nickname={user.nickname} additionalInfo={user.createdAt} />
+        <UserProfile
+          profileImage={user.profileImage}
+          nickname={user.nickname}
+          additionalInfo={user.createdAt}
+        />
         <Button size="sm" className="bg-blue-500">
           <span className="flex items-center gap-1">
             <HiPlus className="h-4 w-4" onClick={() => handleAddSession()} />방 생성하기

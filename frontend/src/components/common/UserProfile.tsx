@@ -12,7 +12,7 @@ import Input from './Input';
 
 interface UserProfileProps {
   nickname: string;
-  profileImage?: string;
+  profileImage?: string | null;
   additionalInfo?: string;
   editable?: boolean;
   onNicknameChange?: (newNickname: string) => void;
