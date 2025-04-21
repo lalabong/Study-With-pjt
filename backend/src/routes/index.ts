@@ -1,12 +1,17 @@
 import express, { Request, Response } from 'express';
 
 import authRoutes from './authRoutes.js';
+import userRoutes from './userRoutes.js';
 
 /**
  * @swagger
  * tags:
  *   - name: Auth
  *     description: 사용자 인증 관련 API
+ *   - name: Users
+ *     description: 사용자 정보 및 데이터 관련 API
+ *   - name: System
+ *     description: 시스템 관련 API
  */
 
 const router = express.Router();
@@ -40,5 +45,6 @@ router.get('/health', (_req: Request, res: Response) => {
 });
 
 router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
 
 export default router;
