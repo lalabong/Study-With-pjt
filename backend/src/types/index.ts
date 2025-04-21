@@ -1,6 +1,15 @@
 import { Request, RequestHandler } from 'express';
 
-// 사용자 관련 타입
+// 사용자 관련 기본 타입 (공통 필드)
+export interface BaseUser {
+  id: number;
+  userId: string;
+  nickname: string;
+  profileImg?: string | null;
+  totalStudyTime?: number;
+}
+
+// 사용자 인증/토큰용 타입
 export interface UserPayload {
   id: number;
   userId: string;
@@ -12,17 +21,16 @@ export interface AuthRequest extends Request {
   user?: UserPayload;
 }
 
-export interface User {
-  id: number;
-  userId: string;
+// DB 저장용 사용자 타입 (비밀번호와 Date 타입 createdAt 포함)
+export interface User extends BaseUser {
   password: string;
-  nickname: string;
-  profileImg?: string | null;
   createdAt: Date | null;
-  totalStudyTime?: number;
 }
 
-export type SafeUser = Omit<User, 'password'>;
+// 클라이언트 반환용 사용자 타입 (비밀번호 제외, 문자열 타입 createdAt)
+export interface SafeUser extends BaseUser {
+  createdAt: string | null;
+}
 
 // 스터디룸 관련 타입
 export interface Room {

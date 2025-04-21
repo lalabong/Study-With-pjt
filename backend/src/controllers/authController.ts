@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
+import { format } from 'date-fns';
 
 import prisma from '../lib/prisma.js';
 import {
@@ -25,7 +26,7 @@ const toSafeUser = (user: User): SafeUser => ({
   userId: user.userId,
   nickname: user.nickname,
   profileImg: user.profileImg,
-  createdAt: user.createdAt,
+  createdAt: user.createdAt ? format(user.createdAt, 'yyyy-MM-dd') : null,
 });
 
 const verifyPassword = async (
