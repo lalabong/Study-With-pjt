@@ -25,6 +25,7 @@ const toSafeUser = (user: User): SafeUser => ({
   userId: user.userId,
   nickname: user.nickname,
   profileImg: user.profileImg,
+  createdAt: user.createdAt,
 });
 
 const verifyPassword = async (
@@ -65,14 +66,14 @@ const login: ControllerFn = async (
       id: user.id,
       userId: user.userId,
       nickname: user.nickname,
+      createdAt: user.createdAt,
     };
 
     const accessToken = generateAccessToken(tokenPayload);
-    
 
     const existingRefreshToken = req.cookies.refreshToken;
     let refreshToken = null;
-    
+
     if (existingRefreshToken) {
       const { payload: existingPayload } = await verifyRefreshToken(existingRefreshToken);
       // 기존 토큰이 유효하고 동일 사용자인 경우 그대로 사용
@@ -80,7 +81,7 @@ const login: ControllerFn = async (
         refreshToken = existingRefreshToken;
       }
     }
-    
+
     if (!refreshToken) {
       refreshToken = generateRefreshToken(tokenPayload);
       await saveRefreshToken(user.id, refreshToken);
@@ -211,6 +212,7 @@ const signup: ControllerFn = async (
         userId,
         password: hashedPassword,
         nickname,
+        createdAt: new Date(),
       },
     });
 
@@ -218,6 +220,7 @@ const signup: ControllerFn = async (
       id: newUser.id,
       userId: newUser.userId,
       nickname: newUser.nickname,
+      createdAt: newUser.createdAt,
     };
 
     const accessToken = generateAccessToken(tokenPayload);

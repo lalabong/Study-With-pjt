@@ -5,6 +5,7 @@ export interface UserPayload {
   id: number;
   userId: string;
   nickname: string;
+  createdAt: Date | null;
 }
 
 export interface AuthRequest extends Request {
@@ -17,7 +18,8 @@ export interface User {
   password: string;
   nickname: string;
   profileImg?: string | null;
-  createdAt?: Date | null;
+  createdAt: Date | null;
+  totalStudyTime?: number;
 }
 
 export type SafeUser = Omit<User, 'password'>;
@@ -83,4 +85,3 @@ export interface LoginRequest {
 export interface SignupRequest extends LoginRequest {
   nickname: string;
 }
-
