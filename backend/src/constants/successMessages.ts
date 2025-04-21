@@ -4,3 +4,9 @@ export const AUTH_SUCCESS = {
   LOGOUT_SUCCESS: '로그아웃 되었습니다.',
   TOKEN_REFRESHED: '토큰이 갱신되었습니다.',
 };
+
+export const USER_SUCCESS = {
+  GET_USER_INFO: '사용자 정보 조회에 성공했습니다.',
+  GET_SCHEDULES: '일정 조회에 성공했습니다.',
+  GET_TIMELOGS: '시간 기록 조회에 성공했습니다.',
+};

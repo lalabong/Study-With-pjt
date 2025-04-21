@@ -5,6 +5,8 @@ import { ko } from 'date-fns/locale';
 import prisma from '../lib/prisma.js';
 import { ControllerFn } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
+import { USER_ERROR } from '../constants/errorMessages.js';
+import { USER_SUCCESS } from '../constants/successMessages.js';
 
 const getUserInfo: ControllerFn = async (
   req: Request,
@@ -24,13 +26,16 @@ const getUserInfo: ControllerFn = async (
         createdAt: true,
       },
     });
-
     if (!user) {
-      createErrorResponse(res, 404, '사용자를 찾을 수 없습니다.');
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
       return;
     }
 
-    createSuccessResponse(res, 200, undefined, '사용자 정보 조회에 성공했습니다.', user);
+    const formattedCreatedAt = user.createdAt ? format(user.createdAt, 'yyyy-MM-dd') : null;
+    createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_USER_INFO, {
+      ...user,
+      createdAt: formattedCreatedAt,
+    });
   } catch (error) {
     console.error('사용자 정보 조회 에러:', error);
     next(error);
@@ -51,7 +56,7 @@ const getUserSchedules: ControllerFn = async (
     });
 
     if (!user) {
-      createErrorResponse(res, 404, '사용자를 찾을 수 없습니다.');
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
       return;
     }
 
@@ -73,7 +78,7 @@ const getUserSchedules: ControllerFn = async (
       },
     });
 
-    createSuccessResponse(res, 200, undefined, '일정 조회에 성공했습니다.', { schedules });
+    createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_SCHEDULES, { schedules });
   } catch (error) {
     console.error('일정 조회 에러:', error);
     next(error);
@@ -94,7 +99,7 @@ const getUserTimeLogs: ControllerFn = async (
     });
 
     if (!user) {
-      createErrorResponse(res, 404, '사용자를 찾을 수 없습니다.');
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
       return;
     }
 
@@ -252,7 +257,7 @@ const getUserTimeLogs: ControllerFn = async (
       responseData.monthlyData = monthlyData;
     }
 
-    createSuccessResponse(res, 200, undefined, '시간 기록 조회에 성공했습니다.', responseData);
+    createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_TIMELOGS, responseData);
   } catch (error) {
     console.error('시간 기록 조회 에러:', error);
     next(error);
