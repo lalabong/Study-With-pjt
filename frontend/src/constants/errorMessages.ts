@@ -15,6 +15,8 @@ export const USER_ERROR_MESSAGES = {
   SERVER_ERROR: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
   NETWORK_ERROR: '네트워크 연결을 확인해주세요.',
   TIMEOUT_ERROR: '요청 시간이 초과되었습니다. 다시 시도해주세요.',
+
+  GET_USER_INFO_FAILED: '사용자 정보 조회에 실패했습니다.',
 };
 
 export const AUTH_ERROR_MESSAGES = {

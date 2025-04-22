@@ -19,3 +19,11 @@ export interface LoginResponse {
   accessToken: string;
   user: User;
 }
+
+export interface UserInfoResponse {
+  id: number;
+  userId: string;
+  nickname: string;
+  profileImg: string;
+  createdAt: string;
+}
