@@ -68,6 +68,11 @@ const router = express.Router();
  *                           type: string
  *                           nullable: true
  *                           description: 프로필 이미지 URL
+ *                         createdAt:
+ *                           type: string
+ *                           format: date
+ *                           example: "2023-05-25"
+ *                           description: 가입일 (YYYY-MM-DD 형식)
  *       401:
  *         description: 로그인 실패
  *         content:
@@ -130,28 +135,6 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 회원가입이 완료되었습니다.
- *                 data:
- *                   type: object
- *                   properties:
- *                     accessToken:
- *                       type: string
- *                       description: JWT 액세스 토큰
- *                     user:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: number
- *                           description: 사용자 ID (데이터베이스)
- *                         userId:
- *                           type: string
- *                           description: 사용자 로그인 ID
- *                         nickname:
- *                           type: string
- *                           description: 사용자 닉네임
- *                         profileImg:
- *                           type: string
- *                           nullable: true
- *                           description: 프로필 이미지 URL
  *       400:
  *         description: 필수 필드 누락
  *         content:

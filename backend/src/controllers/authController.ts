@@ -224,11 +224,8 @@ const signup: ControllerFn = async (
       createdAt: newUser.createdAt,
     };
 
-    const accessToken = generateAccessToken(tokenPayload);
     const refreshToken = generateRefreshToken(tokenPayload);
     await saveRefreshToken(newUser.id, refreshToken);
-
-    const safeUser = toSafeUser(newUser);
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -237,10 +234,7 @@ const signup: ControllerFn = async (
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
     });
 
-    createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE, {
-      accessToken,
-      user: safeUser,
-    });
+    createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE);
   } catch (error: unknown) {
     next(error);
   }
