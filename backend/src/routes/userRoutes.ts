@@ -50,8 +50,9 @@ const router = express.Router();
  *                       description: 프로필 이미지 URL
  *                     createdAt:
  *                       type: string
- *                       format: date-time
- *                       description: 가입일
+ *                       format: date
+ *                       example: "2023-05-25"
+ *                       description: 가입일(YYYY-MM-DD 형식)
  *       404:
  *         description: 사용자를 찾을 수 없음
  */
