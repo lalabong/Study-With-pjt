@@ -51,15 +51,16 @@ export const useAuthStore = create<AuthState>()(
       login: async (data: LoginRequest, onSuccess, onError) => {
         try {
           const response = await postLogin(data);
+          if (response.data) {
+            const { accessToken, user } = response.data;
 
-          const { accessToken, user } = response;
+            if (accessToken) {
+              get().setAccessToken(accessToken);
+            }
 
-          if (accessToken) {
-            get().setAccessToken(accessToken);
-          }
-
-          if (user) {
-            get().setUser(user);
+            if (user) {
+              get().setUser(user);
+            }
           }
 
           if (onSuccess) {
