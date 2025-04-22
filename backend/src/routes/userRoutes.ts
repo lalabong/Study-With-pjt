@@ -110,28 +110,23 @@ router.get('/:userId', getUserInfo);
  *                             type: number
  *                           userId:
  *                             type: number
- *                           roomId:
- *                             type: number
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2023-05-25T10:00:00"
  *                           title:
  *                             type: string
  *                           startTime:
  *                             type: string
  *                             format: date-time
+ *                             example: "2023-05-25T10:00:00"
  *                           endTime:
  *                             type: string
  *                             format: date-time
+ *                             example: "2023-05-25T11:00:00"
  *                           status:
  *                             type: string
- *                           createdAt:
- *                             type: string
- *                             format: date-time
- *                           room:
- *                             type: object
- *                             properties:
- *                               id:
- *                                 type: number
- *                               name:
- *                                 type: string
+ *                             example: "대기중"
  *       404:
  *         description: 사용자를 찾을 수 없음
  */
