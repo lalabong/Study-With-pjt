@@ -6,6 +6,7 @@ import { HiIdentification, HiLockClosed, HiEye, HiEyeOff, HiUser } from 'react-i
 import { toast } from 'react-toastify';
 
 import { Button, Input } from '@/components/common';
+import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
 import { useValidateForm } from '@/hooks/useValidateForm';
 import { useAuthStore } from '@/stores/authStore';
@@ -18,6 +19,7 @@ const SignUpForm = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { errors, validateForm } = useValidateForm({
     userId: { value: userId, validate: true },
@@ -38,23 +40,22 @@ const SignUpForm = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.warn('회원가입 시도:', { userId, nickname, password });
+      console.log('회원가입 시도:', { userId, nickname, password: '***' });
+      setIsLoading(true);
 
       try {
-        await useAuthStore.getState().signup(
-          { userId, nickname, password },
+        await useAuthStore.getState().signup({ userId, nickname, password });
 
-          () => {
-            toast.success(USER_SUCCESS_MESSAGES.SIGNUP_SUCCESS);
-            router.push('/login');
-          },
-
-          (errorMessage) => {
-            toast.error(errorMessage);
-          },
-        );
+        // 회원가입 성공
+        toast.success(USER_SUCCESS_MESSAGES.SIGNUP_SUCCESS);
+        router.push('/login');
       } catch (error) {
+        // 에러 처리
+        const errorMessage = error as string;
+        toast.error(errorMessage || USER_ERROR_MESSAGES.SIGNUP_FAILED);
         console.error('회원가입 중 오류 발생:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -72,6 +73,7 @@ const SignUpForm = () => {
           placeholder="아이디를 입력하세요"
           maxLength={20}
           error={errors.userId}
+          disabled={isLoading}
         />
       </div>
 
@@ -86,6 +88,7 @@ const SignUpForm = () => {
           placeholder="닉네임을 입력하세요"
           maxLength={10}
           error={errors.nickname}
+          disabled={isLoading}
         />
       </div>
 
@@ -103,12 +106,14 @@ const SignUpForm = () => {
               onClick={() => handleTogglePassword('password')}
               className="focus:outline-none cursor-pointer text-gray-400"
               aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+              disabled={isLoading}
             >
               {showPassword ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
             </button>
           }
           placeholder="비밀번호를 입력하세요"
           error={errors.password}
+          disabled={isLoading}
         />
       </div>
 
@@ -126,6 +131,7 @@ const SignUpForm = () => {
               onClick={() => handleTogglePassword('confirmPassword')}
               className="focus:outline-none cursor-pointer text-gray-400"
               aria-label={showConfirmPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+              disabled={isLoading}
             >
               {showConfirmPassword ? (
                 <HiEyeOff className="h-5 w-5" />
@@ -136,6 +142,7 @@ const SignUpForm = () => {
           }
           placeholder="비밀번호를 한번 더 입력하세요"
           error={errors.confirmPassword}
+          disabled={isLoading}
         />
       </div>
 
