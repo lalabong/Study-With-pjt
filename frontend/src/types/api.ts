@@ -20,6 +20,10 @@ export interface LoginResponse {
   user: User;
 }
 
+export interface AuthResponse {
+  accessToken: string;
+}
+
 export interface UserInfoResponse {
   id: number;
   userId: string;

@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
+import { postRefreshAccessToken } from '@/api/user/postRefreshAccessToken';
 import { AUTH_ENDPOINTS } from '@/constants/api';
 import { AUTH_ERROR_MESSAGES, API_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { useAuthStore } from '@/stores/authStore';
@@ -59,7 +60,6 @@ const handleResponseError = async (error: AxiosError) => {
     originalRequest.url?.includes(AUTH_ENDPOINTS.SIGNUP);
 
   // 401 에러이고, 원본 요청이 있고, 아직 재시도하지 않았고, 인증 관련 요청이 아닌 경우에만 토큰 갱신 시도
-  // 기존엔 401에러일 경우에만 토큰 갱신 시도했음
   if (
     error.response?.status === 401 &&
     originalRequest &&
@@ -70,20 +70,18 @@ const handleResponseError = async (error: AxiosError) => {
     originalRequest._retry = true;
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.REFRESH_TOKEN}`,
-        {},
-        { withCredentials: true },
-      );
+      const response = await postRefreshAccessToken();
+      const accessToken = response.data?.accessToken;
+      if (accessToken) {
+        useAuthStore.getState().setAccessToken(accessToken);
+      }
 
-      const { accessToken } = response.data;
-
-      useAuthStore.getState().setAccessToken(accessToken);
-
+      // 원래 요청의 헤더에 새 토큰 설정
       if (originalRequest.headers) {
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
       }
 
+      // 실패했던 요청 다시 실행
       return axios({
         ...originalRequest,
         withCredentials: true,
@@ -91,10 +89,17 @@ const handleResponseError = async (error: AxiosError) => {
     } catch (refreshError) {
       useAuthStore.getState().logout();
 
-      // 토큰 갱신 실패 로그 기록 (콘솔에만 표시)
+      if (refreshError instanceof AxiosError) {
+        if (refreshError.response?.status === 400) {
+          return Promise.reject(AUTH_ERROR_MESSAGES.TOKEN_NOT_FOUND);
+        }
+        if (refreshError.response?.status === 401) {
+          return Promise.reject(AUTH_ERROR_MESSAGES.INVALID_TOKEN);
+        }
+      }
+
       console.error(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_FAILED, refreshError);
 
-      // 원래 에러를 그대로 반환
       return Promise.reject(error);
     }
   }
