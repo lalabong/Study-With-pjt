@@ -20,28 +20,16 @@ export const useLoginMutation = () => {
       router.push('/mypage');
     },
     onError: (error: unknown) => {
-      // 문자열 에러 처리 (authStore에서 throw된 에러)
-      if (typeof error === 'string') {
-        console.log('error.response.data.message', error);
-        toast.error(error);
-        return;
-      }
-
-      // AxiosError 처리
       if (error instanceof AxiosError) {
-        if (error.response?.data?.message) {
-          console.log('error.response.data.message', error.response.data.message);
-          toast.error(error.response.data.message);
+        if (error.response?.status === 403) {
+          toast.error(USER_ERROR_MESSAGES.PASSWORD_MISMATCH);
           return;
         }
-
-        if (error.response?.status === 401) {
-          toast.error(USER_ERROR_MESSAGES.LOGIN_FAILED);
+        if (error.response?.status === 404) {
+          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
           return;
         }
       }
-
-      // 기타 예상치 못한 에러
       toast.error(USER_ERROR_MESSAGES.UNKNOWN_ERROR);
       console.error('로그인 실패:', error);
     },
