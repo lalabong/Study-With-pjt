@@ -1,29 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { GoDotFill } from 'react-icons/go';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+
+import { useUserSchedulesQuery } from '@/hooks/api/useUserSchedulesQuery';
+import { useAuthStore } from '@/stores/authStore';
+import { Schedule } from '@/types/api';
 import './studyCalendar.css';
 
-// 일정이 있는 날짜들 배열(더미)
-const studyDates = [new Date(2025, 4, 1), new Date(2025, 4, 2)];
-
 interface StudyCalendarProps {
-  markedDates?: Date[];
   className?: string;
 }
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const StudyCalendar = ({ markedDates = studyDates, className = '' }: StudyCalendarProps) => {
+const StudyCalendar = ({ className = '' }: StudyCalendarProps) => {
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    setUserId(useAuthStore.getState().user?.userId || '');
+  }, []);
+
+  const { data } = useUserSchedulesQuery({
+    userId,
+    enabled: !!userId,
+  });
+
+  const markedDates =
+    data?.data?.schedules?.map((schedule: Schedule) => new Date(schedule.startTime)) || [];
+
   const activeDate = new Date();
   const [value, onChange] = useState<Value>(activeDate);
   const [currentMonth, setCurrentMonth] = useState<Date>(activeDate);
 
-  // 현재 년도 기준 선택 가능한 년도 리스트
   const showYears = Array.from({ length: 5 }, (_, i) => currentMonth.getFullYear() - 2 + i);
 
   const months = [
@@ -46,7 +59,7 @@ const StudyCalendar = ({ markedDates = studyDates, className = '' }: StudyCalend
   // 일정이 있는 날짜인지 확인
   const isStudyDate = (date: Date) => {
     return markedDates.some(
-      (studyDate) =>
+      (studyDate: Date) =>
         studyDate.getDate() === date.getDate() &&
         studyDate.getMonth() === date.getMonth() &&
         studyDate.getFullYear() === date.getFullYear(),
@@ -73,9 +86,7 @@ const StudyCalendar = ({ markedDates = studyDates, className = '' }: StudyCalend
   };
 
   const handleStudyDateClick = (date: Date) => {
-    console.log('선택한 년도', date.toLocaleDateString().split('.')[0]);
-    console.log('선택한 월', date.toLocaleDateString().split('.')[1]);
-    console.log('선택한 일', date.toLocaleDateString().split('.')[2]);
+    console.log('선택한 일정 상세:', date);
   };
 
   return (

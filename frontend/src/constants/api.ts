@@ -9,4 +9,5 @@ export const AUTH_ENDPOINTS = {
 
 export const MYPAGE_ENDPOINTS = {
   GET_USER_INFO: (userId: string) => `${API_PREFIX}/users/${userId}`,
+  GET_USER_SCHEDULES: (userId: string) => `${API_PREFIX}/users/${userId}/schedules`,
 };

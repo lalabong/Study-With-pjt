@@ -23,6 +23,7 @@ export const USER_ERROR_MESSAGES = {
   TIMEOUT_ERROR: '요청 시간이 초과되었습니다. 다시 시도해주세요.',
 
   GET_USER_INFO_FAILED: '사용자 정보 조회에 실패했습니다.',
+  FETCH_SCHEDULES_FAILED: '사용자 일정 조회에 실패했습니다.',
 };
 
 export const AUTH_ERROR_MESSAGES = {

@@ -24,6 +24,20 @@ export interface AuthResponse {
   accessToken: string;
 }
 
+export interface Schedule {
+  id: number;
+  userId: number;
+  createdAt: string;
+  title: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+}
+
+export interface UserScheduleResponse {
+  schedules: Schedule[];
+}
+
 export interface UserInfoResponse {
   id: number;
   userId: string;
