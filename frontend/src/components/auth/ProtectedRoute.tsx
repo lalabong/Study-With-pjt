@@ -13,7 +13,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const isAuthenticated = useAuthStore.getState().isAuthenticated();
+  const { isAuthenticated } = useAuthStore.getState();
 
   useEffect(() => {
     if (!isAuthenticated) {
