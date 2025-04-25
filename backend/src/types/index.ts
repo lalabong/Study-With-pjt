@@ -13,7 +13,6 @@ export interface BaseUser {
 export interface UserPayload {
   id: number;
   userId: string;
-  nickname: string;
   createdAt: Date | null;
 }
 
