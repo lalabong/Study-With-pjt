@@ -4,6 +4,7 @@ import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 
+import StoreHydrationProvider from '@/components/providers/StoreHydrationProvider';
 import { QueryProvider } from '@/lib/react-query/QueryProvider';
 
 const dotSans = localFont({
@@ -21,20 +22,22 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <html lang="en">
       <body className={dotSans.className}>
         <QueryProvider>
-          {children}
-          <ToastContainer
-            position="top-center"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
+          <StoreHydrationProvider>
+            {children}
+            <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Bounce}
+            />
+          </StoreHydrationProvider>
         </QueryProvider>
       </body>
     </html>

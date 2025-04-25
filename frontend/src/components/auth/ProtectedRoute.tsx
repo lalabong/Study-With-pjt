@@ -13,15 +13,16 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const { isAuthenticated } = useAuthStore.getState();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       router.push('/login');
     } else {
       setIsLoading(false);
     }
-  }, [router, isAuthenticated]);
+  }, [isAuthenticated, user, router]);
 
   if (isLoading) {
     return (
@@ -31,7 +32,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  return isAuthenticated ? children : null;
+  return children;
 };
 
 export default ProtectedRoute;
