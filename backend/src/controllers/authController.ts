@@ -58,6 +58,7 @@ const login: ControllerFn = async (
     const { user, isValid } = await verifyPassword(userId, password);
 
     if (!user || !isValid) {
+      // 둘을 분리하도록
       console.log(user ? '비밀번호 불일치:' : '사용자를 찾을 수 없음:', userId);
       createErrorResponse(res, 401, AUTH_ERROR.INVALID_CREDENTIALS);
       return;

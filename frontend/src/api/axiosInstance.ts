@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
+  skipAuthRetry?: boolean; // 인증 재시도를 건너뛰는 옵션
 }
 
 export const axiosInstance = axios.create({
@@ -52,7 +53,20 @@ const handleResponseSuccess = (response: AxiosResponse) => {
 const handleResponseError = async (error: AxiosError) => {
   const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
-  if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+  // 로그인 및 회원가입 요청은 토큰 갱신 시도하지 않음
+  const isAuthRequest =
+    originalRequest.url?.includes(AUTH_ENDPOINTS.LOGIN) ||
+    originalRequest.url?.includes(AUTH_ENDPOINTS.SIGNUP);
+
+  // 401 에러이고, 원본 요청이 있고, 아직 재시도하지 않았고, 인증 관련 요청이 아닌 경우에만 토큰 갱신 시도
+  // 기존엔 401에러일 경우에만 토큰 갱신 시도했음
+  if (
+    error.response?.status === 401 &&
+    originalRequest &&
+    !originalRequest._retry &&
+    !isAuthRequest &&
+    !originalRequest.skipAuthRetry
+  ) {
     originalRequest._retry = true;
 
     try {
@@ -69,6 +83,7 @@ const handleResponseError = async (error: AxiosError) => {
       if (originalRequest.headers) {
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
       }
+
       return axios({
         ...originalRequest,
         withCredentials: true,
@@ -76,8 +91,11 @@ const handleResponseError = async (error: AxiosError) => {
     } catch (refreshError) {
       useAuthStore.getState().logout();
 
+      // 토큰 갱신 실패 로그 기록 (콘솔에만 표시)
       console.error(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_FAILED, refreshError);
-      return Promise.reject(refreshError);
+
+      // 원래 에러를 그대로 반환
+      return Promise.reject(error);
     }
   }
 
