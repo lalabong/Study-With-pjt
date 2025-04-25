@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { getUserInfo, getUserSchedules, getUserTimeLogs } from '../controllers/userController.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -11,6 +12,8 @@ const router = express.Router();
  *     summary: 사용자 정보 조회
  *     description: 사용자 ID로 기본 정보를 조회합니다.
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
@@ -55,8 +58,10 @@ const router = express.Router();
  *                       description: 가입일(YYYY-MM-DD 형식)
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *       401:
+ *         description: 인증 실패
  */
-router.get('/:userId', getUserInfo);
+router.get('/:userId', authMiddleware, getUserInfo);
 
 /**
  * @swagger
@@ -65,6 +70,8 @@ router.get('/:userId', getUserInfo);
  *     summary: 사용자 일정 조회
  *     description: 사용자의 일정 목록을 조회합니다.
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
@@ -129,8 +136,10 @@ router.get('/:userId', getUserInfo);
  *                             example: "대기중"
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *       401:
+ *         description: 인증 실패
  */
-router.get('/:userId/schedules', getUserSchedules);
+router.get('/:userId/schedules', authMiddleware, getUserSchedules);
 
 /**
  * @swagger
@@ -142,6 +151,8 @@ router.get('/:userId/schedules', getUserSchedules);
  *       period=week 옵션을 사용하면 해당 날짜가 속한 주(월~일)의 일별 학습 시간을 제공합니다.
  *       period=month 옵션을 사용하면 현재 달과 과거 5개월(총 6개월)의 월별 통계를 함께 제공합니다.
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
@@ -247,7 +258,9 @@ router.get('/:userId/schedules', getUserSchedules);
  *                                 description: 소수점 형태 시간
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *       401:
+ *         description: 인증 실패
  */
-router.get('/:userId/timelogs', getUserTimeLogs);
+router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
 
 export default router;

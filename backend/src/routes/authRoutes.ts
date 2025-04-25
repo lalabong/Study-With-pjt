@@ -73,8 +73,8 @@ const router = express.Router();
  *                           format: date
  *                           example: "2023-05-25"
  *                           description: 가입일 (YYYY-MM-DD 형식)
- *       401:
- *         description: 로그인 실패
+ *       404:
+ *         description: 사용자를 찾을 수 없음
  *         content:
  *           application/json:
  *             schema:
@@ -85,7 +85,20 @@ const router = express.Router();
  *                   example: error
  *                 message:
  *                   type: string
- *                   example: 아이디 또는 비밀번호가 올바르지 않습니다.
+ *                   example: 존재하지 않는 아이디입니다.
+ *       403:
+ *         description: 비밀번호 불일치
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 비밀번호가 일치하지 않습니다.
  */
 router.post('/login', login);
 
@@ -149,7 +162,7 @@ router.post('/login', login);
  *                   type: string
  *                   example: 모든 필수 항목을 입력해 주세요.
  *       409:
- *         description: 이미 사용 중인 ID 또는 닉네임
+ *         description: 이미 사용 중인 ID
  *         content:
  *           application/json:
  *             schema:
@@ -161,6 +174,19 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 이미 사용 중인 아이디입니다.
+ *       422:
+ *         description: 이미 사용 중인 닉네임
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 이미 사용 중인 닉네임입니다.
  */
 router.post('/signup', signup);
 
@@ -196,8 +222,8 @@ router.post('/signup', signup);
  *                     accessToken:
  *                       type: string
  *                       description: 새로운 JWT 액세스 토큰
- *       401:
- *         description: 리프레시 토큰 없음 또는 유효하지 않음
+ *       400:
+ *         description: 리프레시 토큰 없음
  *         content:
  *           application/json:
  *             schema:
@@ -208,7 +234,20 @@ router.post('/signup', signup);
  *                   example: error
  *                 message:
  *                   type: string
- *                   example: 토큰이 필요합니다. 또는 유효하지 않은 리프레시 토큰입니다.
+ *                   example: 토큰이 필요합니다.
+ *       410:
+ *         description: 유효하지 않은 리프레시 토큰
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않은 리프레시 토큰입니다.
  */
 router.post('/refreshAccessToken', refreshAccessToken);
 

@@ -21,6 +21,15 @@ const options: swaggerJsdoc.Options = {
         description: '개발 서버',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   apis: [path.join(__dirname, '../routes/*.ts'), path.join(__dirname, '../controllers/*.ts')],
 };
