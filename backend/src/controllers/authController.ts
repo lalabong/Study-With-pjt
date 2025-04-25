@@ -57,10 +57,15 @@ const login: ControllerFn = async (
 
     const { user, isValid } = await verifyPassword(userId, password);
 
-    if (!user || !isValid) {
-      // 둘을 분리하도록
-      console.log(user ? '비밀번호 불일치:' : '사용자를 찾을 수 없음:', userId);
-      createErrorResponse(res, 401, AUTH_ERROR.INVALID_CREDENTIALS);
+    if (!user) {
+      console.log('사용자를 찾을 수 없음:', userId);
+      createErrorResponse(res, 404, AUTH_ERROR.USER_NOT_FOUND);
+      return;
+    }
+
+    if (!isValid) {
+      console.log('비밀번호 불일치:', userId);
+      createErrorResponse(res, 403, AUTH_ERROR.INVALID_PASSWORD);
       return;
     }
 
@@ -120,14 +125,14 @@ const refreshAccessToken: ControllerFn = async (
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      createErrorResponse(res, 401, AUTH_ERROR.TOKEN_REQUIRED);
+      createErrorResponse(res, 400, AUTH_ERROR.TOKEN_REQUIRED);
       return;
     }
 
     const { payload, newToken } = await verifyRefreshToken(refreshToken);
 
     if (!payload) {
-      createErrorResponse(res, 401, AUTH_ERROR.INVALID_REFRESH_TOKEN);
+      createErrorResponse(res, 410, AUTH_ERROR.INVALID_REFRESH_TOKEN);
       return;
     }
 
@@ -204,7 +209,7 @@ const signup: ControllerFn = async (
     });
 
     if (existingNickname) {
-      createErrorResponse(res, 409, AUTH_ERROR.NICKNAME_EXISTS);
+      createErrorResponse(res, 422, AUTH_ERROR.NICKNAME_EXISTS);
       return;
     }
 

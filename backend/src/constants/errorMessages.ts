@@ -11,6 +11,8 @@ export const AUTH_ERROR = {
   INVALID_REFRESH_TOKEN: '유효하지 않은 리프레시 토큰입니다.',
   REFRESH_TOKEN_EXPIRED: '리프레시 토큰이 만료되었습니다. 다시 로그인해주세요.',
   TOKEN_REQUIRED: '토큰이 필요합니다.',
+  USER_NOT_FOUND: '존재하지 않는 아이디입니다.',
+  INVALID_PASSWORD: '비밀번호가 일치하지 않습니다.',
 };
 
 export const SERVER_ERROR = {
