@@ -66,7 +66,6 @@ const login: ControllerFn = async (
     const tokenPayload: UserPayload = {
       id: user.id,
       userId: user.userId,
-      nickname: user.nickname,
       createdAt: user.createdAt,
     };
 
@@ -100,8 +99,10 @@ const login: ControllerFn = async (
     });
 
     createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.LOGIN_SUCCESS, {
-      accessToken,
-      user: safeUser,
+      data: {
+        accessToken,
+        user: safeUser,
+      },
     });
   } catch (error: unknown) {
     console.error('로그인 에러:', error);
@@ -220,7 +221,6 @@ const signup: ControllerFn = async (
     const tokenPayload: UserPayload = {
       id: newUser.id,
       userId: newUser.userId,
-      nickname: newUser.nickname,
       createdAt: newUser.createdAt,
     };
 
