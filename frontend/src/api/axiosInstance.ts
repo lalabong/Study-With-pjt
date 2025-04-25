@@ -98,8 +98,6 @@ const handleResponseError = async (error: AxiosError) => {
         }
       }
 
-      console.error(AUTH_ERROR_MESSAGES.REFRESH_TOKEN_FAILED, refreshError);
-
       return Promise.reject(error);
     }
   }
