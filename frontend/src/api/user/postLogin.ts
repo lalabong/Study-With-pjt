@@ -11,6 +11,7 @@ export const postLogin = async ({
     userId,
     password,
   });
+  console.log('로그인 응답:', response.data);
 
   return response.data;
 };

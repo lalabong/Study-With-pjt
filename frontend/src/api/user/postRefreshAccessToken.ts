@@ -9,6 +9,6 @@ export const postRefreshAccessToken = async (): Promise<ApiResponse<AuthResponse
     {},
     { withCredentials: true },
   );
-
+  console.log('토큰 갱신 응답:', response.data);
   return response.data;
 };
