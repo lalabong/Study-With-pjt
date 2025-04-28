@@ -1,7 +1,9 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
+
+import dynamic from 'next/dynamic';
+
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
 const ChartComponent = dynamic(() => import('./ChartWrapper'), {

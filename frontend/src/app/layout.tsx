@@ -1,11 +1,14 @@
-import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+
+import type { Metadata } from 'next';
 import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import './globals.css';
 
-import StoreHydrationProvider from '@/components/providers/StoreHydrationProvider';
-import { QueryProvider } from '@/lib/react-query/QueryProvider';
+import StoreHydrationProvider from '@components/providers/StoreHydrationProvider';
+
+import { QueryProvider } from '@lib/react-query/QueryProvider';
 
 const dotSans = localFont({
   src: '../../public/fonts/42dotSans-Regular.woff2',

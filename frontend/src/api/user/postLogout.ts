@@ -1,4 +1,5 @@
-import { AUTH_ENDPOINTS } from '@/constants/api';
+import { AUTH_ENDPOINTS } from '@constants/api';
+
 import { ApiResponse } from '@/types/api';
 
 import { axiosInstance } from '../axiosInstance';

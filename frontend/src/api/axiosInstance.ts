@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
-import { postRefreshAccessToken } from '@/api/user/postRefreshAccessToken';
-import { AUTH_ENDPOINTS } from '@/constants/api';
-import { AUTH_ERROR_MESSAGES, API_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { useAuthStore } from '@/stores/authStore';
+import { AUTH_ENDPOINTS } from '@constants/api';
+import { AUTH_ERROR_MESSAGES, API_ERROR_MESSAGES } from '@constants/errorMessages';
+
+import { useAuthStore } from '@stores/authStore';
 
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;

@@ -1,11 +1,14 @@
+import { useRouter } from 'next/navigation';
+
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
-import { useAuthStore } from '@/stores/authStore';
+import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
+import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
+
+import { useAuthStore } from '@stores/authStore';
+
 import { LoginRequest } from '@/types/api';
 
 export const useLoginMutation = () => {

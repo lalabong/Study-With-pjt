@@ -1,6 +1,6 @@
 'use client';
 
-import { GoogleIcon, NaverIcon, KakaoIcon } from '@/components/user/SocialIcons';
+import { GoogleIcon, NaverIcon, KakaoIcon } from '@components/user/SocialIcons';
 
 const SocialLogin = () => {
   const handleSocialLogin = (provider: string): void => {

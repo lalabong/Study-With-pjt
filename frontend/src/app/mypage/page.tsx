@@ -1,18 +1,22 @@
-import { dehydrate } from '@tanstack/react-query';
 import { cookies } from 'next/headers';
 
-import { getUserSchedules } from '@/api/user/getUserSchedules';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { Header } from '@/components/common';
-import HeaderActionButtons from '@/components/mypage/HeaderActionButtons';
-import LogoutButton from '@/components/mypage/LogoutButton';
-import ProfileSection from '@/components/mypage/ProfileSection';
-import StatisticsChart from '@/components/mypage/StatisticsChart';
-import StudyCalendar from '@/components/mypage/StudyCalendar/StudyCalendar';
-import TotalStudyTime from '@/components/mypage/TotalStudyTime';
-import { USER_QUERY_KEYS } from '@/constants/queryKeys';
-import { HydrationBoundary } from '@/lib/react-query/HydrationBoundary';
-import { getServerQueryClient } from '@/lib/react-query/getServerQueryClient';
+import { dehydrate } from '@tanstack/react-query';
+
+import ProtectedRoute from '@components/auth/ProtectedRoute';
+import { Header } from '@components/common';
+import HeaderActionButtons from '@components/mypage/HeaderActionButtons';
+import LogoutButton from '@components/mypage/LogoutButton';
+import ProfileSection from '@components/mypage/ProfileSection';
+import StatisticsChart from '@components/mypage/StatisticsChart';
+import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
+import TotalStudyTime from '@components/mypage/TotalStudyTime';
+
+import { getUserSchedules } from '@api/user/getUserSchedules';
+
+import { USER_QUERY_KEYS } from '@constants/queryKeys';
+
+import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
+import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
 
 export default async function MyPage() {
   const queryClient = getServerQueryClient();

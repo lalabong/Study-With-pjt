@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+
 import { HiX } from 'react-icons/hi';
 
 interface ModalProps {

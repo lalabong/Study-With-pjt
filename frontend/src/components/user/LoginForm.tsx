@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+
 import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
 
-import { Button, Input } from '@/components/common';
-import { useLoginMutation } from '@/hooks/api/useLoginMutaion';
-import { useValidateForm } from '@/hooks/useValidateForm';
+import { Button, Input } from '@components/common';
+
+import { useLoginMutation } from '@hooks/api/useLoginMutaion';
+import { useValidateForm } from '@hooks/useValidateForm';
 
 const LoginForm = () => {
   const [userId, setUserId] = useState<string>('');

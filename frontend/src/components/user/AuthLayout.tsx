@@ -1,12 +1,14 @@
 'use client';
 
+import { ReactNode } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+
 import { HiArrowLeft } from 'react-icons/hi';
 
-import SocialLogin from '@/components/user/SocialLogin';
+import SocialLogin from '@components/user/SocialLogin';
 
 interface AuthLayoutProps {
   children: ReactNode;

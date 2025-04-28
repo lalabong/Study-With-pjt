@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-import { postLogin } from '@/api/user/postLogin';
+import { postLogin } from '@api/user/postLogin';
+
 import { LoginRequest } from '@/types/api';
 
 export interface User {

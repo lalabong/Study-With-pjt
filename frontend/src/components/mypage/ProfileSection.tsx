@@ -2,9 +2,10 @@
 
 import { HiPlus } from 'react-icons/hi';
 
-import { Button, UserProfile } from '@/components/common';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { useAuthStore } from '@/stores/authStore';
+import { Button, UserProfile } from '@components/common';
+import LoadingSpinner from '@components/common/LoadingSpinner';
+
+import { useAuthStore } from '@stores/authStore';
 
 const ProfileSection = () => {
   const handleAddSession = () => {

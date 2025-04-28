@@ -1,6 +1,6 @@
 import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
-import { Button, Header } from '@/components/common';
+import { Button, Header } from '@components/common';
 import ImageSlider from '@components/landing/ImageSlider';
 
 const Home = () => {

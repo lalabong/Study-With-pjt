@@ -1,5 +1,5 @@
-import AuthLayout from '@/components/user/AuthLayout';
-import SignUpForm from '@/components/user/SignupForm';
+import AuthLayout from '@components/user/AuthLayout';
+import SignUpForm from '@components/user/SignupForm';
 
 const SignUpPage = (): React.ReactNode => {
   return (

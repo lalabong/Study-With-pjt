@@ -1,4 +1,4 @@
-import { User } from '@/stores/authStore';
+import { User } from '@stores/authStore';
 
 export type ApiResponse<T, E extends Record<string, unknown> = Record<string, unknown>> = {
   status: 'success' | 'error';

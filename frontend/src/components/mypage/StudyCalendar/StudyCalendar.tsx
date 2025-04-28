@@ -1,14 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { GoDotFill } from 'react-icons/go';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
-import { useUserSchedulesQuery } from '@/hooks/api/useUserSchedulesQuery';
-import { useAuthStore } from '@/stores/authStore';
+import { useUserSchedulesQuery } from '@hooks/api/useUserSchedulesQuery';
+
+import { useAuthStore } from '@stores/authStore';
+
 import { Schedule } from '@/types/api';
+
 import './studyCalendar.css';
 
 interface StudyCalendarProps {

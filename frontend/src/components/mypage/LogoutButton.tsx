@@ -1,12 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+
 import { toast } from 'react-toastify';
 
-import { postLogout } from '@/api/user/postLogout';
-import { Button } from '@/components/common';
-import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
-import { useAuthStore } from '@/stores/authStore';
+import { Button } from '@components/common';
+
+import { postLogout } from '@api/user/postLogout';
+
+import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
+
+import { useAuthStore } from '@stores/authStore';
+
 const LogoutButton = () => {
   const { logout } = useAuthStore.getState();
   const router = useRouter();

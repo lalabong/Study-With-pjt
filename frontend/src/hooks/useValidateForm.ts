@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 
 type ValidateFormField = {
   value: string;

@@ -1,10 +1,12 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'next/navigation';
+
+import LoadingSpinner from '@components/common/LoadingSpinner';
+
+import { useAuthStore } from '@stores/authStore';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

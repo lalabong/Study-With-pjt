@@ -1,4 +1,5 @@
-import { MYPAGE_ENDPOINTS } from '@/constants';
+import { MYPAGE_ENDPOINTS } from '@constants/api';
+
 import { ApiResponse, UserInfoResponse } from '@/types/api';
 
 import { axiosInstance } from '../axiosInstance';

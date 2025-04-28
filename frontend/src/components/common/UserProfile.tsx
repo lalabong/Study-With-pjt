@@ -1,11 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
-import { HiPencil, HiCheck, HiX } from 'react-icons/hi';
 
-// 기본 프로필 이미지를 정적으로 import
-import defaultUserImage from '../../../public/images/default-user-image.png';
+import Image from 'next/image';
+
+import { HiPencil, HiCheck, HiX } from 'react-icons/hi';
 
 import Button from './Button';
 import Input from './Input';
@@ -92,7 +91,7 @@ const UserProfile = ({
             />
           ) : (
             <Image
-              src={defaultUserImage}
+              src={'/images/default-user-image.png'}
               alt="기본 프로필 이미지"
               width={64}
               height={64}
