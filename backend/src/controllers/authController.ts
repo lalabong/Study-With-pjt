@@ -104,7 +104,7 @@ const login: ControllerFn = async (
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
     });
 
-    res.cookie('userId', user.id, {
+    res.cookie('userId', user.userId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // HTTPS에서만 전송
       sameSite: 'strict',
