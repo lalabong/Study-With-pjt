@@ -1,6 +1,7 @@
+import { useRouter } from 'next/navigation';
+
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 import { postSignup } from '@/api/user/postSignup';

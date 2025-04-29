@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 import { getUserSchedules } from '@/api/user/getUserSchedules';
