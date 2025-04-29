@@ -6,7 +6,7 @@ import ProtectedRoute from '@components/auth/ProtectedRoute';
 import { Header } from '@components/common';
 import HeaderActionButtons from '@components/mypage/HeaderActionButtons';
 import LogoutButton from '@components/mypage/LogoutButton';
-import ProfileSection from '@components/mypage/ProfileSection';
+import ProfileManager from '@components/mypage/ProfileManager';
 import StatisticsChart from '@components/mypage/StatisticsChart';
 import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TotalStudyTime from '@components/mypage/TotalStudyTime';
@@ -41,7 +41,7 @@ export default async function MyPage() {
           </Header>
 
           <div className="container mx-auto px-4 py-6">
-            <ProfileSection />
+            <ProfileManager forceCurrentUser={true} />
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="rounded-lg bg-white p-5 shadow-sm">
