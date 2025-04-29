@@ -1,5 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
+import { postRefreshAccessToken } from '@api/user/postRefreshAccessToken';
+
 import { AUTH_ENDPOINTS } from '@constants/api';
 import { AUTH_ERROR_MESSAGES, API_ERROR_MESSAGES } from '@constants/errorMessages';
 
@@ -28,6 +30,12 @@ const logErrorByStatus = (status: number, error: AxiosError): void => {
 
   const errorMessage = statusToMessageMap[status] || API_ERROR_MESSAGES.REQUEST_FAILED;
   console.error(errorMessage, error);
+};
+
+const redirectToLogin = () => {
+  if (typeof window !== 'undefined') {
+    window.location.href = '/login';
+  }
 };
 
 // 요청 인터셉터
@@ -72,6 +80,7 @@ const handleResponseError = async (error: AxiosError) => {
     try {
       const response = await postRefreshAccessToken();
       const accessToken = response.data?.accessToken;
+
       if (accessToken) {
         useAuthStore.getState().setAccessToken(accessToken);
       }
@@ -87,7 +96,9 @@ const handleResponseError = async (error: AxiosError) => {
         withCredentials: true,
       });
     } catch (refreshError) {
-      useAuthStore.getState().logout();
+      useAuthStore.getState().clearAuthState();
+
+      redirectToLogin();
 
       if (refreshError instanceof AxiosError) {
         if (refreshError.response?.status === 400) {
@@ -100,6 +111,11 @@ const handleResponseError = async (error: AxiosError) => {
 
       return Promise.reject(error);
     }
+  }
+
+  if (error.response?.status === 401 && !isAuthRequest) {
+    useAuthStore.getState().clearAuthState();
+    redirectToLogin();
   }
 
   if (error.response) {

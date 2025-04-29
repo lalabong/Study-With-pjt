@@ -19,11 +19,7 @@ export const useLogoutMutation = () => {
     mutationFn: async () => {
       await postLogout();
 
-      useAuthStore.setState({
-        accessToken: null,
-        user: null,
-        isAuthenticated: false,
-      });
+      useAuthStore.getState().clearAuthState();
     },
     onSuccess: () => {
       toast.success(USER_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
