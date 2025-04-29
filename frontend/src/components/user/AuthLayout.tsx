@@ -10,6 +10,10 @@ import { HiArrowLeft } from 'react-icons/hi';
 
 import SocialLogin from '@components/user/SocialLogin';
 
+import { useAuthStore } from '@/stores/authStore';
+
+import LoadingSpinner from '../common/LoadingSpinner';
+
 interface AuthLayoutProps {
   children: ReactNode;
   showRegisterLink?: boolean;
@@ -17,6 +21,15 @@ interface AuthLayoutProps {
 
 const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps) => {
   const router = useRouter();
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (isAuthenticated && user) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-white">
