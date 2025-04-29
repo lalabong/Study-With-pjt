@@ -4,6 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
+import { postLogin } from '@api/user/postLogin';
+
 import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
 
@@ -13,10 +15,36 @@ import { LoginRequest } from '@/types/api';
 
 export const useLoginMutation = () => {
   const router = useRouter();
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const setUser = useAuthStore((state) => state.setUser);
 
   return useMutation({
     mutationFn: async (data: LoginRequest) => {
-      await useAuthStore.getState().login(data);
+      try {
+        const response = await postLogin(data);
+
+        if (!response.data) {
+          throw new Error(USER_ERROR_MESSAGES.UNKNOWN_ERROR);
+        }
+
+        const { accessToken, user } = response.data;
+
+        if (accessToken) {
+          setAccessToken(accessToken);
+        }
+
+        if (user) {
+          setUser(user);
+        }
+
+        if (accessToken && user) {
+          useAuthStore.setState({ isAuthenticated: true });
+        }
+
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
     },
     onSuccess: () => {
       toast.success(USER_SUCCESS_MESSAGES.LOGIN_SUCCESS);

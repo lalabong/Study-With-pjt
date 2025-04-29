@@ -1,11 +1,12 @@
 'use client';
 
+import { ReactNode, useState } from 'react';
+
 import {
   QueryClient,
   HydrationBoundary as RQHydrationBoundary,
   DehydratedState,
 } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
 
 export const getQueryClient = () =>
   new QueryClient({

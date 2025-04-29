@@ -1,33 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
-import { toast } from 'react-toastify';
-
 import { Button } from '@components/common';
 
-import { postLogout } from '@api/user/postLogout';
-
-import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
-
-import { useAuthStore } from '@stores/authStore';
+import { useLogoutMutation } from '@hooks/api/useLogoutMutation';
 
 const LogoutButton = () => {
-  const { logout } = useAuthStore.getState();
-  const router = useRouter();
+  const { mutate: logout } = useLogoutMutation();
 
-  const handleLogout = async () => {
-    try {
-      await postLogout();
-      logout();
-      toast.success(USER_SUCCESS_MESSAGES.LOGOUT_SUCCESS);
-      router.push('/');
-    } catch (error) {
-      console.error('로그아웃 중 오류 발생:', error);
-
-      logout();
-      router.push('/');
-    }
+  const handleLogout = () => {
+    logout();
   };
 
   return (
