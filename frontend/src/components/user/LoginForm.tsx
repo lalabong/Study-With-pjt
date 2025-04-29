@@ -13,6 +13,7 @@ const LoginForm = () => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { mutate: login } = useLoginMutation();
 
@@ -20,6 +21,14 @@ const LoginForm = () => {
     userId: { value: userId, validate: true },
     password: { value: password, validate: true },
   });
+
+  const getRedirectPath = () => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      return searchParams.get('redirect') || '/mypage';
+    }
+    return '/mypage';
+  };
 
   const handleTogglePassword = (): void => {
     setShowPassword(!showPassword);
@@ -29,7 +38,20 @@ const LoginForm = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      login({ userId, password });
+      setIsSubmitting(true);
+
+      const redirectPath = getRedirectPath();
+      login(
+        { userId, password },
+        {
+          onSuccess: () => {
+            window.location.href = redirectPath;
+          },
+          onError: () => {
+            setIsSubmitting(false);
+          },
+        },
+      );
     }
   };
 
@@ -69,7 +91,7 @@ const LoginForm = () => {
       />
 
       <Button type="submit" variant="primary" size="md" fullWidth>
-        로그인
+        {isSubmitting ? '로그인 중...' : '로그인'}
       </Button>
     </form>
   );

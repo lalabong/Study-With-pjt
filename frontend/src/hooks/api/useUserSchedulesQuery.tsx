@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import { getUserSchedules } from '@/api/user/getUserSchedules';
 import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { USER_QUERY_KEYS } from '@/constants/queryKeys';
-import { SCHEDULE_SUCCESS_MESSAGES } from '@/constants/successMessages';
 
 interface UseUserSchedulesQueryParams {
   userId: string;
@@ -25,9 +24,7 @@ export const useUserSchedulesQuery = ({ userId, enabled = true }: UseUserSchedul
   });
 
   useEffect(() => {
-    if (query.isSuccess && query.data) {
-      toast.success(SCHEDULE_SUCCESS_MESSAGES.FETCH_SCHEDULES_SUCCESS);
-    } else if (query.error) {
+    if (query.error) {
       const error = query.error as AxiosError;
       if (error.response?.status === 404) {
         toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);

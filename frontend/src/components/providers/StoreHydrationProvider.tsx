@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { useAuthStore } from '@/stores/authStore';
+import LoadingSpinner from '@components/common/LoadingSpinner';
+
+import { useAuthStore } from '@stores/authStore';
 
 export default function StoreHydrationProvider({ children }: { children: React.ReactNode }) {
   const [isHydrated, setIsHydrated] = useState(false);
@@ -11,7 +12,7 @@ export default function StoreHydrationProvider({ children }: { children: React.R
   useEffect(() => {
     (async () => {
       try {
-        // localStorage에서 직접 auth 데이터 가져오기(안전성 강화)
+        // localStorage에서 직접 auth 데이터 가져오기
 
         // 서버 환경인지, 클라이언트 환경인지 확인
         if (typeof window !== 'undefined') {

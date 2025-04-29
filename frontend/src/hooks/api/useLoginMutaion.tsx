@@ -1,5 +1,3 @@
-import { useRouter } from 'next/navigation';
-
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
@@ -14,7 +12,6 @@ import { useAuthStore } from '@stores/authStore';
 import { LoginRequest } from '@/types/api';
 
 export const useLoginMutation = () => {
-  const router = useRouter();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setUser = useAuthStore((state) => state.setUser);
 
@@ -48,7 +45,6 @@ export const useLoginMutation = () => {
     },
     onSuccess: () => {
       toast.success(USER_SUCCESS_MESSAGES.LOGIN_SUCCESS);
-      router.push('/mypage');
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
