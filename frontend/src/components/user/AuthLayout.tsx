@@ -8,11 +8,10 @@ import { useRouter } from 'next/navigation';
 
 import { HiArrowLeft } from 'react-icons/hi';
 
+import StatusMessage from '@components/common/StatusMessage';
 import SocialLogin from '@components/user/SocialLogin';
 
 import { useAuthStore } from '@/stores/authStore';
-
-import LoadingSpinner from '../common/LoadingSpinner';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -24,11 +23,7 @@ const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps) => {
   const { isAuthenticated, user } = useAuthStore();
 
   if (isAuthenticated && user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <StatusMessage status="loading" message="사용자 정보 확인 중..." className="h-screen" />;
   }
 
   return (

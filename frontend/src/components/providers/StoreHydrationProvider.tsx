@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import LoadingSpinner from '@components/common/LoadingSpinner';
+import StatusMessage from '@components/common/StatusMessage';
 
 import { useAuthStore } from '@stores/authStore';
 
@@ -48,9 +48,7 @@ export default function StoreHydrationProvider({ children }: { children: React.R
 
   if (!isHydrated) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <LoadingSpinner />
-      </div>
+      <StatusMessage status="loading" message="애플리케이션 초기화 중..." className="h-screen" />
     );
   }
 

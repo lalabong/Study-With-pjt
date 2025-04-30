@@ -8,7 +8,7 @@ import { useUserInfoQuery } from '@hooks/api/useUserInfoQuery';
 
 import { useAuthStore } from '@stores/authStore';
 
-import LoadingSpinner from '../common/LoadingSpinner';
+import StatusMessage from '../common/StatusMessage';
 
 import ProfileSection from './ProfileSection';
 
@@ -24,6 +24,7 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
 
   const loginUser = useAuthStore((state) => state.user);
 
+  // 현재 사용자인 경우에는 쿼리를 비활성화
   const {
     data: profileUser,
     isPending,
@@ -41,32 +42,20 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
     return profileUser;
   }, [isCurrentUser, loginUser, profileUser]);
 
-  // 현재 사용자가 아니고 로딩 중인 경우
-  if (!isCurrentUser && isPending) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <LoadingSpinner />
-        <div className="ml-2">사용자 정보를 불러오는 중...</div>
-      </div>
-    );
+  // 상태별 분기 처리
+  if (!isCurrentUser) {
+    if (isPending) {
+      return <StatusMessage status="loading" />;
+    }
+
+    if (isError) {
+      return <StatusMessage status="error" />;
+    }
   }
 
-  // 현재 사용자가 아니고 오류가 발생한 경우
-  if (!isCurrentUser && isError) {
-    return (
-      <div className="flex h-full items-center justify-center text-red-500">
-        <div>사용자 정보를 불러오는 중 오류가 발생했습니다.</div>
-      </div>
-    );
-  }
-
-  // 사용자 정보가 없는 경우 (현재 사용자가 아닌데 데이터가 없는 경우)
+  // 사용자 정보가 없는 경우
   if (!user) {
-    return (
-      <div className="flex h-full items-center justify-center text-gray-500">
-        <div>사용자 정보를 찾을 수 없습니다.</div>
-      </div>
-    );
+    return <StatusMessage status="empty" message="사용자 정보를 찾을 수 없습니다." />;
   }
 
   const handleNicknameUpdate = async (newNickname: string) => {

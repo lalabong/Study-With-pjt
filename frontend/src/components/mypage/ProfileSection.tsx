@@ -3,7 +3,7 @@
 import { HiPlus } from 'react-icons/hi';
 
 import { Button, UserProfile } from '@components/common';
-import LoadingSpinner from '@components/common/LoadingSpinner';
+import StatusMessage from '@components/common/StatusMessage';
 
 import { User } from '@stores/authStore';
 
@@ -26,7 +26,7 @@ const ProfileSection = ({
   if (!user) {
     return (
       <div className="rounded-lg mb-7 bg-white p-6 shadow-sm">
-        <LoadingSpinner />
+        <StatusMessage status="loading" message="프로필 정보를 불러오는 중..." />
       </div>
     );
   }

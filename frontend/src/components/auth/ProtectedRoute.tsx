@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import LoadingSpinner from '@components/common/LoadingSpinner';
+import StatusMessage from '@components/common/StatusMessage';
 
 import { useAuthStore } from '@stores/authStore';
 
@@ -30,11 +30,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }, [isAuthenticated, user, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <StatusMessage status="loading" message="인증 확인 중..." className="h-screen" />;
   }
 
   return children;
