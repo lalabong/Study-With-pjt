@@ -41,7 +41,7 @@ export default async function MyPage() {
           </Header>
 
           <div className="container mx-auto px-4 py-6">
-            <ProfileManager forceCurrentUser={true} />
+            <ProfileManager userId={userId} isCurrentUser={true} />
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="rounded-lg bg-white p-5 shadow-sm">

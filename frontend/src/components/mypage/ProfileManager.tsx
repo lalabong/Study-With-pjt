@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
 
 import { toast } from 'react-toastify';
 
+import { useUserInfoQuery } from '@hooks/api/useUserInfoQuery';
+
 import { useAuthStore } from '@stores/authStore';
-import { User } from '@stores/authStore';
 
 import LoadingSpinner from '../common/LoadingSpinner';
 
@@ -14,46 +15,82 @@ import ProfileSection from './ProfileSection';
 // import { useUpdateUserProfileMutation } from '@hooks/api/useUpdateUserProfileMutation';
 
 interface ProfileManagerProps {
-  profileUser?: User | null;
-  forceCurrentUser?: boolean;
+  userId: string;
+  isCurrentUser: boolean;
 }
 
-const ProfileManager = ({ profileUser, forceCurrentUser }: ProfileManagerProps) => {
-  const currentUser = useAuthStore.getState().user;
+const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
   // const updateProfileMutation = useUpdateUserProfileMutation();
-  const [isUpdating, setIsUpdating] = useState(false);
 
-  const user = profileUser || currentUser;
+  const loginUser = useAuthStore((state) => state.user);
 
-  const isCurrentUser = forceCurrentUser || (!!currentUser && !!user && currentUser.id === user.id);
+  const {
+    data: profileUser,
+    isPending,
+    isError,
+  } = useUserInfoQuery({
+    userId,
+    enabled: !isCurrentUser,
+  });
+
+  const user = useMemo(() => {
+    if (isCurrentUser) {
+      return loginUser;
+    }
+
+    return profileUser;
+  }, [isCurrentUser, loginUser, profileUser]);
+
+  // 현재 사용자가 아니고 로딩 중인 경우
+  if (!isCurrentUser && isPending) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <LoadingSpinner />
+        <div className="ml-2">사용자 정보를 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  // 현재 사용자가 아니고 오류가 발생한 경우
+  if (!isCurrentUser && isError) {
+    return (
+      <div className="flex h-full items-center justify-center text-red-500">
+        <div>사용자 정보를 불러오는 중 오류가 발생했습니다.</div>
+      </div>
+    );
+  }
+
+  // 사용자 정보가 없는 경우 (현재 사용자가 아닌데 데이터가 없는 경우)
+  if (!user) {
+    return (
+      <div className="flex h-full items-center justify-center text-gray-500">
+        <div>사용자 정보를 찾을 수 없습니다.</div>
+      </div>
+    );
+  }
 
   const handleNicknameUpdate = async (newNickname: string) => {
-    if (!isCurrentUser || !currentUser) return;
-
     try {
-      setIsUpdating(true);
       // await updateProfileMutation.mutateAsync({ nickname: newNickname });
+      // 필수 속성이 있는 완전한 User 객체 생성
+      const updatedUser = {
+        ...loginUser!, // loginUser가 null이 아님을 명시
+        nickname: newNickname,
+      };
+
       useAuthStore.setState({
-        user: {
-          ...currentUser,
-          nickname: newNickname,
-        },
+        user: updatedUser,
       });
 
       toast.success('닉네임이 성공적으로 변경되었습니다.');
     } catch (error) {
       toast.error('닉네임 변경에 실패했습니다.');
       console.error('닉네임 업데이트 오류:', error);
-    } finally {
-      setIsUpdating(false);
     }
   };
 
   const handleProfileImageUpdate = async (newImage: string | File) => {
-    if (!isCurrentUser || !currentUser) return;
-
     try {
-      setIsUpdating(true);
       // const formData = new FormData();
       // if (newImage instanceof File) {
       //   formData.append('profileImage', newImage);
@@ -69,19 +106,20 @@ const ProfileManager = ({ profileUser, forceCurrentUser }: ProfileManagerProps) 
         imageUrl = URL.createObjectURL(newImage);
       }
 
+      // 필수 속성이 있는 완전한 User 객체 생성
+      const updatedUser = {
+        ...loginUser!, // loginUser가 null이 아님을 명시
+        profileImage: imageUrl,
+      };
+
       useAuthStore.setState({
-        user: {
-          ...currentUser,
-          profileImage: imageUrl,
-        },
+        user: updatedUser,
       });
 
       toast.success('프로필 이미지가 성공적으로 변경되었습니다.');
     } catch (error) {
       toast.error('프로필 이미지 변경에 실패했습니다.');
       console.error('프로필 이미지 업데이트 오류:', error);
-    } finally {
-      setIsUpdating(false);
     }
   };
 
@@ -90,15 +128,10 @@ const ProfileManager = ({ profileUser, forceCurrentUser }: ProfileManagerProps) 
     console.log('방 생성하기 버튼 클릭');
   };
 
-  if (isUpdating || !user) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <ProfileSection
-      profileUser={user}
+      user={user}
       isCurrentUser={isCurrentUser}
-      showCreateRoomButton={isCurrentUser}
       onCreateRoom={handleCreateRoom}
       onProfileUpdate={
         isCurrentUser

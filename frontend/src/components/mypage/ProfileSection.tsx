@@ -5,36 +5,24 @@ import { HiPlus } from 'react-icons/hi';
 import { Button, UserProfile } from '@components/common';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 
-import { useAuthStore } from '@stores/authStore';
 import { User } from '@stores/authStore';
 
 interface ProfileSectionProps {
-  profileUser?: User | null;
+  user: User;
   isCurrentUser?: boolean;
   onProfileUpdate?: {
     nickname?: (newNickname: string) => void;
     profileImage?: (newImage: string | File) => void;
   };
-  showCreateRoomButton?: boolean;
   onCreateRoom?: () => void;
 }
 
 const ProfileSection = ({
-  profileUser,
+  user,
   isCurrentUser,
   onProfileUpdate,
-  showCreateRoomButton = true,
   onCreateRoom,
 }: ProfileSectionProps) => {
-  const currentUser = useAuthStore.getState().user;
-
-  const user = profileUser || currentUser;
-
-  const isOwner =
-    isCurrentUser !== undefined
-      ? isCurrentUser
-      : !!currentUser && !!user && currentUser.id === user.id;
-
   if (!user) {
     return (
       <div className="rounded-lg mb-7 bg-white p-6 shadow-sm">
@@ -50,11 +38,11 @@ const ProfileSection = ({
           profileImage={user.profileImage}
           nickname={user.nickname}
           additionalInfo={user.createdAt}
-          editable={isOwner}
-          onNicknameChange={isOwner ? onProfileUpdate?.nickname : undefined}
-          onProfileImageChange={isOwner ? onProfileUpdate?.profileImage : undefined}
+          editable={isCurrentUser}
+          onNicknameChange={isCurrentUser ? onProfileUpdate?.nickname : undefined}
+          onProfileImageChange={isCurrentUser ? onProfileUpdate?.profileImage : undefined}
         />
-        {isOwner && showCreateRoomButton && (
+        {isCurrentUser && (
           <Button size="sm" className="bg-blue-500">
             <span className="flex items-center gap-1">
               <HiPlus className="h-4 w-4" onClick={onCreateRoom} />방 생성하기
