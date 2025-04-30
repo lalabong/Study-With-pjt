@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface User {
-  id: string;
+  id: number;
   userId: string;
   nickname: string;
   profileImage?: string | null;

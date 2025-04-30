@@ -18,7 +18,7 @@ export const useUserSchedulesQuery = ({ userId, enabled = true }: UseUserSchedul
     queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId],
     queryFn: async () => {
       const response = await getUserSchedules(userId);
-      return response;
+      return response.data;
     },
     enabled: !!userId && enabled,
   });

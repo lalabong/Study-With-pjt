@@ -35,7 +35,7 @@ const StudyCalendar = ({ className = '' }: StudyCalendarProps) => {
   });
 
   const markedDates =
-    data?.data?.schedules?.map((schedule: Schedule) => new Date(schedule.startTime)) || [];
+    data?.schedules.map((schedule: Schedule) => new Date(schedule.startTime)) || [];
 
   const activeDate = new Date();
   const [value, onChange] = useState<Value>(activeDate);

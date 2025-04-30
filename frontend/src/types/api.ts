@@ -26,7 +26,7 @@ export interface AuthResponse {
 
 export interface Schedule {
   id: number;
-  userId: number;
+  userId: string;
   createdAt: string;
   title: string;
   startTime: string;
@@ -36,12 +36,4 @@ export interface Schedule {
 
 export interface UserScheduleResponse {
   schedules: Schedule[];
-}
-
-export interface UserInfoResponse {
-  id: number;
-  userId: string;
-  nickname: string;
-  profileImg: string;
-  createdAt: string;
 }
