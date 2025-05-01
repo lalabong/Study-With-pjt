@@ -133,6 +133,7 @@
 .react-calendar__tile--now {
   color: #000000;
   background: #e5edff;
+  border-radius: 2rem;
 }
 
 .react-calendar__tile--now:hover {

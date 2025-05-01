@@ -11,14 +11,21 @@ import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
 interface UseUserSchedulesQueryParams {
   userId: string;
+  startDate?: string;
+  endDate?: string;
   enabled?: boolean;
 }
 
-export const useUserSchedulesQuery = ({ userId, enabled = true }: UseUserSchedulesQueryParams) => {
+export const useUserSchedulesQuery = ({
+  userId,
+  startDate,
+  endDate,
+  enabled = true,
+}: UseUserSchedulesQueryParams) => {
   const query = useQuery({
-    queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId],
+    queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
     queryFn: async () => {
-      const response = await getUserSchedules(userId);
+      const response = await getUserSchedules({ userId, startDate, endDate });
       return response.data;
     },
     enabled: !!userId && enabled,
@@ -27,14 +34,16 @@ export const useUserSchedulesQuery = ({ userId, enabled = true }: UseUserSchedul
   useEffect(() => {
     if (query.error) {
       const error = query.error as AxiosError;
-      if (error.response?.status === 404) {
+      if (error.response?.status === 401) {
+        toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
+      } else if (error.response?.status === 404) {
         toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
       } else {
         toast.error(USER_ERROR_MESSAGES.FETCH_SCHEDULES_FAILED);
         console.error('사용자 일정 조회 중 오류 발생:', error);
       }
     }
-  }, [query.isSuccess, query.data, query.error]);
+  }, [query.error]);
 
   return query;
 };

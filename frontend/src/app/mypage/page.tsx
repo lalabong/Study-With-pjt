@@ -17,16 +17,22 @@ import { USER_QUERY_KEYS } from '@constants/queryKeys';
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
 
-export default async function MyPage() {
+import { formatDateToString } from '@/utils/date';
+
+const MyPage = async () => {
   const cookieStore = await cookies();
   const userId = cookieStore.get('userId')?.value || '';
+
+  const now = new Date();
+  const startDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+  const endDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() + 2, 0));
 
   const queryClient = getServerQueryClient();
 
   if (userId) {
     await queryClient.prefetchQuery({
-      queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId],
-      queryFn: async () => getUserSchedules(userId),
+      queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
+      queryFn: async () => getUserSchedules({ userId, startDate, endDate }),
     });
   }
 
@@ -47,7 +53,7 @@ export default async function MyPage() {
 
             <div className="mt-8">
               <div className="rounded-lg bg-white px-8 py-6 shadow-sm">
-                <StudyCalendar className="w-full" />
+                <StudyCalendar userId={userId} />
               </div>
             </div>
 
@@ -57,4 +63,6 @@ export default async function MyPage() {
       </ProtectedRoute>
     </HydrationBoundary>
   );
-}
+};
+
+export default MyPage;
