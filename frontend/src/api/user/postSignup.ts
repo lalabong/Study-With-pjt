@@ -1,8 +1,7 @@
 import { AUTH_ENDPOINTS } from '@constants/api';
 
+import { axiosInstance } from '@/api/axiosInstance';
 import { ApiResponse, SignupRequest } from '@/types/api';
-
-import { axiosInstance } from '../axiosInstance';
 
 export const postSignup = async ({
   userId,

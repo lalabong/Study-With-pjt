@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
-const ChartComponent = dynamic(() => import('./ChartWrapper'), {
+const ChartComponent = dynamic(() => import('@components/mypage/Chart/ChartWrapper'), {
   ssr: false,
 });
 

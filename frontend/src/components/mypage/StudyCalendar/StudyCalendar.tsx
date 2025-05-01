@@ -13,7 +13,7 @@ import { useAuthStore } from '@stores/authStore';
 
 import { Schedule } from '@/types/api';
 
-import './studyCalendar.css';
+import '@components/mypage/StudyCalendar/studyCalendar.css';
 
 interface StudyCalendarProps {
   className?: string;

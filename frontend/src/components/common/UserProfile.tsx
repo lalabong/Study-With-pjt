@@ -6,8 +6,8 @@ import Image from 'next/image';
 
 import { HiPencil, HiCheck, HiX } from 'react-icons/hi';
 
-import Button from './Button';
-import Input from './Input';
+import Button from '@components/common/Button';
+import Input from '@components/common/Input';
 
 interface UserProfileProps {
   nickname: string;

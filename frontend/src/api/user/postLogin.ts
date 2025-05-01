@@ -1,8 +1,8 @@
+import { axiosInstance } from '@api/axiosInstance';
+
 import { AUTH_ENDPOINTS } from '@constants/api';
 
 import { ApiResponse, LoginRequest, LoginResponse } from '@/types/api';
-
-import { axiosInstance } from '../axiosInstance';
 
 export const postLogin = async ({
   userId,

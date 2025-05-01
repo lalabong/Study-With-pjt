@@ -12,6 +12,7 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+// 로그인 필요한 페이지에 사용
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);

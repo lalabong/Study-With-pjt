@@ -6,7 +6,7 @@ import StatusMessage from '@components/common/StatusMessage';
 
 import { useAuthStore } from '@stores/authStore';
 
-export default function StoreHydrationProvider({ children }: { children: React.ReactNode }) {
+const StoreHydrationProvider = ({ children }: { children: React.ReactNode }) => {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -53,4 +53,6 @@ export default function StoreHydrationProvider({ children }: { children: React.R
   }
 
   return <>{children}</>;
-}
+};
+
+export default StoreHydrationProvider;

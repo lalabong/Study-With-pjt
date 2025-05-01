@@ -12,6 +12,7 @@ interface AuthRouteProps {
   children: React.ReactNode;
 }
 
+// 로그인 시 로그인, 회원가입 페이지 접근 못하게 막는 라우트
 const AuthRoute = ({ children }: AuthRouteProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);

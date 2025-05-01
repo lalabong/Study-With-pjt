@@ -4,9 +4,11 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { postSignup } from '@/api/user/postSignup';
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
+import { postSignup } from '@api/user/postSignup';
+
+import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
+import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
+
 import { SignupRequest } from '@/types/api';
 
 export const useSignupMutation = () => {

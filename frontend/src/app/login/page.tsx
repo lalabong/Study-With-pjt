@@ -1,7 +1,6 @@
+import AuthRoute from '@components/router/AuthRoute';
 import AuthLayout from '@components/user/AuthLayout';
 import LoginForm from '@components/user/LoginForm';
-
-import AuthRoute from '@/components/auth/AuthRoute';
 
 const LoginPage = () => {
   return (

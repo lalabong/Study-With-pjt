@@ -1,9 +1,10 @@
+import { axiosInstance } from '@api/axiosInstance';
+
 import { MYPAGE_ENDPOINTS } from '@constants/api';
 
-import { User } from '@/stores/authStore';
-import { ApiResponse } from '@/types/api';
+import { User } from '@stores/authStore';
 
-import { axiosInstance } from '../axiosInstance';
+import { ApiResponse } from '@/types/api';
 
 export const getUserInfo = async (userId: string): Promise<ApiResponse<User>> => {
   const response = await axiosInstance.get(MYPAGE_ENDPOINTS.GET_USER_INFO(userId));

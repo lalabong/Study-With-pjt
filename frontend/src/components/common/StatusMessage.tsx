@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from '@components/common/LoadingSpinner';
 
 type StatusType = 'loading' | 'error' | 'empty';
 

@@ -4,9 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { getUserSchedules } from '@/api/user/getUserSchedules';
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { USER_QUERY_KEYS } from '@/constants/queryKeys';
+import { getUserSchedules } from '@api/user/getUserSchedules';
+
+import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
+import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
 interface UseUserSchedulesQueryParams {
   userId: string;

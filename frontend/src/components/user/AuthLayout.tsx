@@ -11,7 +11,7 @@ import { HiArrowLeft } from 'react-icons/hi';
 import StatusMessage from '@components/common/StatusMessage';
 import SocialLogin from '@components/user/SocialLogin';
 
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@stores/authStore';
 
 interface AuthLayoutProps {
   children: ReactNode;

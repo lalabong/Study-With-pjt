@@ -1,13 +1,12 @@
 import { cookies } from 'next/headers';
 
 import { Header } from '@components/common';
-import HeaderActionButtons from '@components/mypage/HeaderActionButtons';
-import ProfileManager from '@components/mypage/ProfileManager';
-import StatisticsChart from '@components/mypage/StatisticsChart';
+import HeaderActionButtons from '@components/common/HeaderActionButtons';
+import { LogoutButton } from '@components/mypage';
+import StatisticsChart from '@components/mypage/Chart/StatisticsChart';
+import ProfileManager from '@components/mypage/Profile/ProfileManager';
 import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TotalStudyTime from '@components/mypage/TotalStudyTime';
-
-import { LogoutButton } from '@/components/mypage';
 
 interface UserProfilePageProps {
   params: {

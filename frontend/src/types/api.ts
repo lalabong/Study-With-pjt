@@ -20,10 +20,6 @@ export interface LoginResponse {
   user: User;
 }
 
-export interface AuthResponse {
-  accessToken: string;
-}
-
 export interface Schedule {
   id: number;
   userId: string;
@@ -32,8 +28,4 @@ export interface Schedule {
   startTime: string;
   endTime: string;
   status: string;
-}
-
-export interface UserScheduleResponse {
-  schedules: Schedule[];
 }

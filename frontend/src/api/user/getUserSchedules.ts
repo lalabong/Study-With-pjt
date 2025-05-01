@@ -1,7 +1,12 @@
-import { MYPAGE_ENDPOINTS } from '@/constants';
-import { ApiResponse, UserScheduleResponse } from '@/types/api';
+import { axiosInstance } from '@api/axiosInstance';
 
-import { axiosInstance } from '../axiosInstance';
+import { MYPAGE_ENDPOINTS } from '@constants/api';
+
+import { ApiResponse, Schedule } from '@/types/api';
+
+export interface UserScheduleResponse {
+  schedules: Schedule[];
+}
 
 export const getUserSchedules = async (
   userId: string,

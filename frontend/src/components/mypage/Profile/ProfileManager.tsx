@@ -4,13 +4,12 @@ import { useMemo } from 'react';
 
 import { toast } from 'react-toastify';
 
+import StatusMessage from '@components/common/StatusMessage';
+import ProfileSection from '@components/mypage/Profile/ProfileSection';
+
 import { useUserInfoQuery } from '@hooks/api/useUserInfoQuery';
 
 import { useAuthStore } from '@stores/authStore';
-
-import StatusMessage from '../common/StatusMessage';
-
-import ProfileSection from './ProfileSection';
 
 // import { useUpdateUserProfileMutation } from '@hooks/api/useUpdateUserProfileMutation';
 

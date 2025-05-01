@@ -2,14 +2,14 @@ import { cookies } from 'next/headers';
 
 import { dehydrate } from '@tanstack/react-query';
 
-import ProtectedRoute from '@components/auth/ProtectedRoute';
 import { Header } from '@components/common';
-import HeaderActionButtons from '@components/mypage/HeaderActionButtons';
-import LogoutButton from '@components/mypage/LogoutButton';
-import ProfileManager from '@components/mypage/ProfileManager';
-import StatisticsChart from '@components/mypage/StatisticsChart';
+import HeaderActionButtons from '@components/common/HeaderActionButtons';
+import StatisticsChart from '@components/mypage/Chart/StatisticsChart';
+import LogoutButton from '@components/mypage/Profile/LogoutButton';
+import ProfileManager from '@components/mypage/Profile/ProfileManager';
 import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TotalStudyTime from '@components/mypage/TotalStudyTime';
+import ProtectedRoute from '@components/router/ProtectedRoute';
 
 import { getUserSchedules } from '@api/user/getUserSchedules';
 
@@ -41,7 +41,7 @@ export default async function MyPage() {
           </Header>
 
           <div className="container mx-auto px-4 py-6">
-            <ProfileManager userId={userId} isCurrentUser={true} />
+            <ProfileManager isCurrentUser={true} userId={userId} />
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="rounded-lg bg-white p-5 shadow-sm">
