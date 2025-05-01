@@ -240,6 +240,7 @@ const getUserTimeLogs: ControllerFn = async (
     };
 
     const weeklyLogsArray = Object.values(dailyLogs).sort((a, b) => a.date.localeCompare(b.date));
+    const monthlyDataArray = Object.values(monthlyData).sort((a, b) => a.month.localeCompare(b.month));
 
     const responseData: any = {
       totalTime: {
@@ -255,8 +256,8 @@ const getUserTimeLogs: ControllerFn = async (
         const { totalMinutes, ...rest } = log;
         return rest;
       });
-    } else if (period === 'month' && monthlyData.length > 0) {
-      responseData.monthlyData = monthlyData;
+    } else if (period === 'month' && monthlyDataArray.length > 0) {
+      responseData.monthlyData = monthlyDataArray;
     }
 
     createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_TIMELOGS, { data: responseData });
