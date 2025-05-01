@@ -1,6 +1,11 @@
 import express from 'express';
 
-import { getUserInfo, getUserSchedules, getUserTimeLogs } from '../controllers/userController.js';
+import {
+  getUserInfo,
+  getUserSchedules,
+  getUserTimeLogs,
+  getUserTotalStudyTime,
+} from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -262,5 +267,48 @@ router.get('/:userId/schedules', authMiddleware, getUserSchedules);
  *         description: 인증 실패
  */
 router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
+
+/**
+ * @swagger
+ * /api/users/{userId}/totalStudyTime:
+ *   get:
+ *     summary: 사용자 총 학습 시간 조회
+ *     description: 사용자의 총 학습 시간을 조회합니다.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 사용자 ID
+ *     responses:
+ *       200:
+ *         description: 총 학습 시간 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 총 학습 시간 조회에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalStudyTime:
+ *                       type: number
+ *                       description: 총 학습 시간
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *       401:
+ *         description: 인증 실패
+ */
+router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
 
 export default router;

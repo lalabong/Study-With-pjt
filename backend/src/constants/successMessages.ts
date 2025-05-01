@@ -9,4 +9,5 @@ export const USER_SUCCESS = {
   GET_USER_INFO: '사용자 정보 조회에 성공했습니다.',
   GET_SCHEDULES: '일정 조회에 성공했습니다.',
   GET_TIMELOGS: '시간 기록 조회에 성공했습니다.',
+  GET_TOTAL_STUDY_TIME: '총 학습 시간 조회에 성공했습니다.',
 };

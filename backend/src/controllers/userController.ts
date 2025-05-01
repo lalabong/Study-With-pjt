@@ -240,7 +240,9 @@ const getUserTimeLogs: ControllerFn = async (
     };
 
     const weeklyLogsArray = Object.values(dailyLogs).sort((a, b) => a.date.localeCompare(b.date));
-    const monthlyDataArray = Object.values(monthlyData).sort((a, b) => a.month.localeCompare(b.month));
+    const monthlyDataArray = Object.values(monthlyData).sort((a, b) =>
+      a.month.localeCompare(b.month)
+    );
 
     const responseData: any = {
       totalTime: {
@@ -267,4 +269,32 @@ const getUserTimeLogs: ControllerFn = async (
   }
 };
 
-export { getUserInfo, getUserSchedules, getUserTimeLogs };
+const getUserTotalStudyTime: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+
+    const user = await prisma.user.findUnique({
+      where: { userId },
+    });
+
+    if (!user) {
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      return;
+    }
+
+    const totalStudyTime = user.totalStudyTime;
+
+    createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_TOTAL_STUDY_TIME, {
+      data: { totalStudyTime },
+    });
+  } catch (error) {
+    console.error('총 학습 시간 조회 에러:', error);
+    next(error);
+  }
+};
+
+export { getUserInfo, getUserSchedules, getUserTimeLogs, getUserTotalStudyTime };
