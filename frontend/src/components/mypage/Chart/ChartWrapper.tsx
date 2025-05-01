@@ -21,7 +21,7 @@ interface ChartWrapperProps {
 
 const ChartWrapper = ({ data, chartType, barColor, lineColor }: ChartWrapperProps) => {
   return (
-    <div className="w-full h-[250px] min-h-[250px] mt-8">
+    <div className="w-full h-[250px] min-h-[250px] mt-7">
       <ResponsiveContainer width="100%" height="100%" minHeight={200}>
         {chartType === 'bar' ? (
           <BarChart
