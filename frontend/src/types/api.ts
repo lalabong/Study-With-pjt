@@ -29,3 +29,33 @@ export interface Schedule {
   endTime: string;
   status: string;
 }
+
+export interface TimeRecord {
+  hours: number;
+  minutes: number;
+  decimalHours: number;
+}
+
+export interface WeeklyTimeLog {
+  date: string;
+  hours: number;
+  minutes: number;
+  decimalHours: number;
+}
+
+export interface MonthlyTimeLog {
+  month: string;
+  totalTime: TimeRecord;
+}
+
+export interface PeriodInfo {
+  startDate: string;
+  endDate: string;
+}
+
+export interface TimeLogsResponse {
+  totalTime: TimeRecord;
+  periodInfo: PeriodInfo;
+  weeklyData?: WeeklyTimeLog[];
+  monthlyData?: MonthlyTimeLog[];
+}
