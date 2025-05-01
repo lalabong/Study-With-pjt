@@ -12,4 +12,5 @@ export const MYPAGE_ENDPOINTS = {
   GET_USER_SCHEDULES: (userId: string) => `${API_PREFIX}/users/${userId}/schedules`,
   GET_USER_TIMELOGS: (userId: string, period: string, date: string) =>
     `${API_PREFIX}/users/${userId}/timelogs?period=${period}&date=${date}`,
+  GET_USER_TOTAL_STUDY_TIME: (userId: string) => `${API_PREFIX}/users/${userId}/totalStudyTime`,
 };

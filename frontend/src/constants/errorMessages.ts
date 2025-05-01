@@ -25,6 +25,7 @@ export const USER_ERROR_MESSAGES = {
   GET_USER_INFO_FAILED: '사용자 정보 조회에 실패했습니다.',
   FETCH_SCHEDULES_FAILED: '사용자 일정 조회에 실패했습니다.',
   FETCH_TIMELOGS_FAILED: '시간 기록 조회에 실패했습니다.',
+  FETCH_TOTAL_STUDY_TIME_FAILED: '총 학습 시간 조회에 실패했습니다.',
 };
 
 export const AUTH_ERROR_MESSAGES = {

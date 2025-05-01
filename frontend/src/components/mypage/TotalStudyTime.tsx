@@ -1,53 +1,39 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 import StatusMessage from '@components/common/StatusMessage';
 
-interface TotalStudyTimeProps {
-  initialValue?: number;
-  className?: string;
-}
+import { useUserTotalStudyTimeQuery } from '@hooks/api/useUserTotalStudyTimeQuery';
 
-const TotalStudyTime = ({ initialValue, className = '' }: TotalStudyTimeProps) => {
-  const [mounted, setMounted] = useState(false);
-  const [totalHours, setTotalHours] = useState<number>(initialValue || 0);
+import { useAuthStore } from '@stores/authStore';
 
-  const fetchTotalHours = async () => {
-    return Math.floor(Math.random() * 100) + 500;
-  };
+const TotalStudyTime = () => {
+  const userId = useAuthStore((state) => state.user?.userId) || '';
 
-  // 임시 더미 코드
-  useEffect(() => {
-    if (mounted && !initialValue) {
-      fetchTotalHours().then((hours) => {
-        setTotalHours(hours);
-      });
-    }
-  }, [mounted, initialValue]);
+  const { data, isLoading, error } = useUserTotalStudyTimeQuery({
+    userId,
+    enabled: !!userId,
+  });
 
-  useEffect(() => {
-    setMounted(true);
-    return () => {};
-  }, []);
+  if (isLoading) {
+    return <StatusMessage status="loading" message="활동 시간 정보를 불러오는 중..." />;
+  }
+
+  if (error || !data) {
+    return (
+      <StatusMessage status="error" message="활동 시간 정보를 불러오는 중 오류가 발생했습니다." />
+    );
+  }
 
   return (
-    <div className={`${className} rounded-lg bg-white p-6 shadow-sm`}>
-      <div className="flex items-center justify-between mb-4">
+    <div className={`rounded-lg bg-white p-6 shadow-sm`}>
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-medium">총 활동 시간</h3>
       </div>
-      {!mounted ? (
-        <StatusMessage
-          status="loading"
-          message="활동 시간 정보를 불러오는 중..."
-          className="h-[300px]"
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-center h-[300px]">
-          <div className="text-7xl font-bold text-center">{totalHours}</div>
-          <div className="text-gray-500 mt-2">시간</div>
-        </div>
-      )}
+
+      <div className="flex h-[300px] flex-col items-center justify-center">
+        <div className="text-center text-7xl font-bold">{data.totalStudyTime}</div>
+        <div className="mt-2 text-gray-500">시간</div>
+      </div>
     </div>
   );
 };

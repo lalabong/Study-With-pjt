@@ -3,6 +3,7 @@ export const USER_SUCCESS_MESSAGES = {
   LOGIN_SUCCESS: '로그인이 완료되었습니다.',
   LOGOUT_SUCCESS: '로그아웃이 완료되었습니다.',
   FETCH_TIMELOGS_SUCCESS: '시간 기록 조회에 성공했습니다.',
+  FETCH_TOTAL_STUDY_TIME_SUCCESS: '총 학습 시간 조회에 성공했습니다.',
 };
 
 export const SCHEDULE_SUCCESS_MESSAGES = {
