@@ -5,6 +5,8 @@ import {
   getUserSchedules,
   getUserTimeLogs,
   getUserTotalStudyTime,
+  postUserNickname,
+  postUserProfileImg,
 } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
@@ -310,5 +312,163 @@ router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
  *         description: 인증 실패
  */
 router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
+
+/**
+ * @swagger
+ * /api/users/{userId}/profileImg:
+ *   post:
+ *     summary: 사용자 프로필 이미지 수정
+ *     description: 사용자의 프로필 이미지를 수정합니다.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         description: 사용자 ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - profileImg
+ *             properties:
+ *               profileImg:
+ *                 type: string
+ *                 description: 프로필 이미지 URL
+ *     responses:
+ *       200:
+ *         description: 프로필 이미지 수정에 성공했습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: 프로필 이미지 수정에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     profileImg:
+ *                       type: string
+ *                       description: 수정된 프로필 이미지 URL
+ *       404:
+ *         description: 사용자를 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *       500:
+ *         description: 서버 내부 오류
+ */
+router.post('/:userId/profileImg', authMiddleware, postUserProfileImg);
+
+/**
+ * @swagger
+ * /api/users/{userId}/nickname:
+ *   post:
+ *     summary: 사용자 닉네임 수정
+ *     description: 사용자의 닉네임을 수정합니다.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         description: 사용자 ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nickname
+ *             properties:
+ *               nickname:
+ *                 type: string
+ *                 description: 수정할 닉네임 (1자 이상 50자 이하)
+ *     responses:
+ *       200:
+ *         description: 닉네임 수정에 성공했습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: 닉네임 수정에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     nickname:
+ *                       type: string
+ *                       description: 수정된 닉네임
+ *       400:
+ *         description: 닉네임은 1자 이상, 50자 이하여야 합니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: 닉네임은 1자 이상 50자 이하여야 합니다.
+ *       404:
+ *         description: 사용자를 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *       500:
+ *         description: 서버 내부 오류
+ */
+router.post('/:userId/nickname', authMiddleware, postUserNickname);
 
 export default router;

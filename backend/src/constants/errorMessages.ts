@@ -21,4 +21,5 @@ export const SERVER_ERROR = {
 
 export const USER_ERROR = {
   USER_NOT_FOUND: '사용자를 찾을 수 없습니다.',
+  INVALID_NICKNAME: '닉네임은 1자 이상 50자 이하여야 합니다.',
 };

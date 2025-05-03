@@ -297,4 +297,62 @@ const getUserTotalStudyTime: ControllerFn = async (
   }
 };
 
-export { getUserInfo, getUserSchedules, getUserTimeLogs, getUserTotalStudyTime };
+const postUserProfileImg: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { profileImg } = req.body;
+
+    const user = await prisma.user.update({
+      where: { userId },
+      data: { profileImg },
+    });
+
+    createSuccessResponse(res, 200, undefined, USER_SUCCESS.POST_USER_PROFILE_IMG, {
+      data: { profileImg: user.profileImg },
+    });
+  } catch (error) {
+    console.error('프로필 이미지 수정 에러:', error);
+    next(error);
+  }
+};
+
+const postUserNickname: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { nickname } = req.body;
+
+    const user = await prisma.user.update({
+      where: { userId },
+      data: { nickname },
+    });
+
+    if (!nickname || nickname.length > 50) {
+      createErrorResponse(res, 400, USER_ERROR.INVALID_NICKNAME);
+      return;
+    }
+
+    createSuccessResponse(res, 200, undefined, USER_SUCCESS.POST_USER_NICKNAME, {
+      data: { nickname: user.nickname },
+    });
+  } catch (error) {
+    console.error('닉네임 수정 에러:', error);
+    next(error);
+  }
+};
+
+export {
+  getUserInfo,
+  getUserSchedules,
+  getUserTimeLogs,
+  getUserTotalStudyTime,
+  postUserProfileImg,
+  postUserNickname,
+};

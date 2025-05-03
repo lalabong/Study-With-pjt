@@ -251,6 +251,7 @@ const signup: ControllerFn = async (
     createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE);
   } catch (error: unknown) {
     next(error);
+    console.error('회원가입 에러:', error);
   }
 };
 
