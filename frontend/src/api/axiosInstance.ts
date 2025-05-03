@@ -14,9 +14,6 @@ interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   timeout: 30000,
   withCredentials: true,
 });
@@ -45,6 +42,12 @@ const handleRequestSuccess = (config: InternalAxiosRequestConfig) => {
   if (accessToken) {
     config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  } else if (config.data && typeof config.data === 'object') {
+    config.headers['Content-Type'] = 'application/json';
   }
 
   return config;
