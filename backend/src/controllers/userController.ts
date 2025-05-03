@@ -7,6 +7,8 @@ import { ControllerFn } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
 import { USER_ERROR } from '../constants/errorMessages.js';
 import { USER_SUCCESS } from '../constants/successMessages.js';
+import { AUTH_ERROR } from '../constants/errorMessages.js';
+import { getProfileImgPath } from '../middlewares/fileMiddleware.js';
 
 const getUserInfo: ControllerFn = async (
   req: Request,
@@ -297,18 +299,48 @@ const getUserTotalStudyTime: ControllerFn = async (
   }
 };
 
-const postUserProfileImg: ControllerFn = async (
+const patchUserProfileImg: ControllerFn = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { userId } = req.params;
+
+    const file = (req as any).file;
+
+    // body에서 profileImg 값 확인 (문자열인 경우)
     const { profileImg } = req.body;
+
+    const userExists = await prisma.user.findUnique({
+      where: { userId },
+      select: { id: true, profileImg: true },
+    });
+
+    if (!userExists) {
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      return;
+    }
+
+    let finalProfileImgPath: string | null = null;
+
+    // 파일이 있는 경우 파일 경로 사용
+    if (file) {
+      finalProfileImgPath = getProfileImgPath(file.filename);
+    }
+    // 문자열로 URL이 전달된 경우 - 객체가 아니고 유효한 문자열인지 확인
+    else if (profileImg && typeof profileImg === 'string' && profileImg.trim() !== '') {
+      finalProfileImgPath = profileImg;
+    }
+    // 둘 다 없는 경우 또는 profileImg가 객체인 경우 null로 처리
+    else {
+      finalProfileImgPath = null;
+    }
 
     const user = await prisma.user.update({
       where: { userId },
-      data: { profileImg },
+      data: { profileImg: finalProfileImgPath },
+      select: { id: true, userId: true, profileImg: true },
     });
 
     createSuccessResponse(res, 200, undefined, USER_SUCCESS.POST_USER_PROFILE_IMG, {
@@ -320,7 +352,7 @@ const postUserProfileImg: ControllerFn = async (
   }
 };
 
-const postUserNickname: ControllerFn = async (
+const patchUserNickname: ControllerFn = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -329,15 +361,27 @@ const postUserNickname: ControllerFn = async (
     const { userId } = req.params;
     const { nickname } = req.body;
 
-    const user = await prisma.user.update({
-      where: { userId },
-      data: { nickname },
-    });
-
     if (!nickname || nickname.length > 50) {
       createErrorResponse(res, 400, USER_ERROR.INVALID_NICKNAME);
       return;
     }
+
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        nickname,
+        userId: { not: userId }, // 자기 자신 제외
+      },
+    });
+
+    if (existingUser) {
+      createErrorResponse(res, 409, AUTH_ERROR.NICKNAME_EXISTS);
+      return;
+    }
+
+    const user = await prisma.user.update({
+      where: { userId },
+      data: { nickname },
+    });
 
     createSuccessResponse(res, 200, undefined, USER_SUCCESS.POST_USER_NICKNAME, {
       data: { nickname: user.nickname },
@@ -353,6 +397,6 @@ export {
   getUserSchedules,
   getUserTimeLogs,
   getUserTotalStudyTime,
-  postUserProfileImg,
-  postUserNickname,
+  patchUserProfileImg,
+  patchUserNickname,
 };

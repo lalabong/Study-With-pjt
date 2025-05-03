@@ -5,10 +5,11 @@ import {
   getUserSchedules,
   getUserTimeLogs,
   getUserTotalStudyTime,
-  postUserNickname,
-  postUserProfileImg,
+  patchUserNickname,
+  patchUserProfileImg,
 } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
+import { uploadProfileImg } from '../middlewares/fileMiddleware.js';
 
 const router = express.Router();
 
@@ -316,9 +317,9 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
 /**
  * @swagger
  * /api/users/{userId}/profileImg:
- *   post:
+ *   patch:
  *     summary: 사용자 프로필 이미지 수정
- *     description: 사용자의 프로필 이미지를 수정합니다.
+ *     description: 사용자의 프로필 이미지를 수정합니다. 파일 업로드 또는 URL 문자열로 가능합니다.
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -327,19 +328,26 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *         name: userId
  *         schema:
  *           type: string
+ *         required: true
  *         description: 사용자 ID
  *     requestBody:
- *       required: true
+ *       required: false
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             required:
- *               - profileImg
  *             properties:
  *               profileImg:
  *                 type: string
- *                 description: 프로필 이미지 URL
+ *                 format: binary
+ *                 description: 프로필 이미지 파일 (jpg, jpeg, png, gif만 지원, 최대 5MB)
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profileImg:
+ *                 type: string
+ *                 description: 프로필 이미지 URL 또는 null (null인 경우 프로필 이미지 제거)
  *     responses:
  *       200:
  *         description: 프로필 이미지 수정에 성공했습니다.
@@ -348,12 +356,9 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
  *                 status:
- *                   type: integer
- *                   example: 200
+ *                   type: string
+ *                   example: success
  *                 message:
  *                   type: string
  *                   example: 프로필 이미지 수정에 성공했습니다.
@@ -362,32 +367,26 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *                   properties:
  *                     profileImg:
  *                       type: string
- *                       description: 수정된 프로필 이미지 URL
+ *                       nullable: true
+ *                       description: 수정된 프로필 이미지의 전체 URL (서버 도메인 포함) 또는 null
+ *                       example: "http://localhost:4000/uploads/profiles/user123_1746259680098.png"
+ *       400:
+ *         description: 잘못된 요청 또는 파일 업로드 오류
  *       404:
- *         description: 사용자를 찾을 수 없습니다.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 status:
- *                   type: integer
- *                   example: 404
- *                 message:
- *                   type: string
- *                   example: 사용자를 찾을 수 없습니다.
+ *         description: 사용자를 찾을 수 없음
+ *       413:
+ *         description: 파일 크기가 너무 큼 (최대 5MB)
+ *       415:
+ *         description: 지원하지 않는 파일 형식 (jpg, jpeg, png, gif만 지원)
  *       500:
  *         description: 서버 내부 오류
  */
-router.post('/:userId/profileImg', authMiddleware, postUserProfileImg);
+router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
 
 /**
  * @swagger
  * /api/users/{userId}/nickname:
- *   post:
+ *   patch:
  *     summary: 사용자 닉네임 수정
  *     description: 사용자의 닉네임을 수정합니다.
  *     tags: [Users]
@@ -435,7 +434,7 @@ router.post('/:userId/profileImg', authMiddleware, postUserProfileImg);
  *                       type: string
  *                       description: 수정된 닉네임
  *       400:
- *         description: 닉네임은 1자 이상, 50자 이하여야 합니다.
+ *         description: 유효하지 않은 닉네임
  *         content:
  *           application/json:
  *             schema:
@@ -466,9 +465,25 @@ router.post('/:userId/profileImg', authMiddleware, postUserProfileImg);
  *                 message:
  *                   type: string
  *                   example: 사용자를 찾을 수 없습니다.
+ *       409:
+ *         description: 이미 존재하는 닉네임
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 status:
+ *                   type: integer
+ *                   example: 409
+ *                 message:
+ *                   type: string
+ *                   example: 이미 사용 중인 닉네임입니다.
  *       500:
  *         description: 서버 내부 오류
  */
-router.post('/:userId/nickname', authMiddleware, postUserNickname);
+router.patch('/:userId/nickname', authMiddleware, patchUserNickname);
 
 export default router;

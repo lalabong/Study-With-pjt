@@ -22,4 +22,7 @@ export const SERVER_ERROR = {
 export const USER_ERROR = {
   USER_NOT_FOUND: '사용자를 찾을 수 없습니다.',
   INVALID_NICKNAME: '닉네임은 1자 이상 50자 이하여야 합니다.',
+  FILE_SIZE_TOO_LARGE: '파일 크기가 너무 큽니다. 최대 5MB까지 업로드 가능합니다.',
+  INVALID_FILE_TYPE: '지원하지 않는 파일 형식입니다. (jpg, jpeg, png, gif만 가능)',
+  FILE_UPLOAD_ERROR: '파일 업로드 오류가 발생했습니다.',
 };
