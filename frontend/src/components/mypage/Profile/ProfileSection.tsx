@@ -12,7 +12,7 @@ interface ProfileSectionProps {
   isCurrentUser?: boolean;
   onProfileUpdate?: {
     nickname?: (newNickname: string) => void;
-    profileImage?: (newImage: string | File) => void;
+    profileImg?: (newImage: string | File) => void;
   };
   onCreateRoom?: () => void;
 }
@@ -35,12 +35,12 @@ const ProfileSection = ({
     <div className="rounded-lg mb-7 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <UserProfile
-          profileImage={user.profileImage}
+          profileImg={user.profileImg}
           nickname={user.nickname}
           additionalInfo={user.createdAt}
           editable={isCurrentUser}
           onNicknameChange={isCurrentUser ? onProfileUpdate?.nickname : undefined}
-          onProfileImageChange={isCurrentUser ? onProfileUpdate?.profileImage : undefined}
+          onProfileImgChange={isCurrentUser ? onProfileUpdate?.profileImg : undefined}
         />
         {isCurrentUser && (
           <Button size="sm" className="bg-blue-500">

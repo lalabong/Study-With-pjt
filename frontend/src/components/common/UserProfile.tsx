@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 import Image from 'next/image';
 
@@ -11,44 +11,70 @@ import Input from '@components/common/Input';
 
 interface UserProfileProps {
   nickname: string;
-  profileImage?: string | null;
+  profileImg?: string | null;
   additionalInfo?: string;
   editable?: boolean;
   onNicknameChange?: (newNickname: string) => void;
-  onProfileImageChange?: (newImage: string | File) => void;
+  onProfileImgChange?: (newImage: string | File) => void;
   className?: string;
 }
 
 const UserProfile = ({
   nickname,
-  profileImage,
+  profileImg,
   additionalInfo,
   editable = false,
   onNicknameChange,
-  onProfileImageChange,
+  onProfileImgChange,
   className = '',
 }: UserProfileProps) => {
+  const [displayNickname, setDisplayNickname] = useState(nickname);
+
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [nicknameInput, setNicknameInput] = useState(nickname);
-  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
+  const [profileImgPreview, setProfileImgPreview] = useState<string | null>(null);
 
+  useEffect(() => {
+    setDisplayNickname(nickname);
+  }, [nickname]);
+
+  const { isNicknameChanged, isNicknameEmpty } = useMemo(() => {
+    return {
+      isNicknameChanged: nicknameInput.trim() !== nickname,
+      isNicknameEmpty: nicknameInput.trim() === '',
+    };
+  }, [nicknameInput, nickname]);
+
+  // 닉네임 수정 버튼 클릭 시
   const handleNicknameEdit = () => {
     setIsEditingNickname(true);
+    setNicknameInput(displayNickname);
   };
 
+  // 닉네임 수정 취소 버튼 클릭 시
   const handleNicknameCancel = () => {
     setIsEditingNickname(false);
-    setNicknameInput(nickname);
+    setNicknameInput(displayNickname);
   };
 
-  const handleNicknameSave = () => {
-    if (nicknameInput.trim() && onNicknameChange) {
-      onNicknameChange(nicknameInput);
+  // 닉네임 수정 저장 버튼 클릭 시
+  const handleNicknameSave = async () => {
+    if (nicknameInput.trim() && onNicknameChange && isNicknameChanged) {
+      setDisplayNickname(nicknameInput.trim());
+      setIsEditingNickname(false);
+
+      try {
+        await onNicknameChange(nicknameInput);
+      } catch {
+        setDisplayNickname(nickname);
+      }
+    } else {
+      setIsEditingNickname(false);
     }
-    setIsEditingNickname(false);
   };
 
-  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 수정할 이미지 선택 시
+  const handleProfileImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
 
@@ -57,10 +83,10 @@ const UserProfile = ({
         /* 파일 읽기가 완료되었을 때 실행할 콜백 함수 */
         if (event.target && event.target.result) {
           const dataUrl = event.target.result as string;
-          setProfileImagePreview(dataUrl);
+          setProfileImgPreview(dataUrl);
 
-          if (onProfileImageChange) {
-            onProfileImageChange(file);
+          if (onProfileImgChange) {
+            onProfileImgChange(file);
           }
         }
       };
@@ -72,17 +98,17 @@ const UserProfile = ({
     <div className={`flex items-center ${className}`}>
       <div className="relative mr-4">
         <div className="h-16 w-16 overflow-hidden rounded-full bg-gray-200">
-          {profileImagePreview ? (
+          {profileImgPreview ? (
             <Image
-              src={profileImagePreview}
+              src={profileImgPreview}
               alt="변경한 프로필 이미지"
               width={64}
               height={64}
               className="h-full w-full object-cover"
             />
-          ) : profileImage ? (
+          ) : profileImg ? (
             <Image
-              src={profileImage}
+              src={profileImg}
               alt="프로필 이미지"
               width={64}
               height={64}
@@ -100,14 +126,14 @@ const UserProfile = ({
           )}
         </div>
 
-        {editable && onProfileImageChange && (
+        {editable && onProfileImgChange && (
           <div className="absolute -bottom-2 -right-2 flex space-x-1">
             <input
               id="profile-image-upload"
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={handleProfileImageChange}
+              onChange={handleProfileImgChange}
             />
             <label
               htmlFor="profile-image-upload"
@@ -132,7 +158,12 @@ const UserProfile = ({
                 autoFocus
               />
               <div className="flex flex-row space-x-2 pl-2">
-                <Button size="sm" onClick={handleNicknameSave}>
+                <Button
+                  size="sm"
+                  onClick={handleNicknameSave}
+                  disabled={!isNicknameChanged || isNicknameEmpty}
+                  variant="primary"
+                >
                   <span className="flex items-center gap-1 whitespace-nowrap">
                     <HiCheck className="h-4 w-4" />
                     저장
@@ -148,7 +179,7 @@ const UserProfile = ({
             </div>
           ) : (
             <div className="flex items-center">
-              <h3 className="text-lg font-medium">{nickname}</h3>
+              <h3 className="text-lg font-medium">{displayNickname}</h3>
               {editable && onNicknameChange && (
                 <button
                   onClick={handleNicknameEdit}

@@ -45,10 +45,6 @@ export const useValidateForm = (initialFields: ValidateFormFields) => {
       }
     }
 
-    if (initialFields.nickname?.validate && initialFields.nickname.value.length < 2) {
-      newErrors.nickname = USER_ERROR_MESSAGES.NICKNAME_MIN_LENGTH;
-    }
-
     if (
       initialFields.confirmPassword?.validate &&
       initialFields.password.value !== initialFields.confirmPassword.value

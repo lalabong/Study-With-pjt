@@ -1,6 +1,7 @@
 export const USER_ERROR_MESSAGES = {
   ID_MIN_LENGTH: '아이디는 4자 이상이어야 합니다.',
-  NICKNAME_MIN_LENGTH: '닉네임은 2자 이상이어야 합니다.',
+  NICKNAME_MIN_LENGTH: '닉네임은 1자 이상이어야 합니다.',
+  NICKNAME_MAX_LENGTH: '닉네임은 50자 이하여야 합니다.',
   PASSWORD_MIN_LENGTH: '비밀번호는 8자 이상이어야 합니다.',
   PASSWORD_FORMAT: '비밀번호는 문자와 숫자를 모두 포함해야 합니다.',
   USER_NOT_FOUND: '존재하지 않는 사용자입니다.',
@@ -26,6 +27,9 @@ export const USER_ERROR_MESSAGES = {
   FETCH_SCHEDULES_FAILED: '사용자 일정 조회에 실패했습니다.',
   FETCH_TIMELOGS_FAILED: '시간 기록 조회에 실패했습니다.',
   FETCH_TOTAL_STUDY_TIME_FAILED: '총 학습 시간 조회에 실패했습니다.',
+
+  UPDATE_NICKNAME_FAILED: '닉네임 업데이트에 실패했습니다.',
+  UPDATE_PROFILE_IMAGE_FAILED: '프로필 이미지 업데이트에 실패했습니다.',
 };
 
 export const AUTH_ERROR_MESSAGES = {

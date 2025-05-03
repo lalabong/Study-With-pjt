@@ -5,7 +5,7 @@ export interface User {
   id: number;
   userId: string;
   nickname: string;
-  profileImage?: string | null;
+  profileImg?: string | null;
   createdAt: string;
 }
 
