@@ -11,6 +11,7 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   fullWidth?: boolean;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -22,6 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   fullWidth = false,
   className = '',
+  disabled = false,
 }) => {
   const variantClasses = {
     primary: 'bg-blue-500 text-white hover:bg-blue-700',
@@ -48,7 +50,7 @@ const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <button onClick={onClick} className={buttonClasses} type={type}>
+    <button onClick={onClick} className={buttonClasses} type={type} disabled={disabled}>
       {children}
     </button>
   );
