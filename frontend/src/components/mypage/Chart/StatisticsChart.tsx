@@ -14,6 +14,7 @@ import { useAuthStore } from '@stores/authStore';
 
 import { addDays, addMonths, getCurrentDateString, isFutureDate } from '@utils/date';
 
+import { WEEK_DAYS_KO } from '@/constants/calendar';
 import { MonthlyTimeLog, WeeklyTimeLog } from '@/types/api';
 
 const ChartComponent = dynamic(() => import('@components/mypage/Chart/ChartWrapper'), {
@@ -71,9 +72,8 @@ const StatisticsChart = ({
   const parseWeekData = (weeklyData?: WeeklyTimeLog[]): ChartDataItem[] => {
     if (!weeklyData) return [];
 
-    const days = ['월', '화', '수', '목', '금', '토', '일'];
     return weeklyData.map((item, index) => ({
-      day: days[index],
+      day: WEEK_DAYS_KO[index],
       hours: item.decimalHours,
     }));
   };
@@ -86,7 +86,7 @@ const StatisticsChart = ({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [year, month] = item.month.split('-');
       return {
-        day: month + '월',
+        day: parseInt(month, 10).toString(),
         hours: item.totalTime.decimalHours,
       };
     });
