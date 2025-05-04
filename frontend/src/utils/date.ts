@@ -6,6 +6,22 @@ export const formatDateToString = (date: Date): string => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
+// Date 객체를 'YYYY년 MM월 DD일' 형식의 문자열로 변환
+export const formatDate = (date: Date | null | [Date | null, Date | null]): string => {
+  if (!date) return '';
+
+  if (Array.isArray(date)) {
+    // 배열인 경우 첫 번째 요소 사용 (범위 선택 시)
+    return formatDate(date[0]);
+  }
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  return `${year}년 ${month}월 ${day}일`;
+};
+
 //현재 날짜를 'YYYY-MM-DD' 형식의 문자열로 반환
 export const getCurrentDateString = (): string => {
   return formatDateToString(new Date());
@@ -30,6 +46,15 @@ export const isFutureDate = (date: Date | string): boolean => {
   const compareDate = new Date(date);
   const today = new Date();
   return compareDate > today;
+};
+
+// 두 날짜가 같은지 확인
+export const isSameDate = (date1: Date, date2: Date) => {
+  return (
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear()
+  );
 };
 
 // 연도 범위 생성 (현재 연도 기준 -2년 ~ +2년)

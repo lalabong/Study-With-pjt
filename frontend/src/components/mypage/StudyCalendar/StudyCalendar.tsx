@@ -4,14 +4,19 @@ import { useEffect, useState } from 'react';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { Value } from 'react-calendar/dist/esm/shared/types.js';
 import { GoDotFill } from 'react-icons/go';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
-import { MONTHS, WEEK_DAYS } from '@constants/calendar';
+import CalendarModal from '@components/mypage/StudyCalendar/CalendarModal';
+
+import { MONTHS, WEEK_DAYS_KO } from '@constants/calendar';
 
 import { useUserSchedulesQuery } from '@hooks/api/useUserSchedulesQuery';
 
-import { formatDateToString, getYearRange } from '@utils/date';
+import { ScheduleItem, ScheduleStatus, useScheduleStore } from '@/stores/scheduleStore';
+
+import { formatDateToString, getYearRange, isSameDate } from '@utils/date';
 
 import { Schedule } from '@/types/api';
 
@@ -21,15 +26,11 @@ interface StudyCalendarProps {
   userId: string;
 }
 
-// 리액트 캘린더 사용을 위한 타입 정의
-type ValuePiece = Date | null;
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
 const StudyCalendar = ({ userId }: StudyCalendarProps) => {
   // 초기값: 오늘
   const activeDate = new Date();
+  const { openCalendarModal, selectedDate, setSelectedDate } = useScheduleStore();
 
-  const [selectedDate, setSelectedDate] = useState<Value>(activeDate); // 선택된 날짜
   const [currentViewDate, setCurrentViewDate] = useState<Date>(activeDate); // 현재 보고 있는 날짜(연/월/일)
 
   // 기본 시작일과 종료일 계산 (현재 날짜 기준 전월 1일부터 다음달 마지막일까지)
@@ -53,9 +54,10 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     }
   }, [dateRange, userId, refetch]);
 
-  // 일정이 있는 날짜들
-  const markedDates =
-    data?.schedules.map((schedule: Schedule) => new Date(schedule.startTime)) || [];
+  // 일정이 있는 날짜 목록(시작일 기준)
+  const markedDates = [
+    ...(data?.schedules.map((schedule: Schedule) => new Date(schedule.startTime)) || []),
+  ];
 
   // 드롭다운 범위 표시할 연도 목록
   const showYears = getYearRange(currentViewDate.getFullYear());
@@ -68,6 +70,43 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
         studyDate.getMonth() === date.getMonth() &&
         studyDate.getFullYear() === date.getFullYear(),
     );
+  };
+
+  // 특정 날짜의 일정을 가져오는 함수
+  const getSchedulesForDate = (date: Date): ScheduleItem[] => {
+    const selectedSchedules = data?.schedules
+      ? data.schedules
+          .filter((schedule: Schedule) => {
+            const scheduleDate = new Date(schedule.startTime);
+            return isSameDate(scheduleDate, date);
+          })
+          .map((schedule: Schedule): ScheduleItem => {
+            // 시간 부분만 추출
+            const startTime = schedule.startTime
+              ? new Date(schedule.startTime).toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : undefined;
+
+            const endTime = schedule.endTime
+              ? new Date(schedule.endTime).toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : undefined;
+
+            return {
+              id: schedule.id,
+              name: schedule.title,
+              startTime,
+              endTime,
+              status: (schedule.status as ScheduleStatus) || ('대기중' as ScheduleStatus),
+            };
+          })
+      : [];
+
+    return selectedSchedules;
   };
 
   // 타일 클래스 결정 함수(일정 있는 날짜 타일 클래스 추가)
@@ -89,6 +128,11 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     return null;
   };
 
+  // 날짜 변경 핸들러
+  const handleDateChange = (value: Value) => {
+    setSelectedDate(value);
+  };
+
   // 현재 보고 있는 월 변경 핸들러
   const handleActiveStartDateChange = ({ activeStartDate }: { activeStartDate: Date | null }) => {
     if (activeStartDate) {
@@ -100,8 +144,10 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
 
   // 특정 날짜를 선택했을 때 핸들러
   const handleStudyDateClick = (date: Date) => {
-    console.log('선택한 일정 상세:', date);
-    setSelectedDate(date); // 선택된 날짜 업데이트
+    setSelectedDate(date);
+
+    const schedulesForDate = getSchedulesForDate(date);
+    openCalendarModal(date, schedulesForDate);
   };
 
   // 월 기준으로 날짜 범위 업데이트 함수
@@ -151,7 +197,8 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col min-h-[550px]">
+      {/* <div className="w-full flex flex-col"> */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <select
@@ -198,19 +245,22 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
         </div>
       </div>
 
-      <div className="calendar-container w-full">
+      <div className="calendar-container w-full flex-1 flex flex-col">
         <Calendar
           onClickDay={handleStudyDateClick}
-          onChange={setSelectedDate}
+          onChange={handleDateChange}
           value={selectedDate}
           activeStartDate={currentViewDate}
           onActiveStartDateChange={handleActiveStartDateChange}
-          className="w-full rounded-lg border-none text-base"
-          formatShortWeekday={(locale, date) => WEEK_DAYS[date.getDay()]}
+          className="w-full rounded-lg border-none text-base h-full flex-1"
+          formatShortWeekday={(locale, date) => WEEK_DAYS_KO[date.getDay()]}
+          formatDay={(locale, date) => date.getDate().toString()}
           tileClassName={getTileClassName}
           tileContent={getTileContent}
         />
       </div>
+
+      <CalendarModal />
     </div>
   );
 };

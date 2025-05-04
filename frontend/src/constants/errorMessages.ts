@@ -13,7 +13,6 @@ export const USER_ERROR_MESSAGES = {
   SIGNUP_FAILED: '회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.',
   USER_ALREADY_EXISTS: '이미 존재하는 사용자입니다.',
 
-  // 회원가입 관련 에러 메시지 추가
   INVALID_FORM: '모든 필드를 올바르게 입력해주세요.',
   USER_EXISTS: '이미 사용 중인 아이디입니다.',
   NICKNAME_EXISTS: '이미 사용 중인 닉네임입니다.',
@@ -27,6 +26,7 @@ export const USER_ERROR_MESSAGES = {
   FETCH_SCHEDULES_FAILED: '사용자 일정 조회에 실패했습니다.',
   FETCH_TIMELOGS_FAILED: '시간 기록 조회에 실패했습니다.',
   FETCH_TOTAL_STUDY_TIME_FAILED: '총 학습 시간 조회에 실패했습니다.',
+  NOT_SELECTED_DATE: '날짜가 선택되지 않았습니다.',
 
   UPDATE_NICKNAME_FAILED: '닉네임 업데이트에 실패했습니다.',
   UPDATE_PROFILE_IMAGE_FAILED: '프로필 이미지 업데이트에 실패했습니다.',

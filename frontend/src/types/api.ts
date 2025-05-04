@@ -21,13 +21,13 @@ export interface LoginResponse {
 }
 
 export interface Schedule {
-  id: number;
+  id: string;
   userId: string;
   createdAt: string;
   title: string;
   startTime: string;
   endTime: string;
-  status: string;
+  status: '대기중' | '진행중' | '완료' | '취소';
 }
 
 export interface TimeRecord {
