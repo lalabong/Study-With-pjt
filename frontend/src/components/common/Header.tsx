@@ -21,6 +21,8 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
         height={39}
         onClick={handleLogoClick}
         className="cursor-pointer"
+        aria-label="Swith Logo"
+        priority
       />
       <div className="flex space-x-4">{children}</div>
     </header>
