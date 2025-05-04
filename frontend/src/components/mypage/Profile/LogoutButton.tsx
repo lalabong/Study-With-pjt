@@ -4,7 +4,12 @@ import { Button } from '@components/common';
 
 import { useLogoutMutation } from '@hooks/api/useLogoutMutation';
 
-const LogoutButton = () => {
+interface LogoutButtonProps {
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
+
+const LogoutButton = ({ size = 'sm', className }: LogoutButtonProps) => {
   const { mutate: logout } = useLogoutMutation();
 
   const handleLogout = () => {
@@ -12,8 +17,8 @@ const LogoutButton = () => {
   };
 
   return (
-    <div className="mt-8 flex justify-end">
-      <Button variant="secondary" size="sm" onClick={handleLogout}>
+    <div className={className}>
+      <Button variant="secondary" size={size} onClick={handleLogout}>
         로그아웃
       </Button>
     </div>

@@ -36,10 +36,13 @@ const Button: React.FC<ButtonProps> = ({
     md: 'px-6 py-3 text-base',
     lg: 'px-8 py-4 text-lg',
   };
+  const disabledClass = disabled
+    ? '!opacity-50 !cursor-not-allowed !bg-gray-300 !text-gray-500 !border-gray-300'
+    : '';
 
   const baseClasses = 'font-medium rounded-md transition-colors duration-300 cursor-pointer';
 
-  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className} ${fullWidth ? 'w-full' : ''}`;
+  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className} ${fullWidth ? 'w-full' : ''} ${disabledClass}`;
 
   if (href) {
     return (

@@ -14,10 +14,10 @@ import { getUserSchedules } from '@api/user/getUserSchedules';
 
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
+import { formatDateToString } from '@utils/date';
+
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
-
-import { formatDateToString } from '@/utils/date';
 
 const MyPage = async () => {
   const cookieStore = await cookies();
@@ -57,7 +57,7 @@ const MyPage = async () => {
               </div>
             </div>
 
-            <LogoutButton />
+            <LogoutButton className="mt-8 flex justify-end" size="md" />
           </div>
         </main>
       </ProtectedRoute>

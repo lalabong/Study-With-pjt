@@ -9,11 +9,14 @@ import ProfileManager from '@components/mypage/Profile/ProfileManager';
 import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TimeSection from '@components/mypage/TimeSection';
 
-import { getUserSchedules } from '@/api/user/getUserSchedules';
-import { USER_QUERY_KEYS } from '@/constants/queryKeys';
-import { getServerQueryClient } from '@/lib/react-query/getServerQueryClient';
-import { HydrationBoundary } from '@/lib/react-query/HydrationBoundary';
-import { formatDateToString } from '@/utils/date';
+import { getUserSchedules } from '@api/user/getUserSchedules';
+
+import { USER_QUERY_KEYS } from '@constants/queryKeys';
+
+import { formatDateToString } from '@utils/date';
+
+import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
+import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
 
 interface UserProfilePageProps {
   params: {
@@ -62,7 +65,7 @@ const UserProfilePage = async ({ params }: UserProfilePageProps) => {
             </div>
           </div>
 
-          {isCurrentUser && <LogoutButton />}
+          {isCurrentUser && <LogoutButton className="mt-8 flex justify-end" size="md" />}
         </div>
       </main>
     </HydrationBoundary>

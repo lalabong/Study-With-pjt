@@ -4,8 +4,9 @@ import { HiBell, HiUserGroup } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
 
-import { useLogoutMutation } from '@/hooks/api/useLogoutMutation';
 import { useAuthStore } from '@/stores/authStore';
+
+import { LogoutButton } from '../mypage';
 
 interface HeaderActionButtonsProps {
   isHome?: boolean;
@@ -14,18 +15,12 @@ interface HeaderActionButtonsProps {
 const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  const { mutate: logout } = useLogoutMutation();
-
   const handleNotificationClick = () => {
     console.log('알림 버튼 클릭');
   };
 
   const handleFriendClick = () => {
     console.log('친구 버튼 클릭');
-  };
-
-  const handleLogout = () => {
-    logout();
   };
 
   // 홈 화면이 아닌 경우
@@ -63,11 +58,7 @@ const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
       </>
     );
   } else {
-    return (
-      <Button variant="secondary" size="md" onClick={handleLogout}>
-        로그아웃
-      </Button>
-    );
+    return <LogoutButton size="md" />;
   }
 };
 
