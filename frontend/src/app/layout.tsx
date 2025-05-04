@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <body className={dotSans.className}>
+      <body className={`${dotSans.className} no-scrollbar`}>
         <QueryProvider>
           <StoreHydrationProvider>
             {children}
