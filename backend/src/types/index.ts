@@ -51,10 +51,10 @@ export interface RoomUser {
 export interface Schedule {
   id: string;
   userId: string;
-  roomId: string;
   title: string;
   startTime: Date;
   endTime: Date;
+  order: number;
   status: string;
   createdAt?: Date | null;
 }

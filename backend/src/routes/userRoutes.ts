@@ -2,7 +2,6 @@ import express from 'express';
 
 import {
   getUserInfo,
-  getUserSchedules,
   getUserTimeLogs,
   getUserTotalStudyTime,
   patchUserNickname,
@@ -70,86 +69,6 @@ const router = express.Router();
  *         description: 인증 실패
  */
 router.get('/:userId', authMiddleware, getUserInfo);
-
-/**
- * @swagger
- * /api/users/{userId}/schedules:
- *   get:
- *     summary: 사용자 일정 조회
- *     description: 사용자의 일정 목록을 조회합니다.
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string
- *         required: true
- *         description: 사용자 ID
- *       - in: query
- *         name: startDate
- *         schema:
- *           type: string
- *           format: date
- *         description: 시작 날짜 (YYYY-MM-DD)
- *       - in: query
- *         name: endDate
- *         schema:
- *           type: string
- *           format: date
- *         description: 종료 날짜 (YYYY-MM-DD)
- *     responses:
- *       200:
- *         description: 일정 조회 성공
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: success
- *                 message:
- *                   type: string
- *                   example: 일정 조회에 성공했습니다.
- *                 data:
- *                   type: object
- *                   properties:
- *                     schedules:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           userId:
- *                             type: string
- *                           roomId:
- *                             type: string
- *                           createdAt:
- *                             type: string
- *                             format: date-time
- *                             example: "2023-05-25T10:00:00"
- *                           title:
- *                             type: string
- *                           startTime:
- *                             type: string
- *                             format: date-time
- *                             example: "2023-05-25T10:00:00"
- *                           endTime:
- *                             type: string
- *                             format: date-time
- *                             example: "2023-05-25T11:00:00"
- *                           status:
- *                             type: string
- *                             example: "대기중"
- *       404:
- *         description: 사용자를 찾을 수 없음
- *       401:
- *         description: 인증 실패
- */
-router.get('/:userId/schedules', authMiddleware, getUserSchedules);
 
 /**
  * @swagger

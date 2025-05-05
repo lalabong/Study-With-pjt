@@ -46,49 +46,6 @@ const getUserInfo: ControllerFn = async (
   }
 };
 
-const getUserSchedules: ControllerFn = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const { userId } = req.params;
-    const { startDate, endDate } = req.query;
-
-    const user = await prisma.user.findUnique({
-      where: { userId },
-    });
-
-    if (!user) {
-      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
-      return;
-    }
-
-    let whereClause: any = {
-      userId: user.id,
-    };
-
-    if (startDate && endDate) {
-      whereClause.startTime = {
-        gte: new Date(startDate as string), // 시작 시간이 조회 시작 시간보다 크거나 같은 경우
-        lte: new Date(endDate as string), // 종료 시간이 조회 종료 시간보다 작거나 같은 경우
-      };
-    }
-
-    const schedules = await prisma.schedule.findMany({
-      where: whereClause,
-      orderBy: {
-        startTime: 'asc',
-      },
-    });
-
-    createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_SCHEDULES, { data: { schedules } });
-  } catch (error) {
-    console.error('일정 조회 에러:', error);
-    next(error);
-  }
-};
-
 const getUserTimeLogs: ControllerFn = async (
   req: Request,
   res: Response,
@@ -394,7 +351,6 @@ const patchUserNickname: ControllerFn = async (
 
 export {
   getUserInfo,
-  getUserSchedules,
   getUserTimeLogs,
   getUserTotalStudyTime,
   patchUserProfileImg,

@@ -7,9 +7,16 @@ export const AUTH_SUCCESS = {
 
 export const USER_SUCCESS = {
   GET_USER_INFO: '사용자 정보 조회에 성공했습니다.',
-  GET_SCHEDULES: '일정 조회에 성공했습니다.',
   GET_TIMELOGS: '시간 기록 조회에 성공했습니다.',
   GET_TOTAL_STUDY_TIME: '총 학습 시간 조회에 성공했습니다.',
   POST_USER_PROFILE_IMG: '프로필 이미지 수정에 성공했습니다.',
   POST_USER_NICKNAME: '닉네임 수정에 성공했습니다.',
+};
+
+export const SCHEDULE_SUCCESS = {
+  GET_SCHEDULES: '일정 조회에 성공했습니다.',
+  CREATE_SCHEDULE: '일정이 생성되었습니다.',
+  UPDATE_SCHEDULE: '일정이 수정되었습니다.',
+  DELETE_SCHEDULE: '일정이 삭제되었습니다.',
+  UPDATE_ORDER: '일정 순서가 변경되었습니다.',
 };

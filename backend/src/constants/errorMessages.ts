@@ -25,4 +25,14 @@ export const USER_ERROR = {
   FILE_SIZE_TOO_LARGE: '파일 크기가 너무 큽니다. 최대 5MB까지 업로드 가능합니다.',
   INVALID_FILE_TYPE: '지원하지 않는 파일 형식입니다. (jpg, jpeg, png, gif만 가능)',
   FILE_UPLOAD_ERROR: '파일 업로드 오류가 발생했습니다.',
+  UNAUTHORIZED: '로그인이 필요한 서비스입니다.',
+};
+
+export const SCHEDULE_ERROR = {
+  SCHEDULE_NOT_FOUND: '일정을 찾을 수 없습니다.',
+  PERMISSION_DENIED: '권한이 없습니다.',
+  INVALID_TIME_RANGE: '시작 시간은 종료 시간보다 이전이어야 합니다.',
+  REQUIRED_FIELDS: '일정 이름을 입력해주세요.',
+  INVALID_ORDER_POSITION: '유효하지 않은 위치입니다.',
+  DAILY_SCHEDULE_LIMIT: '하루당 최대 20개까지 일정을 생성할 수 있습니다.',
 };
