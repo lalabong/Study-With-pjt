@@ -36,7 +36,6 @@ model Room {
   createdAt DateTime?  @default(now()) @db.Timestamp(0)
   owner     User       @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   roomUsers RoomUser[]
-  schedules Schedule[]
   timeLogs  TimeLog[]
 
   @@map("room")
@@ -57,14 +56,13 @@ model RoomUser {
 model Schedule {
   id        String    @id @default(cuid()) @db.VarChar(36)
   userId    String
-  roomId    String
   title     String    @db.VarChar(255)
   startTime DateTime  @db.DateTime(0)
   endTime   DateTime  @db.DateTime(0)
+  order     Int       @default(0)
   status    String    @default("대기중") @db.VarChar(10)
   createdAt DateTime? @default(now()) @db.Timestamp(0)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@map("schedule")
 }

@@ -301,8 +301,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.7.0
+   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
    */
   export type PrismaVersion = {
     client: string
@@ -1445,13 +1445,11 @@ export namespace Prisma {
 
   export type RoomCountOutputType = {
     roomUsers: number
-    schedules: number
     timeLogs: number
   }
 
   export type RoomCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     roomUsers?: boolean | RoomCountOutputTypeCountRoomUsersArgs
-    schedules?: boolean | RoomCountOutputTypeCountSchedulesArgs
     timeLogs?: boolean | RoomCountOutputTypeCountTimeLogsArgs
   }
 
@@ -1471,13 +1469,6 @@ export namespace Prisma {
    */
   export type RoomCountOutputTypeCountRoomUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RoomUserWhereInput
-  }
-
-  /**
-   * RoomCountOutputType without action
-   */
-  export type RoomCountOutputTypeCountSchedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ScheduleWhereInput
   }
 
   /**
@@ -2829,7 +2820,6 @@ export namespace Prisma {
     createdAt?: boolean
     owner?: boolean | UserDefaultArgs<ExtArgs>
     roomUsers?: boolean | Room$roomUsersArgs<ExtArgs>
-    schedules?: boolean | Room$schedulesArgs<ExtArgs>
     timeLogs?: boolean | Room$timeLogsArgs<ExtArgs>
     _count?: boolean | RoomCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["room"]>
@@ -2847,7 +2837,6 @@ export namespace Prisma {
   export type RoomInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     roomUsers?: boolean | Room$roomUsersArgs<ExtArgs>
-    schedules?: boolean | Room$schedulesArgs<ExtArgs>
     timeLogs?: boolean | Room$timeLogsArgs<ExtArgs>
     _count?: boolean | RoomCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2857,7 +2846,6 @@ export namespace Prisma {
     objects: {
       owner: Prisma.$UserPayload<ExtArgs>
       roomUsers: Prisma.$RoomUserPayload<ExtArgs>[]
-      schedules: Prisma.$SchedulePayload<ExtArgs>[]
       timeLogs: Prisma.$TimeLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3207,7 +3195,6 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     roomUsers<T extends Room$roomUsersArgs<ExtArgs> = {}>(args?: Subset<T, Room$roomUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    schedules<T extends Room$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, Room$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     timeLogs<T extends Room$timeLogsArgs<ExtArgs> = {}>(args?: Subset<T, Room$timeLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TimeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3606,30 +3593,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RoomUserScalarFieldEnum | RoomUserScalarFieldEnum[]
-  }
-
-  /**
-   * Room.schedules
-   */
-  export type Room$schedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Schedule
-     */
-    select?: ScheduleSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Schedule
-     */
-    omit?: ScheduleOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ScheduleInclude<ExtArgs> | null
-    where?: ScheduleWhereInput
-    orderBy?: ScheduleOrderByWithRelationInput | ScheduleOrderByWithRelationInput[]
-    cursor?: ScheduleWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ScheduleScalarFieldEnum | ScheduleScalarFieldEnum[]
   }
 
   /**
@@ -4603,17 +4566,27 @@ export namespace Prisma {
 
   export type AggregateSchedule = {
     _count: ScheduleCountAggregateOutputType | null
+    _avg: ScheduleAvgAggregateOutputType | null
+    _sum: ScheduleSumAggregateOutputType | null
     _min: ScheduleMinAggregateOutputType | null
     _max: ScheduleMaxAggregateOutputType | null
+  }
+
+  export type ScheduleAvgAggregateOutputType = {
+    order: number | null
+  }
+
+  export type ScheduleSumAggregateOutputType = {
+    order: number | null
   }
 
   export type ScheduleMinAggregateOutputType = {
     id: string | null
     userId: string | null
-    roomId: string | null
     title: string | null
     startTime: Date | null
     endTime: Date | null
+    order: number | null
     status: string | null
     createdAt: Date | null
   }
@@ -4621,10 +4594,10 @@ export namespace Prisma {
   export type ScheduleMaxAggregateOutputType = {
     id: string | null
     userId: string | null
-    roomId: string | null
     title: string | null
     startTime: Date | null
     endTime: Date | null
+    order: number | null
     status: string | null
     createdAt: Date | null
   }
@@ -4632,23 +4605,31 @@ export namespace Prisma {
   export type ScheduleCountAggregateOutputType = {
     id: number
     userId: number
-    roomId: number
     title: number
     startTime: number
     endTime: number
+    order: number
     status: number
     createdAt: number
     _all: number
   }
 
 
+  export type ScheduleAvgAggregateInputType = {
+    order?: true
+  }
+
+  export type ScheduleSumAggregateInputType = {
+    order?: true
+  }
+
   export type ScheduleMinAggregateInputType = {
     id?: true
     userId?: true
-    roomId?: true
     title?: true
     startTime?: true
     endTime?: true
+    order?: true
     status?: true
     createdAt?: true
   }
@@ -4656,10 +4637,10 @@ export namespace Prisma {
   export type ScheduleMaxAggregateInputType = {
     id?: true
     userId?: true
-    roomId?: true
     title?: true
     startTime?: true
     endTime?: true
+    order?: true
     status?: true
     createdAt?: true
   }
@@ -4667,10 +4648,10 @@ export namespace Prisma {
   export type ScheduleCountAggregateInputType = {
     id?: true
     userId?: true
-    roomId?: true
     title?: true
     startTime?: true
     endTime?: true
+    order?: true
     status?: true
     createdAt?: true
     _all?: true
@@ -4714,6 +4695,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ScheduleAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ScheduleSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ScheduleMinAggregateInputType
@@ -4744,6 +4737,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ScheduleCountAggregateInputType | true
+    _avg?: ScheduleAvgAggregateInputType
+    _sum?: ScheduleSumAggregateInputType
     _min?: ScheduleMinAggregateInputType
     _max?: ScheduleMaxAggregateInputType
   }
@@ -4751,13 +4746,15 @@ export namespace Prisma {
   export type ScheduleGroupByOutputType = {
     id: string
     userId: string
-    roomId: string
     title: string
     startTime: Date
     endTime: Date
+    order: number
     status: string
     createdAt: Date | null
     _count: ScheduleCountAggregateOutputType | null
+    _avg: ScheduleAvgAggregateOutputType | null
+    _sum: ScheduleSumAggregateOutputType | null
     _min: ScheduleMinAggregateOutputType | null
     _max: ScheduleMaxAggregateOutputType | null
   }
@@ -4779,14 +4776,13 @@ export namespace Prisma {
   export type ScheduleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    roomId?: boolean
     title?: boolean
     startTime?: boolean
     endTime?: boolean
+    order?: boolean
     status?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    room?: boolean | RoomDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["schedule"]>
 
 
@@ -4794,33 +4790,31 @@ export namespace Prisma {
   export type ScheduleSelectScalar = {
     id?: boolean
     userId?: boolean
-    roomId?: boolean
     title?: boolean
     startTime?: boolean
     endTime?: boolean
+    order?: boolean
     status?: boolean
     createdAt?: boolean
   }
 
-  export type ScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "roomId" | "title" | "startTime" | "endTime" | "status" | "createdAt", ExtArgs["result"]["schedule"]>
+  export type ScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "startTime" | "endTime" | "order" | "status" | "createdAt", ExtArgs["result"]["schedule"]>
   export type ScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    room?: boolean | RoomDefaultArgs<ExtArgs>
   }
 
   export type $SchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Schedule"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      room: Prisma.$RoomPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      roomId: string
       title: string
       startTime: Date
       endTime: Date
+      order: number
       status: string
       createdAt: Date | null
     }, ExtArgs["result"]["schedule"]>
@@ -5164,7 +5158,6 @@ export namespace Prisma {
   export interface Prisma__ScheduleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    room<T extends RoomDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoomDefaultArgs<ExtArgs>>): Prisma__RoomClient<$Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5196,10 +5189,10 @@ export namespace Prisma {
   interface ScheduleFieldRefs {
     readonly id: FieldRef<"Schedule", 'String'>
     readonly userId: FieldRef<"Schedule", 'String'>
-    readonly roomId: FieldRef<"Schedule", 'String'>
     readonly title: FieldRef<"Schedule", 'String'>
     readonly startTime: FieldRef<"Schedule", 'DateTime'>
     readonly endTime: FieldRef<"Schedule", 'DateTime'>
+    readonly order: FieldRef<"Schedule", 'Int'>
     readonly status: FieldRef<"Schedule", 'String'>
     readonly createdAt: FieldRef<"Schedule", 'DateTime'>
   }
@@ -8434,10 +8427,10 @@ export namespace Prisma {
   export const ScheduleScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    roomId: 'roomId',
     title: 'title',
     startTime: 'startTime',
     endTime: 'endTime',
+    order: 'order',
     status: 'status',
     createdAt: 'createdAt'
   };
@@ -8525,7 +8518,6 @@ export namespace Prisma {
   export const ScheduleOrderByRelevanceFieldEnum: {
     id: 'id',
     userId: 'userId',
-    roomId: 'roomId',
     title: 'title',
     status: 'status'
   };
@@ -8691,7 +8683,6 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     roomUsers?: RoomUserListRelationFilter
-    schedules?: ScheduleListRelationFilter
     timeLogs?: TimeLogListRelationFilter
   }
 
@@ -8702,7 +8693,6 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     owner?: UserOrderByWithRelationInput
     roomUsers?: RoomUserOrderByRelationAggregateInput
-    schedules?: ScheduleOrderByRelationAggregateInput
     timeLogs?: TimeLogOrderByRelationAggregateInput
     _relevance?: RoomOrderByRelevanceInput
   }
@@ -8717,7 +8707,6 @@ export namespace Prisma {
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     roomUsers?: RoomUserListRelationFilter
-    schedules?: ScheduleListRelationFilter
     timeLogs?: TimeLogListRelationFilter
   }, "id">
 
@@ -8802,27 +8791,25 @@ export namespace Prisma {
     NOT?: ScheduleWhereInput | ScheduleWhereInput[]
     id?: StringFilter<"Schedule"> | string
     userId?: StringFilter<"Schedule"> | string
-    roomId?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
+    order?: IntFilter<"Schedule"> | number
     status?: StringFilter<"Schedule"> | string
     createdAt?: DateTimeNullableFilter<"Schedule"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    room?: XOR<RoomScalarRelationFilter, RoomWhereInput>
   }
 
   export type ScheduleOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    roomId?: SortOrder
     title?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
+    order?: SortOrder
     status?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
-    room?: RoomOrderByWithRelationInput
     _relevance?: ScheduleOrderByRelevanceInput
   }
 
@@ -8832,28 +8819,29 @@ export namespace Prisma {
     OR?: ScheduleWhereInput[]
     NOT?: ScheduleWhereInput | ScheduleWhereInput[]
     userId?: StringFilter<"Schedule"> | string
-    roomId?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
+    order?: IntFilter<"Schedule"> | number
     status?: StringFilter<"Schedule"> | string
     createdAt?: DateTimeNullableFilter<"Schedule"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    room?: XOR<RoomScalarRelationFilter, RoomWhereInput>
   }, "id">
 
   export type ScheduleOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    roomId?: SortOrder
     title?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
+    order?: SortOrder
     status?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     _count?: ScheduleCountOrderByAggregateInput
+    _avg?: ScheduleAvgOrderByAggregateInput
     _max?: ScheduleMaxOrderByAggregateInput
     _min?: ScheduleMinOrderByAggregateInput
+    _sum?: ScheduleSumOrderByAggregateInput
   }
 
   export type ScheduleScalarWhereWithAggregatesInput = {
@@ -8862,10 +8850,10 @@ export namespace Prisma {
     NOT?: ScheduleScalarWhereWithAggregatesInput | ScheduleScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Schedule"> | string
     userId?: StringWithAggregatesFilter<"Schedule"> | string
-    roomId?: StringWithAggregatesFilter<"Schedule"> | string
     title?: StringWithAggregatesFilter<"Schedule"> | string
     startTime?: DateTimeWithAggregatesFilter<"Schedule"> | Date | string
     endTime?: DateTimeWithAggregatesFilter<"Schedule"> | Date | string
+    order?: IntWithAggregatesFilter<"Schedule"> | number
     status?: StringWithAggregatesFilter<"Schedule"> | string
     createdAt?: DateTimeNullableWithAggregatesFilter<"Schedule"> | Date | string | null
   }
@@ -9146,7 +9134,6 @@ export namespace Prisma {
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
     roomUsers?: RoomUserCreateNestedManyWithoutRoomInput
-    schedules?: ScheduleCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
   }
 
@@ -9156,7 +9143,6 @@ export namespace Prisma {
     ownerId: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
   }
 
@@ -9166,7 +9152,6 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
     roomUsers?: RoomUserUpdateManyWithoutRoomNestedInput
-    schedules?: ScheduleUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
   }
 
@@ -9176,7 +9161,6 @@ export namespace Prisma {
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-    schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
   }
 
@@ -9252,19 +9236,19 @@ export namespace Prisma {
     title: string
     startTime: Date | string
     endTime: Date | string
+    order?: number
     status?: string
     createdAt?: Date | string | null
     user: UserCreateNestedOneWithoutSchedulesInput
-    room: RoomCreateNestedOneWithoutSchedulesInput
   }
 
   export type ScheduleUncheckedCreateInput = {
     id?: string
     userId: string
-    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
+    order?: number
     status?: string
     createdAt?: Date | string | null
   }
@@ -9274,19 +9258,19 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutSchedulesNestedInput
-    room?: RoomUpdateOneRequiredWithoutSchedulesNestedInput
   }
 
   export type ScheduleUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -9294,10 +9278,10 @@ export namespace Prisma {
   export type ScheduleCreateManyInput = {
     id?: string
     userId: string
-    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
+    order?: number
     status?: string
     createdAt?: Date | string | null
   }
@@ -9307,6 +9291,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -9314,10 +9299,10 @@ export namespace Prisma {
   export type ScheduleUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -9794,21 +9779,25 @@ export namespace Prisma {
   export type ScheduleCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    roomId?: SortOrder
     title?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
+    order?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ScheduleAvgOrderByAggregateInput = {
+    order?: SortOrder
   }
 
   export type ScheduleMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    roomId?: SortOrder
     title?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
+    order?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
   }
@@ -9816,12 +9805,16 @@ export namespace Prisma {
   export type ScheduleMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    roomId?: SortOrder
     title?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
+    order?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ScheduleSumOrderByAggregateInput = {
+    order?: SortOrder
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -10265,13 +10258,6 @@ export namespace Prisma {
     connect?: RoomUserWhereUniqueInput | RoomUserWhereUniqueInput[]
   }
 
-  export type ScheduleCreateNestedManyWithoutRoomInput = {
-    create?: XOR<ScheduleCreateWithoutRoomInput, ScheduleUncheckedCreateWithoutRoomInput> | ScheduleCreateWithoutRoomInput[] | ScheduleUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutRoomInput | ScheduleCreateOrConnectWithoutRoomInput[]
-    createMany?: ScheduleCreateManyRoomInputEnvelope
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-  }
-
   export type TimeLogCreateNestedManyWithoutRoomInput = {
     create?: XOR<TimeLogCreateWithoutRoomInput, TimeLogUncheckedCreateWithoutRoomInput> | TimeLogCreateWithoutRoomInput[] | TimeLogUncheckedCreateWithoutRoomInput[]
     connectOrCreate?: TimeLogCreateOrConnectWithoutRoomInput | TimeLogCreateOrConnectWithoutRoomInput[]
@@ -10284,13 +10270,6 @@ export namespace Prisma {
     connectOrCreate?: RoomUserCreateOrConnectWithoutRoomInput | RoomUserCreateOrConnectWithoutRoomInput[]
     createMany?: RoomUserCreateManyRoomInputEnvelope
     connect?: RoomUserWhereUniqueInput | RoomUserWhereUniqueInput[]
-  }
-
-  export type ScheduleUncheckedCreateNestedManyWithoutRoomInput = {
-    create?: XOR<ScheduleCreateWithoutRoomInput, ScheduleUncheckedCreateWithoutRoomInput> | ScheduleCreateWithoutRoomInput[] | ScheduleUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutRoomInput | ScheduleCreateOrConnectWithoutRoomInput[]
-    createMany?: ScheduleCreateManyRoomInputEnvelope
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
   }
 
   export type TimeLogUncheckedCreateNestedManyWithoutRoomInput = {
@@ -10322,20 +10301,6 @@ export namespace Prisma {
     deleteMany?: RoomUserScalarWhereInput | RoomUserScalarWhereInput[]
   }
 
-  export type ScheduleUpdateManyWithoutRoomNestedInput = {
-    create?: XOR<ScheduleCreateWithoutRoomInput, ScheduleUncheckedCreateWithoutRoomInput> | ScheduleCreateWithoutRoomInput[] | ScheduleUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutRoomInput | ScheduleCreateOrConnectWithoutRoomInput[]
-    upsert?: ScheduleUpsertWithWhereUniqueWithoutRoomInput | ScheduleUpsertWithWhereUniqueWithoutRoomInput[]
-    createMany?: ScheduleCreateManyRoomInputEnvelope
-    set?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    disconnect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    delete?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    update?: ScheduleUpdateWithWhereUniqueWithoutRoomInput | ScheduleUpdateWithWhereUniqueWithoutRoomInput[]
-    updateMany?: ScheduleUpdateManyWithWhereWithoutRoomInput | ScheduleUpdateManyWithWhereWithoutRoomInput[]
-    deleteMany?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
-  }
-
   export type TimeLogUpdateManyWithoutRoomNestedInput = {
     create?: XOR<TimeLogCreateWithoutRoomInput, TimeLogUncheckedCreateWithoutRoomInput> | TimeLogCreateWithoutRoomInput[] | TimeLogUncheckedCreateWithoutRoomInput[]
     connectOrCreate?: TimeLogCreateOrConnectWithoutRoomInput | TimeLogCreateOrConnectWithoutRoomInput[]
@@ -10362,20 +10327,6 @@ export namespace Prisma {
     update?: RoomUserUpdateWithWhereUniqueWithoutRoomInput | RoomUserUpdateWithWhereUniqueWithoutRoomInput[]
     updateMany?: RoomUserUpdateManyWithWhereWithoutRoomInput | RoomUserUpdateManyWithWhereWithoutRoomInput[]
     deleteMany?: RoomUserScalarWhereInput | RoomUserScalarWhereInput[]
-  }
-
-  export type ScheduleUncheckedUpdateManyWithoutRoomNestedInput = {
-    create?: XOR<ScheduleCreateWithoutRoomInput, ScheduleUncheckedCreateWithoutRoomInput> | ScheduleCreateWithoutRoomInput[] | ScheduleUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: ScheduleCreateOrConnectWithoutRoomInput | ScheduleCreateOrConnectWithoutRoomInput[]
-    upsert?: ScheduleUpsertWithWhereUniqueWithoutRoomInput | ScheduleUpsertWithWhereUniqueWithoutRoomInput[]
-    createMany?: ScheduleCreateManyRoomInputEnvelope
-    set?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    disconnect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    delete?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
-    update?: ScheduleUpdateWithWhereUniqueWithoutRoomInput | ScheduleUpdateWithWhereUniqueWithoutRoomInput[]
-    updateMany?: ScheduleUpdateManyWithWhereWithoutRoomInput | ScheduleUpdateManyWithWhereWithoutRoomInput[]
-    deleteMany?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
   }
 
   export type TimeLogUncheckedUpdateManyWithoutRoomNestedInput = {
@@ -10426,12 +10377,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type RoomCreateNestedOneWithoutSchedulesInput = {
-    create?: XOR<RoomCreateWithoutSchedulesInput, RoomUncheckedCreateWithoutSchedulesInput>
-    connectOrCreate?: RoomCreateOrConnectWithoutSchedulesInput
-    connect?: RoomWhereUniqueInput
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -10442,14 +10387,6 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSchedulesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSchedulesInput, UserUpdateWithoutSchedulesInput>, UserUncheckedUpdateWithoutSchedulesInput>
-  }
-
-  export type RoomUpdateOneRequiredWithoutSchedulesNestedInput = {
-    create?: XOR<RoomCreateWithoutSchedulesInput, RoomUncheckedCreateWithoutSchedulesInput>
-    connectOrCreate?: RoomCreateOrConnectWithoutSchedulesInput
-    upsert?: RoomUpsertWithoutSchedulesInput
-    connect?: RoomWhereUniqueInput
-    update?: XOR<XOR<RoomUpdateToOneWithWhereWithoutSchedulesInput, RoomUpdateWithoutSchedulesInput>, RoomUncheckedUpdateWithoutSchedulesInput>
   }
 
   export type UserCreateNestedOneWithoutTimeLogsInput = {
@@ -10692,7 +10629,6 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserCreateNestedManyWithoutRoomInput
-    schedules?: ScheduleCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
   }
 
@@ -10701,7 +10637,6 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
   }
 
@@ -10742,17 +10677,17 @@ export namespace Prisma {
     title: string
     startTime: Date | string
     endTime: Date | string
+    order?: number
     status?: string
     createdAt?: Date | string | null
-    room: RoomCreateNestedOneWithoutSchedulesInput
   }
 
   export type ScheduleUncheckedCreateWithoutUserInput = {
     id?: string
-    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
+    order?: number
     status?: string
     createdAt?: Date | string | null
   }
@@ -10931,10 +10866,10 @@ export namespace Prisma {
     NOT?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
     id?: StringFilter<"Schedule"> | string
     userId?: StringFilter<"Schedule"> | string
-    roomId?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
+    order?: IntFilter<"Schedule"> | number
     status?: StringFilter<"Schedule"> | string
     createdAt?: DateTimeNullableFilter<"Schedule"> | Date | string | null
   }
@@ -11094,36 +11029,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ScheduleCreateWithoutRoomInput = {
-    id?: string
-    title: string
-    startTime: Date | string
-    endTime: Date | string
-    status?: string
-    createdAt?: Date | string | null
-    user: UserCreateNestedOneWithoutSchedulesInput
-  }
-
-  export type ScheduleUncheckedCreateWithoutRoomInput = {
-    id?: string
-    userId: string
-    title: string
-    startTime: Date | string
-    endTime: Date | string
-    status?: string
-    createdAt?: Date | string | null
-  }
-
-  export type ScheduleCreateOrConnectWithoutRoomInput = {
-    where: ScheduleWhereUniqueInput
-    create: XOR<ScheduleCreateWithoutRoomInput, ScheduleUncheckedCreateWithoutRoomInput>
-  }
-
-  export type ScheduleCreateManyRoomInputEnvelope = {
-    data: ScheduleCreateManyRoomInput | ScheduleCreateManyRoomInput[]
-    skipDuplicates?: boolean
-  }
-
   export type TimeLogCreateWithoutRoomInput = {
     id?: string
     totalTime: number
@@ -11209,22 +11114,6 @@ export namespace Prisma {
     data: XOR<RoomUserUpdateManyMutationInput, RoomUserUncheckedUpdateManyWithoutRoomInput>
   }
 
-  export type ScheduleUpsertWithWhereUniqueWithoutRoomInput = {
-    where: ScheduleWhereUniqueInput
-    update: XOR<ScheduleUpdateWithoutRoomInput, ScheduleUncheckedUpdateWithoutRoomInput>
-    create: XOR<ScheduleCreateWithoutRoomInput, ScheduleUncheckedCreateWithoutRoomInput>
-  }
-
-  export type ScheduleUpdateWithWhereUniqueWithoutRoomInput = {
-    where: ScheduleWhereUniqueInput
-    data: XOR<ScheduleUpdateWithoutRoomInput, ScheduleUncheckedUpdateWithoutRoomInput>
-  }
-
-  export type ScheduleUpdateManyWithWhereWithoutRoomInput = {
-    where: ScheduleScalarWhereInput
-    data: XOR<ScheduleUpdateManyMutationInput, ScheduleUncheckedUpdateManyWithoutRoomInput>
-  }
-
   export type TimeLogUpsertWithWhereUniqueWithoutRoomInput = {
     where: TimeLogWhereUniqueInput
     update: XOR<TimeLogUpdateWithoutRoomInput, TimeLogUncheckedUpdateWithoutRoomInput>
@@ -11246,7 +11135,6 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
-    schedules?: ScheduleCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
   }
 
@@ -11255,7 +11143,6 @@ export namespace Prisma {
     name: string
     ownerId: string
     createdAt?: Date | string | null
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
   }
 
@@ -11317,7 +11204,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
-    schedules?: ScheduleUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
   }
 
@@ -11326,7 +11212,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
   }
 
@@ -11410,29 +11295,6 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutSchedulesInput, UserUncheckedCreateWithoutSchedulesInput>
   }
 
-  export type RoomCreateWithoutSchedulesInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string | null
-    owner: UserCreateNestedOneWithoutRoomsInput
-    roomUsers?: RoomUserCreateNestedManyWithoutRoomInput
-    timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
-  }
-
-  export type RoomUncheckedCreateWithoutSchedulesInput = {
-    id?: string
-    name: string
-    ownerId: string
-    createdAt?: Date | string | null
-    roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
-    timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
-  }
-
-  export type RoomCreateOrConnectWithoutSchedulesInput = {
-    where: RoomWhereUniqueInput
-    create: XOR<RoomCreateWithoutSchedulesInput, RoomUncheckedCreateWithoutSchedulesInput>
-  }
-
   export type UserUpsertWithoutSchedulesInput = {
     update: XOR<UserUpdateWithoutSchedulesInput, UserUncheckedUpdateWithoutSchedulesInput>
     create: XOR<UserCreateWithoutSchedulesInput, UserUncheckedCreateWithoutSchedulesInput>
@@ -11474,35 +11336,6 @@ export namespace Prisma {
     friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
     friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type RoomUpsertWithoutSchedulesInput = {
-    update: XOR<RoomUpdateWithoutSchedulesInput, RoomUncheckedUpdateWithoutSchedulesInput>
-    create: XOR<RoomCreateWithoutSchedulesInput, RoomUncheckedCreateWithoutSchedulesInput>
-    where?: RoomWhereInput
-  }
-
-  export type RoomUpdateToOneWithWhereWithoutSchedulesInput = {
-    where?: RoomWhereInput
-    data: XOR<RoomUpdateWithoutSchedulesInput, RoomUncheckedUpdateWithoutSchedulesInput>
-  }
-
-  export type RoomUpdateWithoutSchedulesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
-    roomUsers?: RoomUserUpdateManyWithoutRoomNestedInput
-    timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
-  }
-
-  export type RoomUncheckedUpdateWithoutSchedulesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    ownerId?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-    timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
   }
 
   export type UserCreateWithoutTimeLogsInput = {
@@ -11548,7 +11381,6 @@ export namespace Prisma {
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
     roomUsers?: RoomUserCreateNestedManyWithoutRoomInput
-    schedules?: ScheduleCreateNestedManyWithoutRoomInput
   }
 
   export type RoomUncheckedCreateWithoutTimeLogsInput = {
@@ -11557,7 +11389,6 @@ export namespace Prisma {
     ownerId: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
   }
 
   export type RoomCreateOrConnectWithoutTimeLogsInput = {
@@ -11625,7 +11456,6 @@ export namespace Prisma {
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
     roomUsers?: RoomUserUpdateManyWithoutRoomNestedInput
-    schedules?: ScheduleUpdateManyWithoutRoomNestedInput
   }
 
   export type RoomUncheckedUpdateWithoutTimeLogsInput = {
@@ -11634,7 +11464,6 @@ export namespace Prisma {
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-    schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
   }
 
   export type UserCreateWithoutFriendsToInput = {
@@ -11891,10 +11720,10 @@ export namespace Prisma {
 
   export type ScheduleCreateManyUserInput = {
     id?: string
-    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
+    order?: number
     status?: string
     createdAt?: Date | string | null
   }
@@ -11929,7 +11758,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUpdateManyWithoutRoomNestedInput
-    schedules?: ScheduleUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
   }
 
@@ -11938,7 +11766,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-    schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
   }
 
@@ -11971,27 +11798,27 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    room?: RoomUpdateOneRequiredWithoutSchedulesNestedInput
   }
 
   export type ScheduleUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ScheduleUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -12077,16 +11904,6 @@ export namespace Prisma {
     joinedAt?: Date | string | null
   }
 
-  export type ScheduleCreateManyRoomInput = {
-    id?: string
-    userId: string
-    title: string
-    startTime: Date | string
-    endTime: Date | string
-    status?: string
-    createdAt?: Date | string | null
-  }
-
   export type TimeLogCreateManyRoomInput = {
     id?: string
     userId: string
@@ -12111,36 +11928,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ScheduleUpdateWithoutRoomInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
-    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    user?: UserUpdateOneRequiredWithoutSchedulesNestedInput
-  }
-
-  export type ScheduleUncheckedUpdateWithoutRoomInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
-    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ScheduleUncheckedUpdateManyWithoutRoomInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
-    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TimeLogUpdateWithoutRoomInput = {
