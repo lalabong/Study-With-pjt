@@ -113,7 +113,7 @@ const getUserTimeLogs: ControllerFn = async (
     let endDate: Date | null = null;
 
     let whereClause: {
-      userId: number;
+      userId: string;
       date?: {
         gte?: Date;
         lte?: Date;

@@ -2,7 +2,7 @@ import { Request, RequestHandler } from 'express';
 
 // 사용자 관련 기본 타입 (공통 필드)
 export interface BaseUser {
-  id: number;
+  id: string;
   userId: string;
   nickname: string;
   profileImg?: string | null;
@@ -11,7 +11,7 @@ export interface BaseUser {
 
 // 사용자 인증/토큰용 타입
 export interface UserPayload {
-  id: number;
+  id: string;
   userId: string;
   createdAt: Date | null;
 }
@@ -33,25 +33,25 @@ export interface SafeUser extends BaseUser {
 
 // 스터디룸 관련 타입
 export interface Room {
-  id: number;
+  id: string;
   name: string;
-  ownerId: number;
+  ownerId: string;
   createdAt?: Date | null;
 }
 
 export interface RoomUser {
-  id: number;
-  roomId: number;
-  userId: number;
+  id: string;
+  roomId: string;
+  userId: string;
   joinedAt?: Date | null;
   createdAt?: Date | null;
 }
 
 // 일정 및 시간 관련 타입
 export interface Schedule {
-  id: number;
-  userId: number;
-  roomId: number;
+  id: string;
+  userId: string;
+  roomId: string;
   title: string;
   startTime: Date;
   endTime: Date;
@@ -60,9 +60,9 @@ export interface Schedule {
 }
 
 export interface TimeLog {
-  id: number;
-  userId: number;
-  roomId: number;
+  id: string;
+  userId: string;
+  roomId: string;
   totalTime: Date;
   date: Date;
   createdAt?: Date | null;
@@ -70,8 +70,8 @@ export interface TimeLog {
 
 // 관계 타입
 export interface Friend {
-  userId: number;
-  friendId: number;
+  userId: string;
+  friendId: string;
   createdAt?: Date | null;
 }
 

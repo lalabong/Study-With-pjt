@@ -1505,17 +1505,15 @@ export namespace Prisma {
   }
 
   export type UserAvgAggregateOutputType = {
-    id: number | null
     totalStudyTime: number | null
   }
 
   export type UserSumAggregateOutputType = {
-    id: number | null
     totalStudyTime: number | null
   }
 
   export type UserMinAggregateOutputType = {
-    id: number | null
+    id: string | null
     userId: string | null
     password: string | null
     nickname: string | null
@@ -1525,7 +1523,7 @@ export namespace Prisma {
   }
 
   export type UserMaxAggregateOutputType = {
-    id: number | null
+    id: string | null
     userId: string | null
     password: string | null
     nickname: string | null
@@ -1547,12 +1545,10 @@ export namespace Prisma {
 
 
   export type UserAvgAggregateInputType = {
-    id?: true
     totalStudyTime?: true
   }
 
   export type UserSumAggregateInputType = {
-    id?: true
     totalStudyTime?: true
   }
 
@@ -1674,7 +1670,7 @@ export namespace Prisma {
   }
 
   export type UserGroupByOutputType = {
-    id: number
+    id: string
     userId: string
     password: string
     nickname: string
@@ -1756,7 +1752,7 @@ export namespace Prisma {
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
+      id: string
       userId: string
       password: string
       nickname: string
@@ -2139,7 +2135,7 @@ export namespace Prisma {
    * Fields of the User model
    */
   interface UserFieldRefs {
-    readonly id: FieldRef<"User", 'Int'>
+    readonly id: FieldRef<"User", 'String'>
     readonly userId: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly nickname: FieldRef<"User", 'String'>
@@ -2681,33 +2677,21 @@ export namespace Prisma {
 
   export type AggregateRoom = {
     _count: RoomCountAggregateOutputType | null
-    _avg: RoomAvgAggregateOutputType | null
-    _sum: RoomSumAggregateOutputType | null
     _min: RoomMinAggregateOutputType | null
     _max: RoomMaxAggregateOutputType | null
   }
 
-  export type RoomAvgAggregateOutputType = {
-    id: number | null
-    ownerId: number | null
-  }
-
-  export type RoomSumAggregateOutputType = {
-    id: number | null
-    ownerId: number | null
-  }
-
   export type RoomMinAggregateOutputType = {
-    id: number | null
+    id: string | null
     name: string | null
-    ownerId: number | null
+    ownerId: string | null
     createdAt: Date | null
   }
 
   export type RoomMaxAggregateOutputType = {
-    id: number | null
+    id: string | null
     name: string | null
-    ownerId: number | null
+    ownerId: string | null
     createdAt: Date | null
   }
 
@@ -2719,16 +2703,6 @@ export namespace Prisma {
     _all: number
   }
 
-
-  export type RoomAvgAggregateInputType = {
-    id?: true
-    ownerId?: true
-  }
-
-  export type RoomSumAggregateInputType = {
-    id?: true
-    ownerId?: true
-  }
 
   export type RoomMinAggregateInputType = {
     id?: true
@@ -2790,18 +2764,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: RoomAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RoomSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: RoomMinAggregateInputType
@@ -2832,20 +2794,16 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RoomCountAggregateInputType | true
-    _avg?: RoomAvgAggregateInputType
-    _sum?: RoomSumAggregateInputType
     _min?: RoomMinAggregateInputType
     _max?: RoomMaxAggregateInputType
   }
 
   export type RoomGroupByOutputType = {
-    id: number
+    id: string
     name: string
-    ownerId: number
+    ownerId: string
     createdAt: Date | null
     _count: RoomCountAggregateOutputType | null
-    _avg: RoomAvgAggregateOutputType | null
-    _sum: RoomSumAggregateOutputType | null
     _min: RoomMinAggregateOutputType | null
     _max: RoomMaxAggregateOutputType | null
   }
@@ -2903,9 +2861,9 @@ export namespace Prisma {
       timeLogs: Prisma.$TimeLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
+      id: string
       name: string
-      ownerId: number
+      ownerId: string
       createdAt: Date | null
     }, ExtArgs["result"]["room"]>
     composites: {}
@@ -3280,9 +3238,9 @@ export namespace Prisma {
    * Fields of the Room model
    */
   interface RoomFieldRefs {
-    readonly id: FieldRef<"Room", 'Int'>
+    readonly id: FieldRef<"Room", 'String'>
     readonly name: FieldRef<"Room", 'String'>
-    readonly ownerId: FieldRef<"Room", 'Int'>
+    readonly ownerId: FieldRef<"Room", 'String'>
     readonly createdAt: FieldRef<"Room", 'DateTime'>
   }
     
@@ -3723,35 +3681,21 @@ export namespace Prisma {
 
   export type AggregateRoomUser = {
     _count: RoomUserCountAggregateOutputType | null
-    _avg: RoomUserAvgAggregateOutputType | null
-    _sum: RoomUserSumAggregateOutputType | null
     _min: RoomUserMinAggregateOutputType | null
     _max: RoomUserMaxAggregateOutputType | null
   }
 
-  export type RoomUserAvgAggregateOutputType = {
-    id: number | null
-    roomId: number | null
-    userId: number | null
-  }
-
-  export type RoomUserSumAggregateOutputType = {
-    id: number | null
-    roomId: number | null
-    userId: number | null
-  }
-
   export type RoomUserMinAggregateOutputType = {
-    id: number | null
-    roomId: number | null
-    userId: number | null
+    id: string | null
+    roomId: string | null
+    userId: string | null
     joinedAt: Date | null
   }
 
   export type RoomUserMaxAggregateOutputType = {
-    id: number | null
-    roomId: number | null
-    userId: number | null
+    id: string | null
+    roomId: string | null
+    userId: string | null
     joinedAt: Date | null
   }
 
@@ -3763,18 +3707,6 @@ export namespace Prisma {
     _all: number
   }
 
-
-  export type RoomUserAvgAggregateInputType = {
-    id?: true
-    roomId?: true
-    userId?: true
-  }
-
-  export type RoomUserSumAggregateInputType = {
-    id?: true
-    roomId?: true
-    userId?: true
-  }
 
   export type RoomUserMinAggregateInputType = {
     id?: true
@@ -3836,18 +3768,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: RoomUserAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RoomUserSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: RoomUserMinAggregateInputType
@@ -3878,20 +3798,16 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RoomUserCountAggregateInputType | true
-    _avg?: RoomUserAvgAggregateInputType
-    _sum?: RoomUserSumAggregateInputType
     _min?: RoomUserMinAggregateInputType
     _max?: RoomUserMaxAggregateInputType
   }
 
   export type RoomUserGroupByOutputType = {
-    id: number
-    roomId: number
-    userId: number
+    id: string
+    roomId: string
+    userId: string
     joinedAt: Date | null
     _count: RoomUserCountAggregateOutputType | null
-    _avg: RoomUserAvgAggregateOutputType | null
-    _sum: RoomUserSumAggregateOutputType | null
     _min: RoomUserMinAggregateOutputType | null
     _max: RoomUserMaxAggregateOutputType | null
   }
@@ -3941,9 +3857,9 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
-      roomId: number
-      userId: number
+      id: string
+      roomId: string
+      userId: string
       joinedAt: Date | null
     }, ExtArgs["result"]["roomUser"]>
     composites: {}
@@ -4316,9 +4232,9 @@ export namespace Prisma {
    * Fields of the RoomUser model
    */
   interface RoomUserFieldRefs {
-    readonly id: FieldRef<"RoomUser", 'Int'>
-    readonly roomId: FieldRef<"RoomUser", 'Int'>
-    readonly userId: FieldRef<"RoomUser", 'Int'>
+    readonly id: FieldRef<"RoomUser", 'String'>
+    readonly roomId: FieldRef<"RoomUser", 'String'>
+    readonly userId: FieldRef<"RoomUser", 'String'>
     readonly joinedAt: FieldRef<"RoomUser", 'DateTime'>
   }
     
@@ -4687,28 +4603,14 @@ export namespace Prisma {
 
   export type AggregateSchedule = {
     _count: ScheduleCountAggregateOutputType | null
-    _avg: ScheduleAvgAggregateOutputType | null
-    _sum: ScheduleSumAggregateOutputType | null
     _min: ScheduleMinAggregateOutputType | null
     _max: ScheduleMaxAggregateOutputType | null
   }
 
-  export type ScheduleAvgAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
-  }
-
-  export type ScheduleSumAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
-  }
-
   export type ScheduleMinAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
+    id: string | null
+    userId: string | null
+    roomId: string | null
     title: string | null
     startTime: Date | null
     endTime: Date | null
@@ -4717,9 +4619,9 @@ export namespace Prisma {
   }
 
   export type ScheduleMaxAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
+    id: string | null
+    userId: string | null
+    roomId: string | null
     title: string | null
     startTime: Date | null
     endTime: Date | null
@@ -4739,18 +4641,6 @@ export namespace Prisma {
     _all: number
   }
 
-
-  export type ScheduleAvgAggregateInputType = {
-    id?: true
-    userId?: true
-    roomId?: true
-  }
-
-  export type ScheduleSumAggregateInputType = {
-    id?: true
-    userId?: true
-    roomId?: true
-  }
 
   export type ScheduleMinAggregateInputType = {
     id?: true
@@ -4824,18 +4714,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: ScheduleAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ScheduleSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: ScheduleMinAggregateInputType
@@ -4866,24 +4744,20 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ScheduleCountAggregateInputType | true
-    _avg?: ScheduleAvgAggregateInputType
-    _sum?: ScheduleSumAggregateInputType
     _min?: ScheduleMinAggregateInputType
     _max?: ScheduleMaxAggregateInputType
   }
 
   export type ScheduleGroupByOutputType = {
-    id: number
-    userId: number
-    roomId: number
+    id: string
+    userId: string
+    roomId: string
     title: string
     startTime: Date
     endTime: Date
     status: string
     createdAt: Date | null
     _count: ScheduleCountAggregateOutputType | null
-    _avg: ScheduleAvgAggregateOutputType | null
-    _sum: ScheduleSumAggregateOutputType | null
     _min: ScheduleMinAggregateOutputType | null
     _max: ScheduleMaxAggregateOutputType | null
   }
@@ -4941,9 +4815,9 @@ export namespace Prisma {
       room: Prisma.$RoomPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
-      userId: number
-      roomId: number
+      id: string
+      userId: string
+      roomId: string
       title: string
       startTime: Date
       endTime: Date
@@ -5320,9 +5194,9 @@ export namespace Prisma {
    * Fields of the Schedule model
    */
   interface ScheduleFieldRefs {
-    readonly id: FieldRef<"Schedule", 'Int'>
-    readonly userId: FieldRef<"Schedule", 'Int'>
-    readonly roomId: FieldRef<"Schedule", 'Int'>
+    readonly id: FieldRef<"Schedule", 'String'>
+    readonly userId: FieldRef<"Schedule", 'String'>
+    readonly roomId: FieldRef<"Schedule", 'String'>
     readonly title: FieldRef<"Schedule", 'String'>
     readonly startTime: FieldRef<"Schedule", 'DateTime'>
     readonly endTime: FieldRef<"Schedule", 'DateTime'>
@@ -5702,32 +5576,26 @@ export namespace Prisma {
   }
 
   export type TimeLogAvgAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
     totalTime: number | null
   }
 
   export type TimeLogSumAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
     totalTime: number | null
   }
 
   export type TimeLogMinAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
+    id: string | null
+    userId: string | null
+    roomId: string | null
     totalTime: number | null
     date: Date | null
     createdAt: Date | null
   }
 
   export type TimeLogMaxAggregateOutputType = {
-    id: number | null
-    userId: number | null
-    roomId: number | null
+    id: string | null
+    userId: string | null
+    roomId: string | null
     totalTime: number | null
     date: Date | null
     createdAt: Date | null
@@ -5745,16 +5613,10 @@ export namespace Prisma {
 
 
   export type TimeLogAvgAggregateInputType = {
-    id?: true
-    userId?: true
-    roomId?: true
     totalTime?: true
   }
 
   export type TimeLogSumAggregateInputType = {
-    id?: true
-    userId?: true
-    roomId?: true
     totalTime?: true
   }
 
@@ -5873,9 +5735,9 @@ export namespace Prisma {
   }
 
   export type TimeLogGroupByOutputType = {
-    id: number
-    userId: number
-    roomId: number
+    id: string
+    userId: string
+    roomId: string
     totalTime: number
     date: Date
     createdAt: Date | null
@@ -5935,9 +5797,9 @@ export namespace Prisma {
       room: Prisma.$RoomPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
-      userId: number
-      roomId: number
+      id: string
+      userId: string
+      roomId: string
       /**
        * 공부 시간(분 단위)
        */
@@ -6315,9 +6177,9 @@ export namespace Prisma {
    * Fields of the TimeLog model
    */
   interface TimeLogFieldRefs {
-    readonly id: FieldRef<"TimeLog", 'Int'>
-    readonly userId: FieldRef<"TimeLog", 'Int'>
-    readonly roomId: FieldRef<"TimeLog", 'Int'>
+    readonly id: FieldRef<"TimeLog", 'String'>
+    readonly userId: FieldRef<"TimeLog", 'String'>
+    readonly roomId: FieldRef<"TimeLog", 'String'>
     readonly totalTime: FieldRef<"TimeLog", 'Int'>
     readonly date: FieldRef<"TimeLog", 'DateTime'>
     readonly createdAt: FieldRef<"TimeLog", 'DateTime'>
@@ -6688,31 +6550,19 @@ export namespace Prisma {
 
   export type AggregateFriend = {
     _count: FriendCountAggregateOutputType | null
-    _avg: FriendAvgAggregateOutputType | null
-    _sum: FriendSumAggregateOutputType | null
     _min: FriendMinAggregateOutputType | null
     _max: FriendMaxAggregateOutputType | null
   }
 
-  export type FriendAvgAggregateOutputType = {
-    userId: number | null
-    friendId: number | null
-  }
-
-  export type FriendSumAggregateOutputType = {
-    userId: number | null
-    friendId: number | null
-  }
-
   export type FriendMinAggregateOutputType = {
-    userId: number | null
-    friendId: number | null
+    userId: string | null
+    friendId: string | null
     createdAt: Date | null
   }
 
   export type FriendMaxAggregateOutputType = {
-    userId: number | null
-    friendId: number | null
+    userId: string | null
+    friendId: string | null
     createdAt: Date | null
   }
 
@@ -6723,16 +6573,6 @@ export namespace Prisma {
     _all: number
   }
 
-
-  export type FriendAvgAggregateInputType = {
-    userId?: true
-    friendId?: true
-  }
-
-  export type FriendSumAggregateInputType = {
-    userId?: true
-    friendId?: true
-  }
 
   export type FriendMinAggregateInputType = {
     userId?: true
@@ -6791,18 +6631,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: FriendAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: FriendSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: FriendMinAggregateInputType
@@ -6833,19 +6661,15 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: FriendCountAggregateInputType | true
-    _avg?: FriendAvgAggregateInputType
-    _sum?: FriendSumAggregateInputType
     _min?: FriendMinAggregateInputType
     _max?: FriendMaxAggregateInputType
   }
 
   export type FriendGroupByOutputType = {
-    userId: number
-    friendId: number
+    userId: string
+    friendId: string
     createdAt: Date | null
     _count: FriendCountAggregateOutputType | null
-    _avg: FriendAvgAggregateOutputType | null
-    _sum: FriendSumAggregateOutputType | null
     _min: FriendMinAggregateOutputType | null
     _max: FriendMaxAggregateOutputType | null
   }
@@ -6893,8 +6717,8 @@ export namespace Prisma {
       friend: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      userId: number
-      friendId: number
+      userId: string
+      friendId: string
       createdAt: Date | null
     }, ExtArgs["result"]["friend"]>
     composites: {}
@@ -7267,8 +7091,8 @@ export namespace Prisma {
    * Fields of the Friend model
    */
   interface FriendFieldRefs {
-    readonly userId: FieldRef<"Friend", 'Int'>
-    readonly friendId: FieldRef<"Friend", 'Int'>
+    readonly userId: FieldRef<"Friend", 'String'>
+    readonly friendId: FieldRef<"Friend", 'String'>
     readonly createdAt: FieldRef<"Friend", 'DateTime'>
   }
     
@@ -7637,34 +7461,22 @@ export namespace Prisma {
 
   export type AggregateRefreshToken = {
     _count: RefreshTokenCountAggregateOutputType | null
-    _avg: RefreshTokenAvgAggregateOutputType | null
-    _sum: RefreshTokenSumAggregateOutputType | null
     _min: RefreshTokenMinAggregateOutputType | null
     _max: RefreshTokenMaxAggregateOutputType | null
   }
 
-  export type RefreshTokenAvgAggregateOutputType = {
-    id: number | null
-    userId: number | null
-  }
-
-  export type RefreshTokenSumAggregateOutputType = {
-    id: number | null
-    userId: number | null
-  }
-
   export type RefreshTokenMinAggregateOutputType = {
-    id: number | null
+    id: string | null
     token: string | null
-    userId: number | null
+    userId: string | null
     expiresAt: Date | null
     createdAt: Date | null
   }
 
   export type RefreshTokenMaxAggregateOutputType = {
-    id: number | null
+    id: string | null
     token: string | null
-    userId: number | null
+    userId: string | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -7678,16 +7490,6 @@ export namespace Prisma {
     _all: number
   }
 
-
-  export type RefreshTokenAvgAggregateInputType = {
-    id?: true
-    userId?: true
-  }
-
-  export type RefreshTokenSumAggregateInputType = {
-    id?: true
-    userId?: true
-  }
 
   export type RefreshTokenMinAggregateInputType = {
     id?: true
@@ -7752,18 +7554,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: RefreshTokenAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RefreshTokenSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: RefreshTokenMinAggregateInputType
@@ -7794,21 +7584,17 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RefreshTokenCountAggregateInputType | true
-    _avg?: RefreshTokenAvgAggregateInputType
-    _sum?: RefreshTokenSumAggregateInputType
     _min?: RefreshTokenMinAggregateInputType
     _max?: RefreshTokenMaxAggregateInputType
   }
 
   export type RefreshTokenGroupByOutputType = {
-    id: number
+    id: string
     token: string
-    userId: number
+    userId: string
     expiresAt: Date
     createdAt: Date
     _count: RefreshTokenCountAggregateOutputType | null
-    _avg: RefreshTokenAvgAggregateOutputType | null
-    _sum: RefreshTokenSumAggregateOutputType | null
     _min: RefreshTokenMinAggregateOutputType | null
     _max: RefreshTokenMaxAggregateOutputType | null
   }
@@ -7857,9 +7643,9 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
+      id: string
       token: string
-      userId: number
+      userId: string
       expiresAt: Date
       createdAt: Date
     }, ExtArgs["result"]["refreshToken"]>
@@ -8232,9 +8018,9 @@ export namespace Prisma {
    * Fields of the RefreshToken model
    */
   interface RefreshTokenFieldRefs {
-    readonly id: FieldRef<"RefreshToken", 'Int'>
+    readonly id: FieldRef<"RefreshToken", 'String'>
     readonly token: FieldRef<"RefreshToken", 'String'>
-    readonly userId: FieldRef<"RefreshToken", 'Int'>
+    readonly userId: FieldRef<"RefreshToken", 'String'>
     readonly expiresAt: FieldRef<"RefreshToken", 'DateTime'>
     readonly createdAt: FieldRef<"RefreshToken", 'DateTime'>
   }
@@ -8708,6 +8494,7 @@ export namespace Prisma {
 
 
   export const UserOrderByRelevanceFieldEnum: {
+    id: 'id',
     userId: 'userId',
     password: 'password',
     nickname: 'nickname',
@@ -8718,13 +8505,27 @@ export namespace Prisma {
 
 
   export const RoomOrderByRelevanceFieldEnum: {
-    name: 'name'
+    id: 'id',
+    name: 'name',
+    ownerId: 'ownerId'
   };
 
   export type RoomOrderByRelevanceFieldEnum = (typeof RoomOrderByRelevanceFieldEnum)[keyof typeof RoomOrderByRelevanceFieldEnum]
 
 
+  export const RoomUserOrderByRelevanceFieldEnum: {
+    id: 'id',
+    roomId: 'roomId',
+    userId: 'userId'
+  };
+
+  export type RoomUserOrderByRelevanceFieldEnum = (typeof RoomUserOrderByRelevanceFieldEnum)[keyof typeof RoomUserOrderByRelevanceFieldEnum]
+
+
   export const ScheduleOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    roomId: 'roomId',
     title: 'title',
     status: 'status'
   };
@@ -8732,8 +8533,27 @@ export namespace Prisma {
   export type ScheduleOrderByRelevanceFieldEnum = (typeof ScheduleOrderByRelevanceFieldEnum)[keyof typeof ScheduleOrderByRelevanceFieldEnum]
 
 
+  export const TimeLogOrderByRelevanceFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    roomId: 'roomId'
+  };
+
+  export type TimeLogOrderByRelevanceFieldEnum = (typeof TimeLogOrderByRelevanceFieldEnum)[keyof typeof TimeLogOrderByRelevanceFieldEnum]
+
+
+  export const FriendOrderByRelevanceFieldEnum: {
+    userId: 'userId',
+    friendId: 'friendId'
+  };
+
+  export type FriendOrderByRelevanceFieldEnum = (typeof FriendOrderByRelevanceFieldEnum)[keyof typeof FriendOrderByRelevanceFieldEnum]
+
+
   export const RefreshTokenOrderByRelevanceFieldEnum: {
-    token: 'token'
+    id: 'id',
+    token: 'token',
+    userId: 'userId'
   };
 
   export type RefreshTokenOrderByRelevanceFieldEnum = (typeof RefreshTokenOrderByRelevanceFieldEnum)[keyof typeof RefreshTokenOrderByRelevanceFieldEnum]
@@ -8745,16 +8565,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'String'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
     
 
 
   /**
-   * Reference to a field of type 'String'
+   * Reference to a field of type 'Int'
    */
-  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
@@ -8779,7 +8599,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    id?: IntFilter<"User"> | number
+    id?: StringFilter<"User"> | string
     userId?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     nickname?: StringFilter<"User"> | string
@@ -8814,7 +8634,7 @@ export namespace Prisma {
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     userId?: string
     nickname?: string
     AND?: UserWhereInput | UserWhereInput[]
@@ -8852,7 +8672,7 @@ export namespace Prisma {
     AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"User"> | number
+    id?: StringWithAggregatesFilter<"User"> | string
     userId?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     nickname?: StringWithAggregatesFilter<"User"> | string
@@ -8865,9 +8685,9 @@ export namespace Prisma {
     AND?: RoomWhereInput | RoomWhereInput[]
     OR?: RoomWhereInput[]
     NOT?: RoomWhereInput | RoomWhereInput[]
-    id?: IntFilter<"Room"> | number
+    id?: StringFilter<"Room"> | string
     name?: StringFilter<"Room"> | string
-    ownerId?: IntFilter<"Room"> | number
+    ownerId?: StringFilter<"Room"> | string
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     roomUsers?: RoomUserListRelationFilter
@@ -8888,12 +8708,12 @@ export namespace Prisma {
   }
 
   export type RoomWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: RoomWhereInput | RoomWhereInput[]
     OR?: RoomWhereInput[]
     NOT?: RoomWhereInput | RoomWhereInput[]
     name?: StringFilter<"Room"> | string
-    ownerId?: IntFilter<"Room"> | number
+    ownerId?: StringFilter<"Room"> | string
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     roomUsers?: RoomUserListRelationFilter
@@ -8907,19 +8727,17 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     _count?: RoomCountOrderByAggregateInput
-    _avg?: RoomAvgOrderByAggregateInput
     _max?: RoomMaxOrderByAggregateInput
     _min?: RoomMinOrderByAggregateInput
-    _sum?: RoomSumOrderByAggregateInput
   }
 
   export type RoomScalarWhereWithAggregatesInput = {
     AND?: RoomScalarWhereWithAggregatesInput | RoomScalarWhereWithAggregatesInput[]
     OR?: RoomScalarWhereWithAggregatesInput[]
     NOT?: RoomScalarWhereWithAggregatesInput | RoomScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Room"> | number
+    id?: StringWithAggregatesFilter<"Room"> | string
     name?: StringWithAggregatesFilter<"Room"> | string
-    ownerId?: IntWithAggregatesFilter<"Room"> | number
+    ownerId?: StringWithAggregatesFilter<"Room"> | string
     createdAt?: DateTimeNullableWithAggregatesFilter<"Room"> | Date | string | null
   }
 
@@ -8927,9 +8745,9 @@ export namespace Prisma {
     AND?: RoomUserWhereInput | RoomUserWhereInput[]
     OR?: RoomUserWhereInput[]
     NOT?: RoomUserWhereInput | RoomUserWhereInput[]
-    id?: IntFilter<"RoomUser"> | number
-    roomId?: IntFilter<"RoomUser"> | number
-    userId?: IntFilter<"RoomUser"> | number
+    id?: StringFilter<"RoomUser"> | string
+    roomId?: StringFilter<"RoomUser"> | string
+    userId?: StringFilter<"RoomUser"> | string
     joinedAt?: DateTimeNullableFilter<"RoomUser"> | Date | string | null
     room?: XOR<RoomScalarRelationFilter, RoomWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -8942,16 +8760,17 @@ export namespace Prisma {
     joinedAt?: SortOrderInput | SortOrder
     room?: RoomOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    _relevance?: RoomUserOrderByRelevanceInput
   }
 
   export type RoomUserWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     roomId_userId?: RoomUserRoomIdUserIdCompoundUniqueInput
     AND?: RoomUserWhereInput | RoomUserWhereInput[]
     OR?: RoomUserWhereInput[]
     NOT?: RoomUserWhereInput | RoomUserWhereInput[]
-    roomId?: IntFilter<"RoomUser"> | number
-    userId?: IntFilter<"RoomUser"> | number
+    roomId?: StringFilter<"RoomUser"> | string
+    userId?: StringFilter<"RoomUser"> | string
     joinedAt?: DateTimeNullableFilter<"RoomUser"> | Date | string | null
     room?: XOR<RoomScalarRelationFilter, RoomWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -8963,19 +8782,17 @@ export namespace Prisma {
     userId?: SortOrder
     joinedAt?: SortOrderInput | SortOrder
     _count?: RoomUserCountOrderByAggregateInput
-    _avg?: RoomUserAvgOrderByAggregateInput
     _max?: RoomUserMaxOrderByAggregateInput
     _min?: RoomUserMinOrderByAggregateInput
-    _sum?: RoomUserSumOrderByAggregateInput
   }
 
   export type RoomUserScalarWhereWithAggregatesInput = {
     AND?: RoomUserScalarWhereWithAggregatesInput | RoomUserScalarWhereWithAggregatesInput[]
     OR?: RoomUserScalarWhereWithAggregatesInput[]
     NOT?: RoomUserScalarWhereWithAggregatesInput | RoomUserScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"RoomUser"> | number
-    roomId?: IntWithAggregatesFilter<"RoomUser"> | number
-    userId?: IntWithAggregatesFilter<"RoomUser"> | number
+    id?: StringWithAggregatesFilter<"RoomUser"> | string
+    roomId?: StringWithAggregatesFilter<"RoomUser"> | string
+    userId?: StringWithAggregatesFilter<"RoomUser"> | string
     joinedAt?: DateTimeNullableWithAggregatesFilter<"RoomUser"> | Date | string | null
   }
 
@@ -8983,9 +8800,9 @@ export namespace Prisma {
     AND?: ScheduleWhereInput | ScheduleWhereInput[]
     OR?: ScheduleWhereInput[]
     NOT?: ScheduleWhereInput | ScheduleWhereInput[]
-    id?: IntFilter<"Schedule"> | number
-    userId?: IntFilter<"Schedule"> | number
-    roomId?: IntFilter<"Schedule"> | number
+    id?: StringFilter<"Schedule"> | string
+    userId?: StringFilter<"Schedule"> | string
+    roomId?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
@@ -9010,12 +8827,12 @@ export namespace Prisma {
   }
 
   export type ScheduleWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: ScheduleWhereInput | ScheduleWhereInput[]
     OR?: ScheduleWhereInput[]
     NOT?: ScheduleWhereInput | ScheduleWhereInput[]
-    userId?: IntFilter<"Schedule"> | number
-    roomId?: IntFilter<"Schedule"> | number
+    userId?: StringFilter<"Schedule"> | string
+    roomId?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
@@ -9035,19 +8852,17 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     _count?: ScheduleCountOrderByAggregateInput
-    _avg?: ScheduleAvgOrderByAggregateInput
     _max?: ScheduleMaxOrderByAggregateInput
     _min?: ScheduleMinOrderByAggregateInput
-    _sum?: ScheduleSumOrderByAggregateInput
   }
 
   export type ScheduleScalarWhereWithAggregatesInput = {
     AND?: ScheduleScalarWhereWithAggregatesInput | ScheduleScalarWhereWithAggregatesInput[]
     OR?: ScheduleScalarWhereWithAggregatesInput[]
     NOT?: ScheduleScalarWhereWithAggregatesInput | ScheduleScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Schedule"> | number
-    userId?: IntWithAggregatesFilter<"Schedule"> | number
-    roomId?: IntWithAggregatesFilter<"Schedule"> | number
+    id?: StringWithAggregatesFilter<"Schedule"> | string
+    userId?: StringWithAggregatesFilter<"Schedule"> | string
+    roomId?: StringWithAggregatesFilter<"Schedule"> | string
     title?: StringWithAggregatesFilter<"Schedule"> | string
     startTime?: DateTimeWithAggregatesFilter<"Schedule"> | Date | string
     endTime?: DateTimeWithAggregatesFilter<"Schedule"> | Date | string
@@ -9059,9 +8874,9 @@ export namespace Prisma {
     AND?: TimeLogWhereInput | TimeLogWhereInput[]
     OR?: TimeLogWhereInput[]
     NOT?: TimeLogWhereInput | TimeLogWhereInput[]
-    id?: IntFilter<"TimeLog"> | number
-    userId?: IntFilter<"TimeLog"> | number
-    roomId?: IntFilter<"TimeLog"> | number
+    id?: StringFilter<"TimeLog"> | string
+    userId?: StringFilter<"TimeLog"> | string
+    roomId?: StringFilter<"TimeLog"> | string
     totalTime?: IntFilter<"TimeLog"> | number
     date?: DateTimeFilter<"TimeLog"> | Date | string
     createdAt?: DateTimeNullableFilter<"TimeLog"> | Date | string | null
@@ -9078,15 +8893,16 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     room?: RoomOrderByWithRelationInput
+    _relevance?: TimeLogOrderByRelevanceInput
   }
 
   export type TimeLogWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: TimeLogWhereInput | TimeLogWhereInput[]
     OR?: TimeLogWhereInput[]
     NOT?: TimeLogWhereInput | TimeLogWhereInput[]
-    userId?: IntFilter<"TimeLog"> | number
-    roomId?: IntFilter<"TimeLog"> | number
+    userId?: StringFilter<"TimeLog"> | string
+    roomId?: StringFilter<"TimeLog"> | string
     totalTime?: IntFilter<"TimeLog"> | number
     date?: DateTimeFilter<"TimeLog"> | Date | string
     createdAt?: DateTimeNullableFilter<"TimeLog"> | Date | string | null
@@ -9112,9 +8928,9 @@ export namespace Prisma {
     AND?: TimeLogScalarWhereWithAggregatesInput | TimeLogScalarWhereWithAggregatesInput[]
     OR?: TimeLogScalarWhereWithAggregatesInput[]
     NOT?: TimeLogScalarWhereWithAggregatesInput | TimeLogScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"TimeLog"> | number
-    userId?: IntWithAggregatesFilter<"TimeLog"> | number
-    roomId?: IntWithAggregatesFilter<"TimeLog"> | number
+    id?: StringWithAggregatesFilter<"TimeLog"> | string
+    userId?: StringWithAggregatesFilter<"TimeLog"> | string
+    roomId?: StringWithAggregatesFilter<"TimeLog"> | string
     totalTime?: IntWithAggregatesFilter<"TimeLog"> | number
     date?: DateTimeWithAggregatesFilter<"TimeLog"> | Date | string
     createdAt?: DateTimeNullableWithAggregatesFilter<"TimeLog"> | Date | string | null
@@ -9124,8 +8940,8 @@ export namespace Prisma {
     AND?: FriendWhereInput | FriendWhereInput[]
     OR?: FriendWhereInput[]
     NOT?: FriendWhereInput | FriendWhereInput[]
-    userId?: IntFilter<"Friend"> | number
-    friendId?: IntFilter<"Friend"> | number
+    userId?: StringFilter<"Friend"> | string
+    friendId?: StringFilter<"Friend"> | string
     createdAt?: DateTimeNullableFilter<"Friend"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     friend?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -9137,6 +8953,7 @@ export namespace Prisma {
     createdAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     friend?: UserOrderByWithRelationInput
+    _relevance?: FriendOrderByRelevanceInput
   }
 
   export type FriendWhereUniqueInput = Prisma.AtLeast<{
@@ -9144,8 +8961,8 @@ export namespace Prisma {
     AND?: FriendWhereInput | FriendWhereInput[]
     OR?: FriendWhereInput[]
     NOT?: FriendWhereInput | FriendWhereInput[]
-    userId?: IntFilter<"Friend"> | number
-    friendId?: IntFilter<"Friend"> | number
+    userId?: StringFilter<"Friend"> | string
+    friendId?: StringFilter<"Friend"> | string
     createdAt?: DateTimeNullableFilter<"Friend"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     friend?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -9156,18 +8973,16 @@ export namespace Prisma {
     friendId?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     _count?: FriendCountOrderByAggregateInput
-    _avg?: FriendAvgOrderByAggregateInput
     _max?: FriendMaxOrderByAggregateInput
     _min?: FriendMinOrderByAggregateInput
-    _sum?: FriendSumOrderByAggregateInput
   }
 
   export type FriendScalarWhereWithAggregatesInput = {
     AND?: FriendScalarWhereWithAggregatesInput | FriendScalarWhereWithAggregatesInput[]
     OR?: FriendScalarWhereWithAggregatesInput[]
     NOT?: FriendScalarWhereWithAggregatesInput | FriendScalarWhereWithAggregatesInput[]
-    userId?: IntWithAggregatesFilter<"Friend"> | number
-    friendId?: IntWithAggregatesFilter<"Friend"> | number
+    userId?: StringWithAggregatesFilter<"Friend"> | string
+    friendId?: StringWithAggregatesFilter<"Friend"> | string
     createdAt?: DateTimeNullableWithAggregatesFilter<"Friend"> | Date | string | null
   }
 
@@ -9175,9 +8990,9 @@ export namespace Prisma {
     AND?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     OR?: RefreshTokenWhereInput[]
     NOT?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
-    id?: IntFilter<"RefreshToken"> | number
+    id?: StringFilter<"RefreshToken"> | string
     token?: StringFilter<"RefreshToken"> | string
-    userId?: IntFilter<"RefreshToken"> | number
+    userId?: StringFilter<"RefreshToken"> | string
     expiresAt?: DateTimeFilter<"RefreshToken"> | Date | string
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -9194,12 +9009,12 @@ export namespace Prisma {
   }
 
   export type RefreshTokenWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     token?: string
     AND?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     OR?: RefreshTokenWhereInput[]
     NOT?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
-    userId?: IntFilter<"RefreshToken"> | number
+    userId?: StringFilter<"RefreshToken"> | string
     expiresAt?: DateTimeFilter<"RefreshToken"> | Date | string
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -9212,24 +9027,23 @@ export namespace Prisma {
     expiresAt?: SortOrder
     createdAt?: SortOrder
     _count?: RefreshTokenCountOrderByAggregateInput
-    _avg?: RefreshTokenAvgOrderByAggregateInput
     _max?: RefreshTokenMaxOrderByAggregateInput
     _min?: RefreshTokenMinOrderByAggregateInput
-    _sum?: RefreshTokenSumOrderByAggregateInput
   }
 
   export type RefreshTokenScalarWhereWithAggregatesInput = {
     AND?: RefreshTokenScalarWhereWithAggregatesInput | RefreshTokenScalarWhereWithAggregatesInput[]
     OR?: RefreshTokenScalarWhereWithAggregatesInput[]
     NOT?: RefreshTokenScalarWhereWithAggregatesInput | RefreshTokenScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"RefreshToken"> | number
+    id?: StringWithAggregatesFilter<"RefreshToken"> | string
     token?: StringWithAggregatesFilter<"RefreshToken"> | string
-    userId?: IntWithAggregatesFilter<"RefreshToken"> | number
+    userId?: StringWithAggregatesFilter<"RefreshToken"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"RefreshToken"> | Date | string
   }
 
   export type UserCreateInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -9246,7 +9060,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -9263,6 +9077,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -9279,7 +9094,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -9296,7 +9111,7 @@ export namespace Prisma {
   }
 
   export type UserCreateManyInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -9306,6 +9121,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -9315,7 +9131,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -9325,6 +9141,7 @@ export namespace Prisma {
   }
 
   export type RoomCreateInput = {
+    id?: string
     name: string
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
@@ -9334,9 +9151,9 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedCreateInput = {
-    id?: number
+    id?: string
     name: string
-    ownerId: number
+    ownerId: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
@@ -9344,6 +9161,7 @@ export namespace Prisma {
   }
 
   export type RoomUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
@@ -9353,9 +9171,9 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    ownerId?: IntFieldUpdateOperationsInput | number
+    ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
@@ -9363,69 +9181,74 @@ export namespace Prisma {
   }
 
   export type RoomCreateManyInput = {
-    id?: number
+    id?: string
     name: string
-    ownerId: number
+    ownerId: string
     createdAt?: Date | string | null
   }
 
   export type RoomUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    ownerId?: IntFieldUpdateOperationsInput | number
+    ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUserCreateInput = {
+    id?: string
     joinedAt?: Date | string | null
     room: RoomCreateNestedOneWithoutRoomUsersInput
     user: UserCreateNestedOneWithoutRoomUsersInput
   }
 
   export type RoomUserUncheckedCreateInput = {
-    id?: number
-    roomId: number
-    userId: number
+    id?: string
+    roomId: string
+    userId: string
     joinedAt?: Date | string | null
   }
 
   export type RoomUserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     room?: RoomUpdateOneRequiredWithoutRoomUsersNestedInput
     user?: UserUpdateOneRequiredWithoutRoomUsersNestedInput
   }
 
   export type RoomUserUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUserCreateManyInput = {
-    id?: number
-    roomId: number
-    userId: number
+    id?: string
+    roomId: string
+    userId: string
     joinedAt?: Date | string | null
   }
 
   export type RoomUserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUserUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ScheduleCreateInput = {
+    id?: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -9436,9 +9259,9 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedCreateInput = {
-    id?: number
-    userId: number
-    roomId: number
+    id?: string
+    userId: string
+    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -9447,6 +9270,7 @@ export namespace Prisma {
   }
 
   export type ScheduleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9457,9 +9281,9 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9468,9 +9292,9 @@ export namespace Prisma {
   }
 
   export type ScheduleCreateManyInput = {
-    id?: number
-    userId: number
-    roomId: number
+    id?: string
+    userId: string
+    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -9479,6 +9303,7 @@ export namespace Prisma {
   }
 
   export type ScheduleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9487,9 +9312,9 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9498,6 +9323,7 @@ export namespace Prisma {
   }
 
   export type TimeLogCreateInput = {
+    id?: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
@@ -9506,15 +9332,16 @@ export namespace Prisma {
   }
 
   export type TimeLogUncheckedCreateInput = {
-    id?: number
-    userId: number
-    roomId: number
+    id?: string
+    userId: string
+    roomId: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
   }
 
   export type TimeLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9523,33 +9350,34 @@ export namespace Prisma {
   }
 
   export type TimeLogUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TimeLogCreateManyInput = {
-    id?: number
-    userId: number
-    roomId: number
+    id?: string
+    userId: string
+    roomId: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
   }
 
   export type TimeLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TimeLogUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9562,8 +9390,8 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedCreateInput = {
-    userId: number
-    friendId: number
+    userId: string
+    friendId: string
     createdAt?: Date | string | null
   }
 
@@ -9574,14 +9402,14 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedUpdateInput = {
-    userId?: IntFieldUpdateOperationsInput | number
-    friendId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    friendId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FriendCreateManyInput = {
-    userId: number
-    friendId: number
+    userId: string
+    friendId: string
     createdAt?: Date | string | null
   }
 
@@ -9590,12 +9418,13 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedUpdateManyInput = {
-    userId?: IntFieldUpdateOperationsInput | number
-    friendId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    friendId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RefreshTokenCreateInput = {
+    id?: string
     token: string
     expiresAt: Date | string
     createdAt?: Date | string
@@ -9603,14 +9432,15 @@ export namespace Prisma {
   }
 
   export type RefreshTokenUncheckedCreateInput = {
-    id?: number
+    id?: string
     token: string
-    userId: number
+    userId: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9618,44 +9448,34 @@ export namespace Prisma {
   }
 
   export type RefreshTokenUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
-    userId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RefreshTokenCreateManyInput = {
-    id?: number
+    id?: string
     token: string
-    userId: number
+    userId: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RefreshTokenUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
-    userId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -9686,6 +9506,17 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     search?: string
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -9781,7 +9612,6 @@ export namespace Prisma {
   }
 
   export type UserAvgOrderByAggregateInput = {
-    id?: SortOrder
     totalStudyTime?: SortOrder
   }
 
@@ -9806,24 +9636,7 @@ export namespace Prisma {
   }
 
   export type UserSumOrderByAggregateInput = {
-    id?: SortOrder
     totalStudyTime?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -9862,6 +9675,22 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -9894,11 +9723,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type RoomAvgOrderByAggregateInput = {
-    id?: SortOrder
-    ownerId?: SortOrder
-  }
-
   export type RoomMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -9913,19 +9737,20 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type RoomSumOrderByAggregateInput = {
-    id?: SortOrder
-    ownerId?: SortOrder
-  }
-
   export type RoomScalarRelationFilter = {
     is?: RoomWhereInput
     isNot?: RoomWhereInput
   }
 
+  export type RoomUserOrderByRelevanceInput = {
+    fields: RoomUserOrderByRelevanceFieldEnum | RoomUserOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type RoomUserRoomIdUserIdCompoundUniqueInput = {
-    roomId: number
-    userId: number
+    roomId: string
+    userId: string
   }
 
   export type RoomUserCountOrderByAggregateInput = {
@@ -9933,12 +9758,6 @@ export namespace Prisma {
     roomId?: SortOrder
     userId?: SortOrder
     joinedAt?: SortOrder
-  }
-
-  export type RoomUserAvgOrderByAggregateInput = {
-    id?: SortOrder
-    roomId?: SortOrder
-    userId?: SortOrder
   }
 
   export type RoomUserMaxOrderByAggregateInput = {
@@ -9953,12 +9772,6 @@ export namespace Prisma {
     roomId?: SortOrder
     userId?: SortOrder
     joinedAt?: SortOrder
-  }
-
-  export type RoomUserSumOrderByAggregateInput = {
-    id?: SortOrder
-    roomId?: SortOrder
-    userId?: SortOrder
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -9989,12 +9802,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type ScheduleAvgOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    roomId?: SortOrder
-  }
-
   export type ScheduleMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -10017,12 +9824,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type ScheduleSumOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    roomId?: SortOrder
-  }
-
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -10037,6 +9838,12 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type TimeLogOrderByRelevanceInput = {
+    fields: TimeLogOrderByRelevanceFieldEnum | TimeLogOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type TimeLogCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -10047,9 +9854,6 @@ export namespace Prisma {
   }
 
   export type TimeLogAvgOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    roomId?: SortOrder
     totalTime?: SortOrder
   }
 
@@ -10072,26 +9876,24 @@ export namespace Prisma {
   }
 
   export type TimeLogSumOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    roomId?: SortOrder
     totalTime?: SortOrder
   }
 
+  export type FriendOrderByRelevanceInput = {
+    fields: FriendOrderByRelevanceFieldEnum | FriendOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type FriendUserIdFriendIdCompoundUniqueInput = {
-    userId: number
-    friendId: number
+    userId: string
+    friendId: string
   }
 
   export type FriendCountOrderByAggregateInput = {
     userId?: SortOrder
     friendId?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type FriendAvgOrderByAggregateInput = {
-    userId?: SortOrder
-    friendId?: SortOrder
   }
 
   export type FriendMaxOrderByAggregateInput = {
@@ -10104,11 +9906,6 @@ export namespace Prisma {
     userId?: SortOrder
     friendId?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type FriendSumOrderByAggregateInput = {
-    userId?: SortOrder
-    friendId?: SortOrder
   }
 
   export type RefreshTokenOrderByRelevanceInput = {
@@ -10125,11 +9922,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type RefreshTokenAvgOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-  }
-
   export type RefreshTokenMaxOrderByAggregateInput = {
     id?: SortOrder
     token?: SortOrder
@@ -10144,11 +9936,6 @@ export namespace Prisma {
     userId?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type RefreshTokenSumOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
   }
 
   export type RoomCreateNestedManyWithoutOwnerInput = {
@@ -10735,17 +10522,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRefreshTokensInput, UserUpdateWithoutRefreshTokensInput>, UserUncheckedUpdateWithoutRefreshTokensInput>
   }
 
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -10776,6 +10552,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -10785,33 +10572,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -10861,6 +10621,33 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -10901,6 +10688,7 @@ export namespace Prisma {
   }
 
   export type RoomCreateWithoutOwnerInput = {
+    id?: string
     name: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserCreateNestedManyWithoutRoomInput
@@ -10909,7 +10697,7 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedCreateWithoutOwnerInput = {
-    id?: number
+    id?: string
     name: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
@@ -10928,13 +10716,14 @@ export namespace Prisma {
   }
 
   export type RoomUserCreateWithoutUserInput = {
+    id?: string
     joinedAt?: Date | string | null
     room: RoomCreateNestedOneWithoutRoomUsersInput
   }
 
   export type RoomUserUncheckedCreateWithoutUserInput = {
-    id?: number
-    roomId: number
+    id?: string
+    roomId: string
     joinedAt?: Date | string | null
   }
 
@@ -10949,6 +10738,7 @@ export namespace Prisma {
   }
 
   export type ScheduleCreateWithoutUserInput = {
+    id?: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -10958,8 +10748,8 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedCreateWithoutUserInput = {
-    id?: number
-    roomId: number
+    id?: string
+    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -10978,6 +10768,7 @@ export namespace Prisma {
   }
 
   export type TimeLogCreateWithoutUserInput = {
+    id?: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
@@ -10985,8 +10776,8 @@ export namespace Prisma {
   }
 
   export type TimeLogUncheckedCreateWithoutUserInput = {
-    id?: number
-    roomId: number
+    id?: string
+    roomId: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
@@ -11008,7 +10799,7 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedCreateWithoutUserInput = {
-    friendId: number
+    friendId: string
     createdAt?: Date | string | null
   }
 
@@ -11028,7 +10819,7 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedCreateWithoutFriendInput = {
-    userId: number
+    userId: string
     createdAt?: Date | string | null
   }
 
@@ -11043,13 +10834,14 @@ export namespace Prisma {
   }
 
   export type RefreshTokenCreateWithoutUserInput = {
+    id?: string
     token: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
 
   export type RefreshTokenUncheckedCreateWithoutUserInput = {
-    id?: number
+    id?: string
     token: string
     expiresAt: Date | string
     createdAt?: Date | string
@@ -11085,9 +10877,9 @@ export namespace Prisma {
     AND?: RoomScalarWhereInput | RoomScalarWhereInput[]
     OR?: RoomScalarWhereInput[]
     NOT?: RoomScalarWhereInput | RoomScalarWhereInput[]
-    id?: IntFilter<"Room"> | number
+    id?: StringFilter<"Room"> | string
     name?: StringFilter<"Room"> | string
-    ownerId?: IntFilter<"Room"> | number
+    ownerId?: StringFilter<"Room"> | string
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
   }
 
@@ -11111,9 +10903,9 @@ export namespace Prisma {
     AND?: RoomUserScalarWhereInput | RoomUserScalarWhereInput[]
     OR?: RoomUserScalarWhereInput[]
     NOT?: RoomUserScalarWhereInput | RoomUserScalarWhereInput[]
-    id?: IntFilter<"RoomUser"> | number
-    roomId?: IntFilter<"RoomUser"> | number
-    userId?: IntFilter<"RoomUser"> | number
+    id?: StringFilter<"RoomUser"> | string
+    roomId?: StringFilter<"RoomUser"> | string
+    userId?: StringFilter<"RoomUser"> | string
     joinedAt?: DateTimeNullableFilter<"RoomUser"> | Date | string | null
   }
 
@@ -11137,9 +10929,9 @@ export namespace Prisma {
     AND?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
     OR?: ScheduleScalarWhereInput[]
     NOT?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
-    id?: IntFilter<"Schedule"> | number
-    userId?: IntFilter<"Schedule"> | number
-    roomId?: IntFilter<"Schedule"> | number
+    id?: StringFilter<"Schedule"> | string
+    userId?: StringFilter<"Schedule"> | string
+    roomId?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
@@ -11167,9 +10959,9 @@ export namespace Prisma {
     AND?: TimeLogScalarWhereInput | TimeLogScalarWhereInput[]
     OR?: TimeLogScalarWhereInput[]
     NOT?: TimeLogScalarWhereInput | TimeLogScalarWhereInput[]
-    id?: IntFilter<"TimeLog"> | number
-    userId?: IntFilter<"TimeLog"> | number
-    roomId?: IntFilter<"TimeLog"> | number
+    id?: StringFilter<"TimeLog"> | string
+    userId?: StringFilter<"TimeLog"> | string
+    roomId?: StringFilter<"TimeLog"> | string
     totalTime?: IntFilter<"TimeLog"> | number
     date?: DateTimeFilter<"TimeLog"> | Date | string
     createdAt?: DateTimeNullableFilter<"TimeLog"> | Date | string | null
@@ -11195,8 +10987,8 @@ export namespace Prisma {
     AND?: FriendScalarWhereInput | FriendScalarWhereInput[]
     OR?: FriendScalarWhereInput[]
     NOT?: FriendScalarWhereInput | FriendScalarWhereInput[]
-    userId?: IntFilter<"Friend"> | number
-    friendId?: IntFilter<"Friend"> | number
+    userId?: StringFilter<"Friend"> | string
+    friendId?: StringFilter<"Friend"> | string
     createdAt?: DateTimeNullableFilter<"Friend"> | Date | string | null
   }
 
@@ -11236,14 +11028,15 @@ export namespace Prisma {
     AND?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
     OR?: RefreshTokenScalarWhereInput[]
     NOT?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
-    id?: IntFilter<"RefreshToken"> | number
+    id?: StringFilter<"RefreshToken"> | string
     token?: StringFilter<"RefreshToken"> | string
-    userId?: IntFilter<"RefreshToken"> | number
+    userId?: StringFilter<"RefreshToken"> | string
     expiresAt?: DateTimeFilter<"RefreshToken"> | Date | string
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
   }
 
   export type UserCreateWithoutRoomsInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11259,7 +11052,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutRoomsInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11280,13 +11073,14 @@ export namespace Prisma {
   }
 
   export type RoomUserCreateWithoutRoomInput = {
+    id?: string
     joinedAt?: Date | string | null
     user: UserCreateNestedOneWithoutRoomUsersInput
   }
 
   export type RoomUserUncheckedCreateWithoutRoomInput = {
-    id?: number
-    userId: number
+    id?: string
+    userId: string
     joinedAt?: Date | string | null
   }
 
@@ -11301,6 +11095,7 @@ export namespace Prisma {
   }
 
   export type ScheduleCreateWithoutRoomInput = {
+    id?: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -11310,8 +11105,8 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedCreateWithoutRoomInput = {
-    id?: number
-    userId: number
+    id?: string
+    userId: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -11330,6 +11125,7 @@ export namespace Prisma {
   }
 
   export type TimeLogCreateWithoutRoomInput = {
+    id?: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
@@ -11337,8 +11133,8 @@ export namespace Prisma {
   }
 
   export type TimeLogUncheckedCreateWithoutRoomInput = {
-    id?: number
-    userId: number
+    id?: string
+    userId: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
@@ -11366,6 +11162,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutRoomsInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11381,7 +11178,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutRoomsInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11445,6 +11242,7 @@ export namespace Prisma {
   }
 
   export type RoomCreateWithoutRoomUsersInput = {
+    id?: string
     name: string
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
@@ -11453,9 +11251,9 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedCreateWithoutRoomUsersInput = {
-    id?: number
+    id?: string
     name: string
-    ownerId: number
+    ownerId: string
     createdAt?: Date | string | null
     schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
@@ -11467,6 +11265,7 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutRoomUsersInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11482,7 +11281,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutRoomUsersInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11514,6 +11313,7 @@ export namespace Prisma {
   }
 
   export type RoomUpdateWithoutRoomUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
@@ -11522,9 +11322,9 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedUpdateWithoutRoomUsersInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    ownerId?: IntFieldUpdateOperationsInput | number
+    ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
@@ -11542,6 +11342,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutRoomUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11557,7 +11358,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutRoomUsersInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11573,6 +11374,7 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutSchedulesInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11588,7 +11390,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutSchedulesInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11609,6 +11411,7 @@ export namespace Prisma {
   }
 
   export type RoomCreateWithoutSchedulesInput = {
+    id?: string
     name: string
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
@@ -11617,9 +11420,9 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedCreateWithoutSchedulesInput = {
-    id?: number
+    id?: string
     name: string
-    ownerId: number
+    ownerId: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
@@ -11642,6 +11445,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11657,7 +11461,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutSchedulesInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11684,6 +11488,7 @@ export namespace Prisma {
   }
 
   export type RoomUpdateWithoutSchedulesInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
@@ -11692,15 +11497,16 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedUpdateWithoutSchedulesInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    ownerId?: IntFieldUpdateOperationsInput | number
+    ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
   }
 
   export type UserCreateWithoutTimeLogsInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11716,7 +11522,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutTimeLogsInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11737,6 +11543,7 @@ export namespace Prisma {
   }
 
   export type RoomCreateWithoutTimeLogsInput = {
+    id?: string
     name: string
     createdAt?: Date | string | null
     owner: UserCreateNestedOneWithoutRoomsInput
@@ -11745,9 +11552,9 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedCreateWithoutTimeLogsInput = {
-    id?: number
+    id?: string
     name: string
-    ownerId: number
+    ownerId: string
     createdAt?: Date | string | null
     roomUsers?: RoomUserUncheckedCreateNestedManyWithoutRoomInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutRoomInput
@@ -11770,6 +11577,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutTimeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11785,7 +11593,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutTimeLogsInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11812,6 +11620,7 @@ export namespace Prisma {
   }
 
   export type RoomUpdateWithoutTimeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     owner?: UserUpdateOneRequiredWithoutRoomsNestedInput
@@ -11820,15 +11629,16 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedUpdateWithoutTimeLogsInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    ownerId?: IntFieldUpdateOperationsInput | number
+    ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutRoomNestedInput
   }
 
   export type UserCreateWithoutFriendsToInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11844,7 +11654,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutFriendsToInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11865,6 +11675,7 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutFriendsFromInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11880,7 +11691,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutFriendsFromInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -11912,6 +11723,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutFriendsToInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11927,7 +11739,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutFriendsToInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11954,6 +11766,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutFriendsFromInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11969,7 +11782,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutFriendsFromInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -11985,6 +11798,7 @@ export namespace Prisma {
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -12000,7 +11814,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
-    id?: number
+    id?: string
     userId: string
     password: string
     nickname: string
@@ -12032,6 +11846,7 @@ export namespace Prisma {
   }
 
   export type UserUpdateWithoutRefreshTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -12047,7 +11862,7 @@ export namespace Prisma {
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     nickname?: StringFieldUpdateOperationsInput | string
@@ -12063,20 +11878,20 @@ export namespace Prisma {
   }
 
   export type RoomCreateManyOwnerInput = {
-    id?: number
+    id?: string
     name: string
     createdAt?: Date | string | null
   }
 
   export type RoomUserCreateManyUserInput = {
-    id?: number
-    roomId: number
+    id?: string
+    roomId: string
     joinedAt?: Date | string | null
   }
 
   export type ScheduleCreateManyUserInput = {
-    id?: number
-    roomId: number
+    id?: string
+    roomId: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -12085,31 +11900,32 @@ export namespace Prisma {
   }
 
   export type TimeLogCreateManyUserInput = {
-    id?: number
-    roomId: number
+    id?: string
+    roomId: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
   }
 
   export type FriendCreateManyUserInput = {
-    friendId: number
+    friendId: string
     createdAt?: Date | string | null
   }
 
   export type FriendCreateManyFriendInput = {
-    userId: number
+    userId: string
     createdAt?: Date | string | null
   }
 
   export type RefreshTokenCreateManyUserInput = {
-    id?: number
+    id?: string
     token: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
 
   export type RoomUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUpdateManyWithoutRoomNestedInput
@@ -12118,7 +11934,7 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedUpdateWithoutOwnerInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     roomUsers?: RoomUserUncheckedUpdateManyWithoutRoomNestedInput
@@ -12127,29 +11943,31 @@ export namespace Prisma {
   }
 
   export type RoomUncheckedUpdateManyWithoutOwnerInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUserUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     room?: RoomUpdateOneRequiredWithoutRoomUsersNestedInput
   }
 
   export type RoomUserUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUserUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ScheduleUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12159,8 +11977,8 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12169,8 +11987,8 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12179,6 +11997,7 @@ export namespace Prisma {
   }
 
   export type TimeLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12186,16 +12005,16 @@ export namespace Prisma {
   }
 
   export type TimeLogUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TimeLogUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    roomId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    roomId?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12207,12 +12026,12 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedUpdateWithoutUserInput = {
-    friendId?: IntFieldUpdateOperationsInput | number
+    friendId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FriendUncheckedUpdateManyWithoutUserInput = {
-    friendId?: IntFieldUpdateOperationsInput | number
+    friendId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -12222,44 +12041,45 @@ export namespace Prisma {
   }
 
   export type FriendUncheckedUpdateWithoutFriendInput = {
-    userId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type FriendUncheckedUpdateManyWithoutFriendInput = {
-    userId?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RefreshTokenUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RefreshTokenUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RefreshTokenUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RoomUserCreateManyRoomInput = {
-    id?: number
-    userId: number
+    id?: string
+    userId: string
     joinedAt?: Date | string | null
   }
 
   export type ScheduleCreateManyRoomInput = {
-    id?: number
-    userId: number
+    id?: string
+    userId: string
     title: string
     startTime: Date | string
     endTime: Date | string
@@ -12268,31 +12088,33 @@ export namespace Prisma {
   }
 
   export type TimeLogCreateManyRoomInput = {
-    id?: number
-    userId: number
+    id?: string
+    userId: string
     totalTime: number
     date: Date | string
     createdAt?: Date | string | null
   }
 
   export type RoomUserUpdateWithoutRoomInput = {
+    id?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutRoomUsersNestedInput
   }
 
   export type RoomUserUncheckedUpdateWithoutRoomInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RoomUserUncheckedUpdateManyWithoutRoomInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ScheduleUpdateWithoutRoomInput = {
+    id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12302,8 +12124,8 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedUpdateWithoutRoomInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12312,8 +12134,8 @@ export namespace Prisma {
   }
 
   export type ScheduleUncheckedUpdateManyWithoutRoomInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12322,6 +12144,7 @@ export namespace Prisma {
   }
 
   export type TimeLogUpdateWithoutRoomInput = {
+    id?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12329,16 +12152,16 @@ export namespace Prisma {
   }
 
   export type TimeLogUncheckedUpdateWithoutRoomInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TimeLogUncheckedUpdateManyWithoutRoomInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    userId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     totalTime?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

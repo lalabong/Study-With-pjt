@@ -186,6 +186,7 @@ exports.Prisma.NullsOrder = {
 };
 
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
+  id: 'id',
   userId: 'userId',
   password: 'password',
   nickname: 'nickname',
@@ -193,16 +194,40 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
 };
 
 exports.Prisma.RoomOrderByRelevanceFieldEnum = {
-  name: 'name'
+  id: 'id',
+  name: 'name',
+  ownerId: 'ownerId'
+};
+
+exports.Prisma.RoomUserOrderByRelevanceFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  userId: 'userId'
 };
 
 exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  roomId: 'roomId',
   title: 'title',
   status: 'status'
 };
 
+exports.Prisma.TimeLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  roomId: 'roomId'
+};
+
+exports.Prisma.FriendOrderByRelevanceFieldEnum = {
+  userId: 'userId',
+  friendId: 'friendId'
+};
+
 exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
-  token: 'token'
+  id: 'id',
+  token: 'token',
+  userId: 'userId'
 };
 
 

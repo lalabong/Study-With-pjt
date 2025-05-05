@@ -56,7 +56,7 @@ const router = express.Router();
  *                       type: object
  *                       properties:
  *                         id:
- *                           type: number
+ *                           type: string
  *                           description: 사용자 ID (데이터베이스)
  *                         userId:
  *                           type: string

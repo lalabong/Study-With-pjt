@@ -19,7 +19,7 @@ export const generateRefreshToken = (payload: UserPayload): string => {
   return jwt.sign(payload, refreshSecret, { expiresIn: '14d' });
 };
 
-export const saveRefreshToken = async (userId: number, token: string): Promise<void> => {
+export const saveRefreshToken = async (userId: string, token: string): Promise<void> => {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 14);
 
@@ -32,7 +32,9 @@ export const saveRefreshToken = async (userId: number, token: string): Promise<v
   });
 };
 
-export const verifyRefreshToken = async (token: string): Promise<{ payload: UserPayload | null, newToken?: string }> => {
+export const verifyRefreshToken = async (
+  token: string
+): Promise<{ payload: UserPayload | null; newToken?: string }> => {
   try {
     const refreshSecret = process.env.REFRESH_TOKEN_SECRET;
     if (!refreshSecret) {
@@ -41,7 +43,7 @@ export const verifyRefreshToken = async (token: string): Promise<{ payload: User
 
     const tokenRecord = await prisma.refreshToken.findUnique({
       where: { token },
-      include: { user: true }
+      include: { user: true },
     });
 
     if (!tokenRecord) {
@@ -59,21 +61,21 @@ export const verifyRefreshToken = async (token: string): Promise<{ payload: User
 
     const sevenDaysFromNow = new Date();
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-    
+
     if (tokenRecord.expiresAt < sevenDaysFromNow) {
       const newToken = generateRefreshToken(payload);
       await saveRefreshToken(tokenRecord.user.id, newToken);
-      
+
       await prisma.refreshToken.delete({
-        where: { id: tokenRecord.id }
+        where: { id: tokenRecord.id },
       });
-      
+
       return { payload, newToken };
     }
 
     const userTokens = await prisma.refreshToken.findMany({
       where: { userId: tokenRecord.user.id },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
 
     if (userTokens.length > 3) {
@@ -81,9 +83,9 @@ export const verifyRefreshToken = async (token: string): Promise<{ payload: User
       await prisma.refreshToken.deleteMany({
         where: {
           id: {
-            in: tokensToDelete.map(t => t.id)
-          }
-        }
+            in: tokensToDelete.map((t) => t.id),
+          },
+        },
       });
     }
 
