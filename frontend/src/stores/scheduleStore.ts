@@ -8,6 +8,7 @@ export interface ScheduleItem {
   startTime?: string;
   endTime?: string;
   status: ScheduleStatus;
+  order: number;
 }
 
 type ValuePiece = Date | null;
@@ -26,6 +27,18 @@ interface ScheduleState {
   setOpenStatusDropdownId: (id: string | null) => void; // 드롭다운을 연 일정의 id 설정
 
   setSelectedDate: (date: Value) => void; // 캘린더에서 선택한 날짜 설정
+
+  // 필터링된 일정 목록 직접 설정
+  setFilteredSchedules: (schedules: ScheduleItem[]) => void;
+
+  // 일정 항목을 업데이트하는 함수
+  updateScheduleItem: (id: string, updatedSchedule: Partial<ScheduleItem>) => void;
+
+  // 새 일정 추가 함수
+  addScheduleItem: (newSchedule: ScheduleItem) => void;
+
+  // 일정 삭제 함수
+  removeScheduleItem: (id: string) => void;
 }
 
 export const useScheduleStore = create<ScheduleState>((set) => ({
@@ -53,5 +66,31 @@ export const useScheduleStore = create<ScheduleState>((set) => ({
   setOpenStatusDropdownId: (id) =>
     set(() => ({
       openStatusDropdownId: id,
+    })),
+
+  // 필터링된 일정 목록 직접 설정
+  setFilteredSchedules: (schedules) =>
+    set(() => ({
+      filteredSchedules: schedules,
+    })),
+
+  // 일정 항목 업데이트
+  updateScheduleItem: (id, updatedSchedule) =>
+    set((state) => ({
+      filteredSchedules: state.filteredSchedules.map((schedule) =>
+        schedule.id === id ? { ...schedule, ...updatedSchedule } : schedule,
+      ),
+    })),
+
+  // 새 일정 추가
+  addScheduleItem: (newSchedule) =>
+    set((state) => ({
+      filteredSchedules: [...state.filteredSchedules, newSchedule],
+    })),
+
+  // 일정 삭제
+  removeScheduleItem: (id) =>
+    set((state) => ({
+      filteredSchedules: state.filteredSchedules.filter((schedule) => schedule.id !== id),
     })),
 }));

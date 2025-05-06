@@ -4,13 +4,15 @@ import { HiTrash, HiClock, HiChevronDown } from 'react-icons/hi';
 
 import { STATUS_OPTIONS } from '@constants/calendar';
 
+import { useDeleteScheduleMutation } from '@hooks/api/useDeleteScheduleMutation';
+import { useUpdateScheduleMutation } from '@hooks/api/useUpdateScheduleMutation';
 import { useClickOutside } from '@hooks/useClickOutside';
 
 import {
   ScheduleItem as ScheduleItemType,
   ScheduleStatus,
   useScheduleStore,
-} from '@/stores/scheduleStore';
+} from '@stores/scheduleStore';
 
 interface ScheduleItemProps {
   schedule: ScheduleItemType;
@@ -18,6 +20,9 @@ interface ScheduleItemProps {
 
 const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
   const { openStatusDropdownId, setOpenStatusDropdownId } = useScheduleStore();
+
+  const deleteScheduleMutation = useDeleteScheduleMutation();
+  const updateScheduleMutation = useUpdateScheduleMutation();
 
   const isStatusOpen = openStatusDropdownId === schedule.id;
 
@@ -42,13 +47,13 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
   // 일정 삭제 핸들러
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // removeSchedule(schedule.id);
+    deleteScheduleMutation.mutate({ scheduleId: schedule.id });
   };
 
   const handleDeleteKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      // removeSchedule(schedule.id);
+      deleteScheduleMutation.mutate({ scheduleId: schedule.id });
     }
   };
 
@@ -70,7 +75,12 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
       e.stopPropagation();
       e.preventDefault();
     }
-    // updateScheduleStatus(schedule.id, status);
+
+    updateScheduleMutation.mutate({
+      scheduleId: schedule.id,
+      status,
+    });
+
     setOpenStatusDropdownId(null);
   };
 
