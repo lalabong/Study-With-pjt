@@ -45,3 +45,23 @@ export const API_ERROR_MESSAGES = {
   NOT_FOUND: '요청한 정보를 찾을 수 없습니다.',
   FORBIDDEN: '접근 권한이 없습니다.',
 };
+
+export const SCHEDULE_ERROR_MESSAGES = {
+  CREATE_SCHEDULE_FAILED: '일정 생성에 실패했습니다.',
+  UPDATE_SCHEDULE_FAILED: '일정 수정에 실패했습니다.',
+  DELETE_SCHEDULE_FAILED: '일정 삭제에 실패했습니다.',
+  UPDATE_ORDER_FAILED: '일정 순서 변경에 실패했습니다.',
+  SCHEDULE_NOT_FOUND: '존재하지 않는 일정입니다.',
+  PERMISSION_DENIED: '일정을 수정할 권한이 없습니다.',
+  INVALID_TIME_RANGE: '시작 시간은 종료 시간보다 이전이어야 합니다.',
+  DAILY_SCHEDULE_LIMIT: '하루에 최대 20개까지 일정을 생성할 수 있습니다.',
+  REQUIRED_FIELDS: '필수 항목을 모두 입력해주세요.',
+  INVALID_POSITION: '유효하지 않은 위치입니다.',
+};
+
+export const SCHEDULE_SUCCESS_MESSAGES = {
+  CREATE_SCHEDULE: '일정이 생성되었습니다.',
+  UPDATE_SCHEDULE: '일정이 수정되었습니다.',
+  DELETE_SCHEDULE: '일정이 삭제되었습니다.',
+  UPDATE_ORDER: '일정 순서가 변경되었습니다.',
+};

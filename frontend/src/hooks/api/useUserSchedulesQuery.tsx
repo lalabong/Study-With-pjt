@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { getUserSchedules } from '@api/user/getUserSchedules';
+import { getSchedules } from '@api/schedule/getSchedules';
 
 import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
@@ -25,7 +25,7 @@ export const useUserSchedulesQuery = ({
   const query = useQuery({
     queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
     queryFn: async () => {
-      const response = await getUserSchedules({ userId, startDate, endDate });
+      const response = await getSchedules({ userId, startDate, endDate });
       return response.data;
     },
     enabled: !!userId && enabled,
