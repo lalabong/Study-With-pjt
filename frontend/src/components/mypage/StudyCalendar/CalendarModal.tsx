@@ -11,7 +11,7 @@ import Modal from '@components/common/Modal';
 import AddScheduleForm from '@components/mypage/StudyCalendar/AddScheduleForm';
 import ScheduleList from '@components/mypage/StudyCalendar/ScheduleList';
 
-import { useScheduleStore } from '@/stores/scheduleStore';
+import { useScheduleStore } from '@stores/scheduleStore';
 
 import { formatDate } from '@utils/date';
 

@@ -14,7 +14,7 @@ import { MONTHS, WEEK_DAYS_KO } from '@constants/calendar';
 
 import { useUserSchedulesQuery } from '@hooks/api/useUserSchedulesQuery';
 
-import { ScheduleItem, ScheduleStatus, useScheduleStore } from '@/stores/scheduleStore';
+import { ScheduleItem, ScheduleStatus, useScheduleStore } from '@stores/scheduleStore';
 
 import { formatDateToString, getYearRange, isSameDate } from '@utils/date';
 
