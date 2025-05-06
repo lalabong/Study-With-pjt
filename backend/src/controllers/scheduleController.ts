@@ -43,7 +43,7 @@ export const getUserSchedules: ControllerFn = async (
     const schedules = await prisma.schedule.findMany({
       where: whereClause,
       orderBy: {
-        startTime: 'asc',
+        order: 'asc',
       },
     });
 
