@@ -6,13 +6,33 @@ export const formatDateToString = (date: Date): string => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
+// ISO 날짜 문자열을 '오전/오후 HH:MM' 형식으로 변환
+export const formatTimeToKorean = (isoDateString: string): string => {
+  if (!isoDateString) return '';
+
+  const date = new Date(isoDateString);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  // 오전/오후 구분
+  const ampm = hours < 12 ? '오전' : '오후';
+
+  // 12시간제로 변환
+  const formattedHours = hours % 12 || 12;
+
+  // 분 두 자리로 패딩
+  const formattedMinutes = String(minutes).padStart(2, '0');
+
+  return `${ampm} ${formattedHours}:${formattedMinutes}`;
+};
+
 // Date 객체를 'YYYY년 MM월 DD일' 형식의 문자열로 변환
-export const formatDate = (date: Date | null | [Date | null, Date | null]): string => {
+export const formatDateToKorean = (date: Date | null | [Date | null, Date | null]): string => {
   if (!date) return '';
 
   if (Array.isArray(date)) {
     // 배열인 경우 첫 번째 요소 사용 (범위 선택 시)
-    return formatDate(date[0]);
+    return formatDateToKorean(date[0]);
   }
 
   const year = date.getFullYear();
@@ -60,4 +80,11 @@ export const isSameDate = (date1: Date, date2: Date) => {
 // 연도 범위 생성 (현재 연도 기준 -2년 ~ +2년)
 export const getYearRange = (currentYear: number, range: number = 2): number[] => {
   return Array.from({ length: range * 2 + 1 }, (_, i) => currentYear - range + i);
+};
+
+// 현재 날짜를 기준으로 월 범위 생성 (현재 월 기준 -1달 ~ +1달)
+export const getMonthRange = (now: Date): [string, string] => {
+  const startDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+  const endDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() + 2, 0));
+  return [startDate, endDate];
 };
