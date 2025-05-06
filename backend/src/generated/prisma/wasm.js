@@ -133,20 +133,20 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.RoomScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  ownerId: 'ownerId',
+  ownerCuid: 'ownerCuid',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.RoomUserScalarFieldEnum = {
   id: 'id',
-  roomId: 'roomId',
-  userId: 'userId',
+  roomCuid: 'roomCuid',
+  userCuid: 'userCuid',
   joinedAt: 'joinedAt'
 };
 
 exports.Prisma.ScheduleScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
+  userCuid: 'userCuid',
   title: 'title',
   startTime: 'startTime',
   endTime: 'endTime',
@@ -157,23 +157,23 @@ exports.Prisma.ScheduleScalarFieldEnum = {
 
 exports.Prisma.TimeLogScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  roomId: 'roomId',
+  userCuid: 'userCuid',
+  roomCuid: 'roomCuid',
   totalTime: 'totalTime',
   date: 'date',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.FriendScalarFieldEnum = {
-  userId: 'userId',
-  friendId: 'friendId',
+  userCuid: 'userCuid',
+  friendCuid: 'friendCuid',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.RefreshTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
-  userId: 'userId',
+  userCuid: 'userCuid',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 };
@@ -199,37 +199,37 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
 exports.Prisma.RoomOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
-  ownerId: 'ownerId'
+  ownerCuid: 'ownerCuid'
 };
 
 exports.Prisma.RoomUserOrderByRelevanceFieldEnum = {
   id: 'id',
-  roomId: 'roomId',
-  userId: 'userId'
+  roomCuid: 'roomCuid',
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
   id: 'id',
-  userId: 'userId',
+  userCuid: 'userCuid',
   title: 'title',
   status: 'status'
 };
 
 exports.Prisma.TimeLogOrderByRelevanceFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  roomId: 'roomId'
+  userCuid: 'userCuid',
+  roomCuid: 'roomCuid'
 };
 
 exports.Prisma.FriendOrderByRelevanceFieldEnum = {
-  userId: 'userId',
-  friendId: 'friendId'
+  userCuid: 'userCuid',
+  friendCuid: 'friendCuid'
 };
 
 exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
   id: 'id',
   token: 'token',
-  userId: 'userId'
+  userCuid: 'userCuid'
 };
 
 

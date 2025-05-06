@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id            String         @id @default(cuid()) @db.VarChar(36)
-  userId        String         @unique @db.VarChar(50)
+  userId        String         @unique @db.VarChar(50) // 유저의 로그인 아이디
   password      String         @db.VarChar(255)
   nickname      String         @unique @db.VarChar(50)
   profileImg    String?        @db.VarChar(255)
@@ -32,9 +32,9 @@ model User {
 model Room {
   id        String     @id @default(cuid()) @db.VarChar(36)
   name      String     @db.VarChar(100)
-  ownerId   String
+  ownerCuid   String
   createdAt DateTime?  @default(now()) @db.Timestamp(0)
-  owner     User       @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  owner     User       @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
   roomUsers RoomUser[]
   timeLogs  TimeLog[]
 
@@ -43,61 +43,61 @@ model Room {
 
 model RoomUser {
   id       String    @id @default(cuid()) @db.VarChar(36)
-  roomId   String
-  userId   String
+  roomCuid   String
+  userCuid   String
   joinedAt DateTime? @default(now()) @db.Timestamp(0)
-  room     Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room     Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
-  @@unique([roomId, userId])
+  @@unique([roomCuid, userCuid])
   @@map("room_user")
 }
 
 model Schedule {
   id        String    @id @default(cuid()) @db.VarChar(36)
-  userId    String
+  userCuid    String
   title     String    @db.VarChar(255)
   startTime DateTime  @db.DateTime(0)
   endTime   DateTime  @db.DateTime(0)
   order     Int       @default(0)
   status    String    @default("대기중") @db.VarChar(10)
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@map("schedule")
 }
 
 model TimeLog {
   id        String    @id @default(cuid()) @db.VarChar(36)
-  userId    String
-  roomId    String
+  userCuid    String
+  roomCuid    String
   totalTime Int       /// 공부 시간(분 단위)
   date      DateTime  @db.Date
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
+  room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
 
   @@map("time_log")
 }
 
 model Friend {
-  userId    String
-  friendId  String
+  userCuid    String
+  friendCuid  String
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation("UserToFriend", fields: [userId], references: [id], onDelete: Cascade)
-  friend    User      @relation("FriendToUser", fields: [friendId], references: [id], onDelete: Cascade)
+  user      User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
+  friend    User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
 
-  @@id([userId, friendId])
+  @@id([userCuid, friendCuid])
   @@map("friend")
 }
 
 model RefreshToken {
   id        String   @id @default(cuid()) @db.VarChar(36)
   token     String   @unique @db.VarChar(255)
-  userId    String
+  userCuid    String
   expiresAt DateTime @db.DateTime(0)
   createdAt DateTime @default(now()) @db.Timestamp(0)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@map("refresh_token")
 }
