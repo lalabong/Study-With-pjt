@@ -4,6 +4,7 @@ export type ApiResponse<T, E extends Record<string, unknown> = Record<string, un
   status: 'success' | 'error';
   message?: string;
   data?: T;
+  errorCode?: number;
 } & E;
 
 export interface LoginRequest {
@@ -22,12 +23,13 @@ export interface LoginResponse {
 
 export interface Schedule {
   id: string;
-  userId: string;
+  userCuid: string;
   createdAt: string;
   title: string;
   startTime: string;
   endTime: string;
   status: '대기중' | '진행중' | '완료' | '취소';
+  order: number;
 }
 
 export interface TimeRecord {
