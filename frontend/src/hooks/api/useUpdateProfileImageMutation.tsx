@@ -2,12 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
+import { updateUserProfileImg } from '@api/user/updateUserProfileImg';
+
 import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
 
 import { useAuthStore } from '@stores/authStore';
-
-import { updateUserProfileImg } from '@/api/user/updateUserProfileImg';
 
 interface UpdateProfileImgParams {
   userId: string;

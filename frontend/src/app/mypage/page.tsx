@@ -10,11 +10,11 @@ import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TimeSection from '@components/mypage/TimeSection';
 import ProtectedRoute from '@components/router/ProtectedRoute';
 
-import { getUserSchedules } from '@api/user/getUserSchedules';
+import { getSchedules } from '@api/schedule/getSchedules';
 
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
-import { formatDateToString } from '@utils/date';
+import { getMonthRange } from '@utils/date';
 
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
@@ -24,15 +24,14 @@ const MyPage = async () => {
   const userId = cookieStore.get('userId')?.value || '';
 
   const now = new Date();
-  const startDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() - 1, 1));
-  const endDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() + 2, 0));
+  const [startDate, endDate] = getMonthRange(now);
 
   const queryClient = getServerQueryClient();
 
   if (userId) {
     await queryClient.prefetchQuery({
       queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
-      queryFn: async () => getUserSchedules({ userId, startDate, endDate }),
+      queryFn: async () => getSchedules({ userId, startDate, endDate }),
     });
   }
 

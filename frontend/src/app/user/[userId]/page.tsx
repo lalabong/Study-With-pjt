@@ -9,14 +9,14 @@ import ProfileManager from '@components/mypage/Profile/ProfileManager';
 import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TimeSection from '@components/mypage/TimeSection';
 
-import { getUserSchedules } from '@api/user/getUserSchedules';
-
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
 import { formatDateToString } from '@utils/date';
 
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
+
+import { getSchedules } from '@/api/schedule/getSchedules';
 
 interface UserProfilePageProps {
   params: {
@@ -41,7 +41,7 @@ const UserProfilePage = async ({ params }: UserProfilePageProps) => {
   if (userId) {
     await queryClient.prefetchQuery({
       queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId],
-      queryFn: async () => getUserSchedules({ userId, startDate, endDate }),
+      queryFn: async () => getSchedules({ userId, startDate, endDate }),
     });
   }
 
