@@ -19,14 +19,14 @@ export const generateRefreshToken = (payload: UserPayload): string => {
   return jwt.sign(payload, refreshSecret, { expiresIn: '14d' });
 };
 
-export const saveRefreshToken = async (userId: string, token: string): Promise<void> => {
+export const saveRefreshToken = async (userCuid: string, token: string): Promise<void> => {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 14);
 
   await prisma.refreshToken.create({
     data: {
       token,
-      userId,
+      userCuid,
       expiresAt,
     },
   });
@@ -74,7 +74,7 @@ export const verifyRefreshToken = async (
     }
 
     const userTokens = await prisma.refreshToken.findMany({
-      where: { userId: tokenRecord.user.id },
+      where: { userCuid: tokenRecord.user.id },
       orderBy: { createdAt: 'desc' },
     });
 

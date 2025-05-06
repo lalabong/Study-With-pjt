@@ -65,8 +65,36 @@ const router = express.Router();
  *                       description: 가입일(YYYY-MM-DD 형식)
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3404
  *       401:
  *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1401
  */
 router.get('/:userId', authMiddleware, getUserInfo);
 
@@ -187,8 +215,36 @@ router.get('/:userId', authMiddleware, getUserInfo);
  *                                 description: 소수점 형태 시간
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3404
  *       401:
  *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1401
  */
 router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
 
@@ -230,8 +286,36 @@ router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
  *                       description: 총 학습 시간
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3404
  *       401:
  *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1401
  */
 router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
 
@@ -293,14 +377,84 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *                       example: "http://localhost:4000/uploads/profiles/user123_1746259680098.png"
  *       400:
  *         description: 잘못된 요청 또는 파일 업로드 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 파일 업로드 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3004
  *       404:
  *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3404
  *       413:
  *         description: 파일 크기가 너무 큼 (최대 5MB)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 파일 크기가 너무 큽니다. 최대 5MB까지 업로드 가능합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3002
  *       415:
  *         description: 지원하지 않는 파일 형식 (jpg, jpeg, png, gif만 지원)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 지원하지 않는 파일 형식입니다. (jpg, jpeg, png, gif만 가능)
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3003
  *       500:
  *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 서버 내부 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 2001
  */
 router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
 
@@ -339,12 +493,9 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
  *                 status:
- *                   type: integer
- *                   example: 200
+ *                   type: string
+ *                   example: success
  *                 message:
  *                   type: string
  *                   example: 닉네임 수정에 성공했습니다.
@@ -361,15 +512,15 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
  *                 status:
- *                   type: integer
- *                   example: 400
+ *                   type: string
+ *                   example: error
  *                 message:
  *                   type: string
  *                   example: 닉네임은 1자 이상 50자 이하여야 합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3001
  *       404:
  *         description: 사용자를 찾을 수 없습니다.
  *         content:
@@ -377,15 +528,15 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
  *                 status:
- *                   type: integer
- *                   example: 404
+ *                   type: string
+ *                   example: error
  *                 message:
  *                   type: string
  *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3404
  *       409:
  *         description: 이미 존재하는 닉네임
  *         content:
@@ -393,17 +544,31 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
  *                 status:
- *                   type: integer
- *                   example: 409
+ *                   type: string
+ *                   example: error
  *                 message:
  *                   type: string
  *                   example: 이미 사용 중인 닉네임입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1004
  *       500:
  *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 서버 내부 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 2001
  */
 router.patch('/:userId/nickname', authMiddleware, patchUserNickname);
 

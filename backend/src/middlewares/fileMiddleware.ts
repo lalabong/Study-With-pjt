@@ -2,7 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { createErrorResponse } from '#src/utils/responseUtils';
-import { USER_ERROR } from '#src/constants/errorMessages';
+import { USER_ERROR, ERROR_CODES } from '#src/constants/errorMessages';
 
 declare global {
   namespace Express {
@@ -55,7 +55,7 @@ export const uploadProfileImg = multer({
   },
 }).single('profileImg');
 
-// 파일 경로 생성 함수 
+// 파일 경로 생성 함수
 export const getProfileImgPath = (filename: string): string => {
   const serverUrl = process.env.SERVER_URL;
   return `${serverUrl}/uploads/profiles/${filename}`;
@@ -65,13 +65,28 @@ export const getProfileImgPath = (filename: string): string => {
 export const handleFileUploadErrors = (err: any, req: any, res: any, next: any) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
-      return createErrorResponse(res, 413, USER_ERROR.FILE_SIZE_TOO_LARGE);
+      return createErrorResponse(
+        res,
+        413,
+        USER_ERROR.FILE_SIZE_TOO_LARGE,
+        ERROR_CODES.USER_FILE_SIZE_TOO_LARGE
+      );
     }
-    return createErrorResponse(res, 400, USER_ERROR.FILE_UPLOAD_ERROR);
+    return createErrorResponse(
+      res,
+      400,
+      USER_ERROR.FILE_UPLOAD_ERROR,
+      ERROR_CODES.USER_FILE_UPLOAD_ERROR
+    );
   }
 
   if (err.message && err.message.includes('지원하지 않는 파일 형식')) {
-    return createErrorResponse(res, 415, USER_ERROR.INVALID_FILE_TYPE);
+    return createErrorResponse(
+      res,
+      415,
+      USER_ERROR.INVALID_FILE_TYPE,
+      ERROR_CODES.USER_INVALID_FILE_TYPE
+    );
   }
 
   next(err);

@@ -13,6 +13,91 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /api/schedules/user/{userId}:
+ *   get:
+ *     summary: 사용자 일정 조회
+ *     description: 특정 사용자의 일정 목록을 조회합니다.
+ *     tags: [Schedules]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 사용자 ID
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: 시작 날짜 (YYYY-MM-DD)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: 종료 날짜 (YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: 일정 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 일정 조회에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     schedules:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           userCuid:
+ *                             type: string
+ *                           title:
+ *                             type: string
+ *                           startTime:
+ *                             type: string
+ *                             format: date-time
+ *                           endTime:
+ *                             type: string
+ *                             format: date-time
+ *                           status:
+ *                             type: string
+ *                           order:
+ *                             type: integer
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3404
+ */
+router.get('/user/:userId', getUserSchedules);
+
+/**
+ * @swagger
  * /api/schedules:
  *   post:
  *     summary: 새 일정 생성
@@ -76,15 +161,75 @@ const router = express.Router();
  *                           format: date-time
  *                         status:
  *                           type: string
- *                         userId:
+ *                         userCuid:
  *                           type: string
  *                         order:
  *                           type: integer
  *                           description: 일정 순서 값
  *       400:
- *         description: 잘못된 요청, 필수 필드 누락, 시간 범위 오류 또는 일일 일정 한도 초과
+ *         description: 필수 필드 누락
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 일정 이름을 입력해주세요.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4001
  *       401:
  *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3401
+ *       422:
+ *         description: 유효하지 않은 시간 범위
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 시작 시간은 종료 시간보다 이전이어야 합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4422
+ *       429:
+ *         description: 일일 일정 한도 초과
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 하루당 최대 20개까지 일정을 생성할 수 있습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4429
  */
 router.post('/', authMiddleware, createSchedule);
 
@@ -157,18 +302,74 @@ router.post('/', authMiddleware, createSchedule);
  *                           format: date-time
  *                         status:
  *                           type: string
- *                         userId:
+ *                         userCuid:
  *                           type: string
  *                         order:
  *                           type: integer
- *       400:
- *         description: 잘못된 요청 또는 시간 범위 오류
  *       401:
  *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1401
  *       403:
  *         description: 접근 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 권한이 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4403
  *       404:
  *         description: 일정을 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 일정을 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4404
+ *       422:
+ *         description: 유효하지 않은 시간 범위
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 시작 시간은 종료 시간보다 이전이어야 합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4422
  */
 router.patch('/:scheduleId', authMiddleware, updateSchedule);
 
@@ -204,44 +405,6 @@ router.patch('/:scheduleId', authMiddleware, updateSchedule);
  *                   example: 일정이 삭제되었습니다.
  *       401:
  *         description: 인증 실패
- *       403:
- *         description: 접근 권한 없음
- *       404:
- *         description: 일정을 찾을 수 없음
- */
-router.delete('/:scheduleId', authMiddleware, deleteSchedule);
-
-/**
- * @swagger
- * /api/schedules/user/{userId}:
- *   get:
- *     summary: 사용자 일정 조회
- *     description: 특정 사용자의 일정 목록을 조회합니다.
- *     tags: [Schedules]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string
- *         required: true
- *         description: 사용자 ID
- *       - in: query
- *         name: startDate
- *         schema:
- *           type: string
- *           format: date
- *         description: 시작 날짜 (YYYY-MM-DD)
- *       - in: query
- *         name: endDate
- *         schema:
- *           type: string
- *           format: date
- *         description: 종료 날짜 (YYYY-MM-DD)
- *     responses:
- *       200:
- *         description: 일정 조회 성공
  *         content:
  *           application/json:
  *             schema:
@@ -249,53 +412,54 @@ router.delete('/:scheduleId', authMiddleware, deleteSchedule);
  *               properties:
  *                 status:
  *                   type: string
- *                   example: success
+ *                   example: error
  *                 message:
  *                   type: string
- *                   example: 일정 조회에 성공했습니다.
- *                 data:
- *                   type: object
- *                   properties:
- *                     schedules:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           userId:
- *                             type: string
- *                           title:
- *                             type: string
- *                           startTime:
- *                             type: string
- *                             format: date-time
- *                           endTime:
- *                             type: string
- *                             format: date-time
- *                           status:
- *                             type: string
- *                           order:
- *                             type: integer
- *                           createdAt:
- *                             type: string
- *                             format: date-time
- *       401:
- *         description: 인증 실패
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1401
+ *       403:
+ *         description: 접근 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 권한이 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4403
  *       404:
- *         description: 사용자를 찾을 수 없음
+ *         description: 일정을 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 일정을 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4404
  */
-router.get('/user/:userId', authMiddleware, getUserSchedules);
+router.delete('/:scheduleId', authMiddleware, deleteSchedule);
 
 /**
  * @swagger
  * /api/schedules/{scheduleId}/order:
  *   patch:
  *     summary: 일정 순서 변경
- *     description: |
- *       사용자의 일정 순서를 변경합니다.
- *       드래그 앤 드롭으로 순서를 변경할 때 앞뒤 일정 순서의 중간값을 계산합니다.
- *       순서 간격이 너무 좁아지면 모든 일정을 자동으로 재정렬합니다.
+ *     description: 일정의 순서를 변경합니다.
  *     tags: [Schedules]
  *     security:
  *       - bearerAuth: []
@@ -305,7 +469,7 @@ router.get('/user/:userId', authMiddleware, getUserSchedules);
  *         schema:
  *           type: string
  *         required: true
- *         description: 순서를 변경할 일정 ID
+ *         description: 일정 ID
  *     requestBody:
  *       required: true
  *       content:
@@ -317,7 +481,7 @@ router.get('/user/:userId', authMiddleware, getUserSchedules);
  *             properties:
  *               targetPosition:
  *                 type: integer
- *                 description: 변경할 위치 (0부터 시작하는 인덱스)
+ *                 description: 이동할 위치 (0부터 시작)
  *     responses:
  *       200:
  *         description: 일정 순서 변경 성공
@@ -340,17 +504,84 @@ router.get('/user/:userId', authMiddleware, getUserSchedules);
  *                       properties:
  *                         id:
  *                           type: string
+ *                         title:
+ *                           type: string
+ *                         startTime:
+ *                           type: string
+ *                           format: date-time
+ *                         endTime:
+ *                           type: string
+ *                           format: date-time
+ *                         status:
+ *                           type: string
+ *                         userCuid:
+ *                           type: string
  *                         order:
  *                           type: integer
- *                           description: 변경된 순서 값
- *       400:
- *         description: 잘못된 요청 또는 유효하지 않은 위치
  *       401:
  *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3401
  *       403:
  *         description: 접근 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 권한이 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4403
  *       404:
  *         description: 일정을 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 일정을 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4404
+ *       422:
+ *         description: 유효하지 않은 위치
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않은 위치입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4422
  */
 router.patch('/:scheduleId/order', authMiddleware, updateScheduleOrder);
 

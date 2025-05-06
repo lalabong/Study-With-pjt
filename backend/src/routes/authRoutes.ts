@@ -86,6 +86,9 @@ const router = express.Router();
  *                 message:
  *                   type: string
  *                   example: 존재하지 않는 아이디입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1404
  *       403:
  *         description: 비밀번호 불일치
  *         content:
@@ -99,6 +102,9 @@ const router = express.Router();
  *                 message:
  *                   type: string
  *                   example: 비밀번호가 일치하지 않습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1012
  */
 router.post('/login', login);
 
@@ -161,6 +167,9 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 모든 필수 항목을 입력해 주세요.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1002
  *       409:
  *         description: 이미 사용 중인 ID
  *         content:
@@ -174,6 +183,9 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 이미 사용 중인 아이디입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1003
  *       422:
  *         description: 이미 사용 중인 닉네임
  *         content:
@@ -187,6 +199,9 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 이미 사용 중인 닉네임입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1004
  */
 router.post('/signup', signup);
 
@@ -235,6 +250,9 @@ router.post('/signup', signup);
  *                 message:
  *                   type: string
  *                   example: 토큰이 필요합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1011
  *       410:
  *         description: 유효하지 않은 리프레시 토큰
  *         content:
@@ -248,6 +266,9 @@ router.post('/signup', signup);
  *                 message:
  *                   type: string
  *                   example: 유효하지 않은 리프레시 토큰입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1009
  */
 router.post('/refreshAccessToken', refreshAccessToken);
 

@@ -12,7 +12,7 @@ import {
   SignupRequest,
 } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
-import { AUTH_ERROR, AUTH_SUCCESS } from '../constants/index.js';
+import { AUTH_ERROR, AUTH_SUCCESS, ERROR_CODES } from '../constants/index.js';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -59,13 +59,13 @@ const login: ControllerFn = async (
 
     if (!user) {
       console.log('사용자를 찾을 수 없음:', userId);
-      createErrorResponse(res, 404, AUTH_ERROR.USER_NOT_FOUND);
+      createErrorResponse(res, 404, AUTH_ERROR.USER_NOT_FOUND, ERROR_CODES.AUTH_USER_NOT_FOUND);
       return;
     }
 
     if (!isValid) {
       console.log('비밀번호 불일치:', userId);
-      createErrorResponse(res, 403, AUTH_ERROR.INVALID_PASSWORD);
+      createErrorResponse(res, 403, AUTH_ERROR.INVALID_PASSWORD, ERROR_CODES.AUTH_INVALID_PASSWORD);
       return;
     }
 
@@ -109,7 +109,7 @@ const login: ControllerFn = async (
       secure: process.env.NODE_ENV === 'production', // HTTPS에서만 전송
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
-      path: '/'
+      path: '/',
     });
 
     createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.LOGIN_SUCCESS, {
@@ -133,14 +133,19 @@ const refreshAccessToken: ControllerFn = async (
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      createErrorResponse(res, 400, AUTH_ERROR.TOKEN_REQUIRED);
+      createErrorResponse(res, 400, AUTH_ERROR.TOKEN_REQUIRED, ERROR_CODES.AUTH_TOKEN_REQUIRED);
       return;
     }
 
     const { payload, newToken } = await verifyRefreshToken(refreshToken);
 
     if (!payload) {
-      createErrorResponse(res, 410, AUTH_ERROR.INVALID_REFRESH_TOKEN);
+      createErrorResponse(
+        res,
+        410,
+        AUTH_ERROR.INVALID_REFRESH_TOKEN,
+        ERROR_CODES.AUTH_INVALID_REFRESH_TOKEN
+      );
       return;
     }
 
@@ -199,7 +204,7 @@ const signup: ControllerFn = async (
     const { userId, password, nickname } = req.body as SignupRequest;
 
     if (!userId || !password || !nickname) {
-      createErrorResponse(res, 400, AUTH_ERROR.REQUIRED_FIELDS);
+      createErrorResponse(res, 400, AUTH_ERROR.REQUIRED_FIELDS, ERROR_CODES.AUTH_REQUIRED_FIELDS);
       return;
     }
 
@@ -208,7 +213,7 @@ const signup: ControllerFn = async (
     });
 
     if (existingUserId) {
-      createErrorResponse(res, 409, AUTH_ERROR.USER_ID_EXISTS);
+      createErrorResponse(res, 409, AUTH_ERROR.USER_ID_EXISTS, ERROR_CODES.AUTH_USER_ID_EXISTS);
       return;
     }
 
@@ -217,7 +222,7 @@ const signup: ControllerFn = async (
     });
 
     if (existingNickname) {
-      createErrorResponse(res, 422, AUTH_ERROR.NICKNAME_EXISTS);
+      createErrorResponse(res, 422, AUTH_ERROR.NICKNAME_EXISTS, ERROR_CODES.AUTH_NICKNAME_EXISTS);
       return;
     }
 

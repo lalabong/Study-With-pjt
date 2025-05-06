@@ -5,12 +5,18 @@ import { ApiResponse } from '../types/index.js';
  * @param res Express 응답 객체
  * @param status HTTP 상태 코드
  * @param message 에러 메시지
+ * @param errorCode 오류 코드 (옵션)
  */
-export const createErrorResponse = (res: Response, status: number, message: string): void => {
-  const errorResponse: ApiResponse<null> = {
+export const createErrorResponse = (res: Response, status: number, message: string, errorCode?: number): void => {
+  const errorResponse: ApiResponse<null> & { errorCode?: number } = {
     status: 'error',
     message,
   };
+  
+  if (errorCode) {
+    errorResponse.errorCode = errorCode;
+  }
+  
   res.status(status).json(errorResponse);
 };
 

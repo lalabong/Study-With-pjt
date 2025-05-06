@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma.js';
 import { ControllerFn, AuthRequest } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
-import { AUTH_ERROR, SCHEDULE_ERROR, USER_ERROR } from '../constants/errorMessages.js';
+import { AUTH_ERROR, SCHEDULE_ERROR, USER_ERROR, ERROR_CODES } from '../constants/errorMessages.js';
 import { SCHEDULE_SUCCESS } from '../constants/successMessages.js';
 import {
   DAILY_SCHEDULE_LIMIT,
@@ -25,12 +25,12 @@ export const getUserSchedules: ControllerFn = async (
     });
 
     if (!user) {
-      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
       return;
     }
 
     let whereClause: any = {
-      userId: user.id,
+      userCuid: user.id,
     };
 
     if (startDate && endDate) {
@@ -66,17 +66,27 @@ export const createSchedule: ControllerFn = async (
     const authUser = (req as AuthRequest).user;
 
     if (!authUser) {
-      createErrorResponse(res, 401, USER_ERROR.UNAUTHORIZED);
+      createErrorResponse(res, 401, USER_ERROR.UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
       return;
     }
 
     if (!title) {
-      createErrorResponse(res, 400, SCHEDULE_ERROR.REQUIRED_FIELDS);
+      createErrorResponse(
+        res,
+        400,
+        SCHEDULE_ERROR.REQUIRED_FIELDS,
+        ERROR_CODES.SCHEDULE_REQUIRED_FIELDS
+      );
       return;
     }
 
     if (startTime >= endTime) {
-      createErrorResponse(res, 400, SCHEDULE_ERROR.INVALID_TIME_RANGE);
+      createErrorResponse(
+        res,
+        422,
+        SCHEDULE_ERROR.INVALID_TIME_RANGE,
+        ERROR_CODES.SCHEDULE_INVALID_TIME_RANGE
+      );
       return;
     }
 
@@ -89,7 +99,7 @@ export const createSchedule: ControllerFn = async (
 
     const schedulesForDate = await prisma.schedule.findMany({
       where: {
-        userId: authUser.id,
+        userCuid: authUser.id,
         AND: [
           {
             startTime: {
@@ -106,13 +116,18 @@ export const createSchedule: ControllerFn = async (
     });
 
     if (schedulesForDate.length >= DAILY_SCHEDULE_LIMIT) {
-      createErrorResponse(res, 400, SCHEDULE_ERROR.DAILY_SCHEDULE_LIMIT);
+      createErrorResponse(
+        res,
+        429,
+        SCHEDULE_ERROR.DAILY_SCHEDULE_LIMIT,
+        ERROR_CODES.SCHEDULE_DAILY_SCHEDULE_LIMIT
+      );
       return;
     }
 
     // 사용자의 마지막 일정 순서 확인
     const lastSchedule = await prisma.schedule.findFirst({
-      where: { userId: authUser.id },
+      where: { userCuid: authUser.id },
       orderBy: [{ order: 'desc' }],
     });
 
@@ -125,7 +140,7 @@ export const createSchedule: ControllerFn = async (
         startTime: startTime,
         endTime: endTime,
         status,
-        userId: authUser.id,
+        userCuid: authUser.id,
         order: newOrder,
       },
     });
@@ -150,7 +165,7 @@ export const updateSchedule: ControllerFn = async (
     const authUser = (req as AuthRequest).user;
 
     if (!authUser) {
-      createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED);
+      createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED, ERROR_CODES.AUTH_UNAUTHORIZED);
       return;
     }
 
@@ -159,12 +174,22 @@ export const updateSchedule: ControllerFn = async (
     });
 
     if (!existingSchedule) {
-      createErrorResponse(res, 404, SCHEDULE_ERROR.SCHEDULE_NOT_FOUND);
+      createErrorResponse(
+        res,
+        404,
+        SCHEDULE_ERROR.SCHEDULE_NOT_FOUND,
+        ERROR_CODES.SCHEDULE_NOT_FOUND
+      );
       return;
     }
 
-    if (existingSchedule.userId !== authUser.id) {
-      createErrorResponse(res, 403, SCHEDULE_ERROR.PERMISSION_DENIED);
+    if (existingSchedule.userCuid !== authUser.id) {
+      createErrorResponse(
+        res,
+        403,
+        SCHEDULE_ERROR.PERMISSION_DENIED,
+        ERROR_CODES.SCHEDULE_PERMISSION_DENIED
+      );
       return;
     }
 
@@ -179,7 +204,12 @@ export const updateSchedule: ControllerFn = async (
 
       // 시작 시간이 종료 시간보다 이후인지 확인
       if (start >= end) {
-        createErrorResponse(res, 400, SCHEDULE_ERROR.INVALID_TIME_RANGE);
+        createErrorResponse(
+          res,
+          422,
+          SCHEDULE_ERROR.INVALID_TIME_RANGE,
+          ERROR_CODES.SCHEDULE_INVALID_TIME_RANGE
+        );
         return;
       }
 
@@ -211,7 +241,7 @@ export const deleteSchedule: ControllerFn = async (
     const authUser = (req as AuthRequest).user;
 
     if (!authUser) {
-      createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED);
+      createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED, ERROR_CODES.AUTH_UNAUTHORIZED);
       return;
     }
 
@@ -220,12 +250,22 @@ export const deleteSchedule: ControllerFn = async (
     });
 
     if (!existingSchedule) {
-      createErrorResponse(res, 404, SCHEDULE_ERROR.SCHEDULE_NOT_FOUND);
+      createErrorResponse(
+        res,
+        404,
+        SCHEDULE_ERROR.SCHEDULE_NOT_FOUND,
+        ERROR_CODES.SCHEDULE_NOT_FOUND
+      );
       return;
     }
 
-    if (existingSchedule.userId !== authUser.id) {
-      createErrorResponse(res, 403, SCHEDULE_ERROR.PERMISSION_DENIED);
+    if (existingSchedule.userCuid !== authUser.id) {
+      createErrorResponse(
+        res,
+        403,
+        SCHEDULE_ERROR.PERMISSION_DENIED,
+        ERROR_CODES.SCHEDULE_PERMISSION_DENIED
+      );
       return;
     }
 
@@ -251,7 +291,7 @@ export const updateScheduleOrder: ControllerFn = async (
     const authUser = (req as AuthRequest).user;
 
     if (!authUser) {
-      createErrorResponse(res, 401, USER_ERROR.UNAUTHORIZED);
+      createErrorResponse(res, 401, USER_ERROR.UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
       return;
     }
 
@@ -260,24 +300,39 @@ export const updateScheduleOrder: ControllerFn = async (
     });
 
     if (!existingSchedule) {
-      createErrorResponse(res, 404, SCHEDULE_ERROR.SCHEDULE_NOT_FOUND);
+      createErrorResponse(
+        res,
+        404,
+        SCHEDULE_ERROR.SCHEDULE_NOT_FOUND,
+        ERROR_CODES.SCHEDULE_NOT_FOUND
+      );
       return;
     }
 
-    if (existingSchedule.userId !== authUser.id) {
-      createErrorResponse(res, 403, SCHEDULE_ERROR.PERMISSION_DENIED);
+    if (existingSchedule.userCuid !== authUser.id) {
+      createErrorResponse(
+        res,
+        403,
+        SCHEDULE_ERROR.PERMISSION_DENIED,
+        ERROR_CODES.SCHEDULE_PERMISSION_DENIED
+      );
       return;
     }
 
     // 사용자의 모든 일정을 순서대로 가져옴
     const userSchedules = await prisma.schedule.findMany({
-      where: { userId: authUser.id },
+      where: { userCuid: authUser.id },
       orderBy: [{ order: 'asc' }],
     });
 
     // 유효한 targetPosition 범위 확인
     if (targetPosition < 0 || targetPosition >= userSchedules.length) {
-      createErrorResponse(res, 400, SCHEDULE_ERROR.INVALID_ORDER_POSITION);
+      createErrorResponse(
+        res,
+        422,
+        SCHEDULE_ERROR.INVALID_ORDER_POSITION,
+        ERROR_CODES.SCHEDULE_INVALID_ORDER_POSITION
+      );
       return;
     }
 
@@ -326,9 +381,9 @@ export const updateScheduleOrder: ControllerFn = async (
   }
 };
 
-async function reorderAllSchedules(userId: string): Promise<void> {
+async function reorderAllSchedules(userCuid: string): Promise<void> {
   const schedules = await prisma.schedule.findMany({
-    where: { userId },
+    where: { userCuid: userCuid },
     orderBy: [{ order: 'asc' }],
   });
 

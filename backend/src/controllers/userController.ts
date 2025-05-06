@@ -5,7 +5,7 @@ import { ko } from 'date-fns/locale';
 import prisma from '../lib/prisma.js';
 import { ControllerFn } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
-import { USER_ERROR } from '../constants/errorMessages.js';
+import { USER_ERROR, ERROR_CODES } from '../constants/errorMessages.js';
 import { USER_SUCCESS } from '../constants/successMessages.js';
 import { AUTH_ERROR } from '../constants/errorMessages.js';
 import { getProfileImgPath } from '../middlewares/fileMiddleware.js';
@@ -29,7 +29,7 @@ const getUserInfo: ControllerFn = async (
       },
     });
     if (!user) {
-      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
       return;
     }
 
@@ -60,7 +60,7 @@ const getUserTimeLogs: ControllerFn = async (
     });
 
     if (!user) {
-      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
       return;
     }
 
@@ -70,12 +70,12 @@ const getUserTimeLogs: ControllerFn = async (
     let endDate: Date | null = null;
 
     let whereClause: {
-      userId: string;
+      userCuid: string;
       date?: {
         gte?: Date;
         lte?: Date;
       };
-    } = { userId: user.id };
+    } = { userCuid: user.id };
     let dailyLogs: Record<string, any> = {};
     let monthlyRanges: { start: Date; end: Date; month: string }[] = [];
 
@@ -85,7 +85,7 @@ const getUserTimeLogs: ControllerFn = async (
       endDate = endOfWeek(baseDate, { locale: ko, weekStartsOn: 1 });
 
       whereClause = {
-        userId: user.id,
+        userCuid: user.id,
         date: {
           gte: startDate,
           lte: endDate,
@@ -120,7 +120,7 @@ const getUserTimeLogs: ControllerFn = async (
 
       // 6개월 범위로 쿼리 설정
       whereClause = {
-        userId: user.id,
+        userCuid: user.id,
         date: {
           gte: monthlyRanges[5].start, // 가장 과거 달의 시작일
           lte: monthlyRanges[0].end, // 현재 달의 마지막 일
@@ -134,7 +134,7 @@ const getUserTimeLogs: ControllerFn = async (
       endDate = baseDate;
 
       whereClause = {
-        userId: user.id,
+        userCuid: user.id,
         date: {
           gte: startDate,
           lte: endDate,
@@ -241,7 +241,7 @@ const getUserTotalStudyTime: ControllerFn = async (
     });
 
     if (!user) {
-      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
       return;
     }
 
@@ -275,7 +275,7 @@ const patchUserProfileImg: ControllerFn = async (
     });
 
     if (!userExists) {
-      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND);
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
       return;
     }
 
@@ -319,7 +319,7 @@ const patchUserNickname: ControllerFn = async (
     const { nickname } = req.body;
 
     if (!nickname || nickname.length > 50) {
-      createErrorResponse(res, 400, USER_ERROR.INVALID_NICKNAME);
+      createErrorResponse(res, 400, USER_ERROR.INVALID_NICKNAME, ERROR_CODES.USER_INVALID_NICKNAME);
       return;
     }
 
@@ -331,7 +331,7 @@ const patchUserNickname: ControllerFn = async (
     });
 
     if (existingUser) {
-      createErrorResponse(res, 409, AUTH_ERROR.NICKNAME_EXISTS);
+      createErrorResponse(res, 409, AUTH_ERROR.NICKNAME_EXISTS, ERROR_CODES.AUTH_NICKNAME_EXISTS);
       return;
     }
 
