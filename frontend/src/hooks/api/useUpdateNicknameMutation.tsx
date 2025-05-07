@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { updateUserNickname } from '@api/user/updateUserNickname';
+import { patchUserNickname } from '@api/user/patchUserNickname';
 
 import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
@@ -28,7 +28,7 @@ export const useUpdateNicknameMutation = ({ userId }: UpdateNicknameParams) => {
       }
 
       try {
-        const response = await updateUserNickname(userId, data);
+        const response = await patchUserNickname(userId, data);
 
         if (!response.data) {
           throw new Error(USER_ERROR_MESSAGES.UPDATE_NICKNAME_FAILED);
@@ -51,21 +51,29 @@ export const useUpdateNicknameMutation = ({ userId }: UpdateNicknameParams) => {
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 400) {
-          toast.error(USER_ERROR_MESSAGES.NICKNAME_MAX_LENGTH);
-          return;
+        const errorCode = (error as AxiosError<{ errorCode?: number }>).response?.data?.errorCode;
+
+        switch (errorCode) {
+          case 3001:
+            toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+            return;
+          case 3002:
+            toast.error(USER_ERROR_MESSAGES.NICKNAME_MAX_LENGTH);
+            return;
+          case 1004:
+            toast.error(USER_ERROR_MESSAGES.NICKNAME_EXISTS);
+            return;
+          case 2001:
+            toast.error(USER_ERROR_MESSAGES.SERVER_ERROR);
+            return;
+          default:
+            toast.error(USER_ERROR_MESSAGES.UPDATE_NICKNAME_FAILED);
+            console.error('닉네임 업데이트 실패:', error);
         }
-        if (error.response?.status === 404) {
-          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
-          return;
-        }
-        if (error.response?.status === 409) {
-          toast.error(USER_ERROR_MESSAGES.NICKNAME_EXISTS);
-          return;
-        }
+      } else {
+        toast.error(USER_ERROR_MESSAGES.UPDATE_NICKNAME_FAILED);
+        console.error('닉네임 업데이트 실패:', error);
       }
-      toast.error(USER_ERROR_MESSAGES.UPDATE_NICKNAME_FAILED);
-      console.error('닉네임 업데이트 실패:', error);
     },
   });
 };

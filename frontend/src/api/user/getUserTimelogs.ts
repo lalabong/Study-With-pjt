@@ -2,13 +2,26 @@ import { axiosInstance } from '@api/axiosInstance';
 
 import { MYPAGE_ENDPOINTS } from '@constants/api';
 
-import { ApiResponse, TimeLogsResponse } from '@/types/api';
+import { ApiResponse, MonthlyTimeLog, PeriodInfo, TimeRecord, WeeklyTimeLog } from '@/types/api';
+
+interface GetUserTimeLogsRequest {
+  userId: string;
+  period?: string;
+  date?: string;
+}
+
+export interface TimeLogsResponse {
+  totalTime: TimeRecord;
+  periodInfo: PeriodInfo;
+  weeklyData?: WeeklyTimeLog[];
+  monthlyData?: MonthlyTimeLog[];
+}
 
 export const getUserTimeLogs = async (
-  userId: string,
-  period: string = 'week',
-  date?: string,
+  data: GetUserTimeLogsRequest,
 ): Promise<ApiResponse<TimeLogsResponse>> => {
+  const { userId, period, date } = data;
+
   const currentDate = date || new Date().toISOString().split('T')[0];
 
   const response = await axiosInstance.get(

@@ -1,7 +1,14 @@
+import { axiosInstance } from '@api/axiosInstance';
+
 import { AUTH_ENDPOINTS } from '@constants/api';
 
-import { axiosInstance } from '@/api/axiosInstance';
-import { ApiResponse, SignupRequest } from '@/types/api';
+import { ApiResponse } from '@/types/api';
+
+import { PostLoginRequest } from './postLogin';
+
+export interface SignupRequest extends PostLoginRequest {
+  nickname: string;
+}
 
 export const postSignup = async ({
   userId,

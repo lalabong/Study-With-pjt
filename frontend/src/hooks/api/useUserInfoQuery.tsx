@@ -20,7 +20,7 @@ export const useUserInfoQuery = ({ userId, enabled = true }: UseUserInfoQueryPar
   const query = useQuery({
     queryKey: [USER_QUERY_KEYS.USER_INFO, userId],
     queryFn: async () => {
-      const response = await getUserInfo(userId);
+      const response = await getUserInfo({ userId });
       return response.data;
     },
     enabled: !!userId && enabled,
@@ -28,14 +28,19 @@ export const useUserInfoQuery = ({ userId, enabled = true }: UseUserInfoQueryPar
 
   useEffect(() => {
     if (query.error) {
-      const error = query.error as AxiosError;
-      if (error.response?.status === 401) {
-        toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
-      } else if (error.response?.status === 404) {
-        toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
-      } else {
-        toast.error(USER_ERROR_MESSAGES.GET_USER_INFO_FAILED);
-        console.error('사용자 정보 조회 중 오류 발생:', error);
+      const error = query.error as AxiosError<{ errorCode?: number }>;
+      const errorCode = error.response?.data?.errorCode;
+
+      switch (errorCode) {
+        case 1005:
+          toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
+          break;
+        case 3001:
+          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+          break;
+        default:
+          toast.error(USER_ERROR_MESSAGES.GET_USER_INFO_FAILED);
+          console.error('사용자 정보 조회 중 오류 발생:', error);
       }
     }
   }, [query.error]);

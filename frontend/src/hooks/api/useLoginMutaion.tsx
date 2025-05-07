@@ -3,20 +3,19 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import { postLogin } from '@api/user/postLogin';
+import { PostLoginRequest } from '@api/user/postLogin';
 
 import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
 
 import { useAuthStore } from '@stores/authStore';
 
-import { LoginRequest } from '@/types/api';
-
 export const useLoginMutation = () => {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setUser = useAuthStore((state) => state.setUser);
 
   return useMutation({
-    mutationFn: async (data: LoginRequest) => {
+    mutationFn: async (data: PostLoginRequest) => {
       try {
         const response = await postLogin(data);
 
@@ -48,17 +47,23 @@ export const useLoginMutation = () => {
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 403) {
-          toast.error(USER_ERROR_MESSAGES.PASSWORD_MISMATCH);
-          return;
+        const errorCode = error?.response?.data?.errorCode;
+
+        switch (errorCode) {
+          case 1014:
+            toast.error(USER_ERROR_MESSAGES.PASSWORD_MISMATCH);
+            return;
+          case 1013:
+            toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+            return;
+          default:
+            toast.error(USER_ERROR_MESSAGES.LOGIN_FAILED);
+            console.error('로그인 실패:', error);
         }
-        if (error.response?.status === 404) {
-          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
-          return;
-        }
+      } else {
+        toast.error(USER_ERROR_MESSAGES.UNKNOWN_ERROR);
+        console.error('로그인 실패:', error);
       }
-      toast.error(USER_ERROR_MESSAGES.UNKNOWN_ERROR);
-      console.error('로그인 실패:', error);
     },
   });
 };

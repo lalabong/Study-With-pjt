@@ -33,14 +33,16 @@ export const useUserSchedulesQuery = ({
 
   useEffect(() => {
     if (query.error) {
-      const error = query.error as AxiosError;
-      if (error.response?.status === 401) {
-        toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
-      } else if (error.response?.status === 404) {
-        toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
-      } else {
-        toast.error(USER_ERROR_MESSAGES.FETCH_SCHEDULES_FAILED);
-        console.error('사용자 일정 조회 중 오류 발생:', error);
+      const error = query.error as AxiosError<{ errorCode?: number }>;
+      const errorCode = error.response?.data?.errorCode;
+
+      switch (errorCode) {
+        case 3001:
+          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+          break;
+        default:
+          toast.error(USER_ERROR_MESSAGES.FETCH_SCHEDULES_FAILED);
+          console.error('사용자 일정 조회 중 오류 발생:', error);
       }
     }
   }, [query.error]);

@@ -56,16 +56,16 @@ export const useUpdateScheduleOrderMutation = () => {
         const errorCode = error?.response?.data?.errorCode;
 
         switch (errorCode) {
-          case 3401:
+          case 3006:
             toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
             return;
-          case 4403:
+          case 4002:
             toast.error(SCHEDULE_ERROR_MESSAGES.PERMISSION_DENIED);
             return;
-          case 4404:
+          case 4001:
             toast.error(SCHEDULE_ERROR_MESSAGES.SCHEDULE_NOT_FOUND);
             return;
-          case 4422:
+          case 4005:
             toast.error(SCHEDULE_ERROR_MESSAGES.INVALID_POSITION);
             return;
           default:

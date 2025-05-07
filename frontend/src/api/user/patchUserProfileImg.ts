@@ -4,18 +4,18 @@ import { MYPAGE_ENDPOINTS } from '@constants/api';
 
 import { ApiResponse } from '@/types/api';
 
-interface UpdateProfileImgRequest {
+interface PatchUserProfileImgRequest {
   userId: string;
   profileImg: string | File;
 }
 
-interface UpdateProfileImgResponse {
+interface PatchUserProfileImgResponse {
   profileImg: string | null;
 }
 
-export const updateUserProfileImg = async (
-  data: UpdateProfileImgRequest,
-): Promise<ApiResponse<UpdateProfileImgResponse>> => {
+export const patchUserProfileImg = async (
+  data: PatchUserProfileImgRequest,
+): Promise<ApiResponse<PatchUserProfileImgResponse>> => {
   // File 객체인 경우에만 FormData 사용
   if (data.profileImg instanceof File) {
     const formData = new FormData();

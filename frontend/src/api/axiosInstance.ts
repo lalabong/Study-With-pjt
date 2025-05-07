@@ -18,14 +18,14 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const logErrorByStatus = (status: number, error: AxiosError): void => {
-  const statusToMessageMap: Record<number, string> = {
-    400: API_ERROR_MESSAGES.BAD_REQUEST,
-    403: API_ERROR_MESSAGES.FORBIDDEN,
-    404: API_ERROR_MESSAGES.NOT_FOUND,
+const logErrorByErrorCode = (errorCode: number, error: AxiosError): void => {
+  const errorCodeToMessageMap: Record<number, string> = {
+    1002: API_ERROR_MESSAGES.BAD_REQUEST,
+    1012: API_ERROR_MESSAGES.FORBIDDEN,
+    1013: API_ERROR_MESSAGES.NOT_FOUND,
   };
 
-  const errorMessage = statusToMessageMap[status] || API_ERROR_MESSAGES.REQUEST_FAILED;
+  const errorMessage = errorCodeToMessageMap[errorCode] || API_ERROR_MESSAGES.REQUEST_FAILED;
   console.error(errorMessage, error);
 };
 
@@ -62,8 +62,9 @@ const handleResponseSuccess = (response: AxiosResponse) => {
   return response;
 };
 
-const handleResponseError = async (error: AxiosError) => {
+const handleResponseError = async (error: AxiosError<{ errorCode?: number }>) => {
   const originalRequest = error.config as ExtendedAxiosRequestConfig;
+  const errorCode = error.response?.data?.errorCode;
 
   // 로그인 및 회원가입 요청은 토큰 갱신 시도하지 않음
   const isAuthRequest =
@@ -104,10 +105,12 @@ const handleResponseError = async (error: AxiosError) => {
       redirectToLogin();
 
       if (refreshError instanceof AxiosError) {
-        if (refreshError.response?.status === 400) {
+        const refreshErrorCode = refreshError.response?.data?.errorCode;
+
+        if (refreshErrorCode === 1012) {
           return Promise.reject(AUTH_ERROR_MESSAGES.TOKEN_NOT_FOUND);
         }
-        if (refreshError.response?.status === 401) {
+        if (refreshErrorCode === 1010) {
           return Promise.reject(AUTH_ERROR_MESSAGES.INVALID_TOKEN);
         }
       }
@@ -121,8 +124,8 @@ const handleResponseError = async (error: AxiosError) => {
     redirectToLogin();
   }
 
-  if (error.response) {
-    logErrorByStatus(error.response.status, error);
+  if (error.response && errorCode) {
+    logErrorByErrorCode(errorCode, error);
   }
 
   return Promise.reject(error);

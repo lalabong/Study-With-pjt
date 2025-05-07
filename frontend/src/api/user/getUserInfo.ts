@@ -6,7 +6,19 @@ import { User } from '@stores/authStore';
 
 import { ApiResponse } from '@/types/api';
 
-export const getUserInfo = async (userId: string): Promise<ApiResponse<User>> => {
+interface GetUserInfoRequest {
+  userId: string;
+}
+
+interface GetUserInfoResponse {
+  user: User;
+}
+
+export const getUserInfo = async (
+  data: GetUserInfoRequest,
+): Promise<ApiResponse<GetUserInfoResponse>> => {
+  const { userId } = data;
+
   const response = await axiosInstance.get(MYPAGE_ENDPOINTS.GET_USER_INFO(userId));
   console.log('사용자 정보 조회 응답:', response.data);
 

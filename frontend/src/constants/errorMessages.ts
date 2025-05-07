@@ -1,7 +1,7 @@
 export const USER_ERROR_MESSAGES = {
   ID_MIN_LENGTH: '아이디는 4자 이상이어야 합니다.',
   NICKNAME_MIN_LENGTH: '닉네임은 1자 이상이어야 합니다.',
-  NICKNAME_MAX_LENGTH: '닉네임은 50자 이하여야 합니다.',
+  NICKNAME_MAX_LENGTH: '닉네임은 10자 이하여야 합니다.',
   PASSWORD_MIN_LENGTH: '비밀번호는 8자 이상이어야 합니다.',
   PASSWORD_FORMAT: '비밀번호는 문자와 숫자를 모두 포함해야 합니다.',
   USER_NOT_FOUND: '존재하지 않는 사용자입니다.',
@@ -30,6 +30,10 @@ export const USER_ERROR_MESSAGES = {
 
   UPDATE_NICKNAME_FAILED: '닉네임 업데이트에 실패했습니다.',
   UPDATE_PROFILE_IMAGE_FAILED: '프로필 이미지 업데이트에 실패했습니다.',
+
+  FILE_TOO_LARGE: '파일 크기가 너무 큽니다. 최대 5MB까지 업로드 가능합니다.',
+  UNSUPPORTED_FILE_TYPE: '지원하지 않는 파일 형식입니다. (jpg, jpeg, png, gif만 가능)',
+  FILE_UPLOAD_ERROR: '파일 업로드 중 오류가 발생했습니다.',
 };
 
 export const AUTH_ERROR_MESSAGES = {

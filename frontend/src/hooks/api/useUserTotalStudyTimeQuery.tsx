@@ -23,7 +23,7 @@ export const useUserTotalStudyTimeQuery = ({
   const query = useQuery({
     queryKey: [USER_QUERY_KEYS.USER_TOTAL_STUDY_TIME, userId],
     queryFn: async () => {
-      const response = await getUserTotalStudyTime(userId);
+      const response = await getUserTotalStudyTime({ userId });
       return response.data;
     },
     enabled: !!userId && enabled,

@@ -27,7 +27,7 @@ export const useUserTimeLogsQuery = ({
   const query = useQuery({
     queryKey: [USER_QUERY_KEYS.USER_TIMELOGS, userId, period, date],
     queryFn: async () => {
-      const response = await getUserTimeLogs(userId, period, date);
+      const response = await getUserTimeLogs({ userId, period, date });
       return response.data;
     },
     enabled: !!userId && enabled,
@@ -35,14 +35,19 @@ export const useUserTimeLogsQuery = ({
 
   useEffect(() => {
     if (query.error) {
-      const error = query.error as AxiosError;
-      if (error.response?.status === 401) {
-        toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
-      } else if (error.response?.status === 404) {
-        toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
-      } else {
-        toast.error(USER_ERROR_MESSAGES.FETCH_TIMELOGS_FAILED);
-        console.error('사용자 시간 기록 조회 중 오류 발생:', error);
+      const error = query.error as AxiosError<{ errorCode?: number }>;
+      const errorCode = error.response?.data?.errorCode;
+
+      switch (errorCode) {
+        case 1005:
+          toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
+          break;
+        case 3001:
+          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+          break;
+        default:
+          toast.error(USER_ERROR_MESSAGES.FETCH_TIMELOGS_FAILED);
+          console.error('사용자 시간 기록 조회 중 오류 발생:', error);
       }
     }
   }, [query.error]);

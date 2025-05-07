@@ -57,16 +57,16 @@ export const useCreateScheduleMutation = () => {
         const errorCode = error?.response?.data?.errorCode;
 
         switch (errorCode) {
-          case 4001:
+          case 4004:
             toast.error(SCHEDULE_ERROR_MESSAGES.REQUIRED_FIELDS);
             return;
-          case 3401:
+          case 3006:
             toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
             return;
-          case 4422:
+          case 4003:
             toast.error(SCHEDULE_ERROR_MESSAGES.INVALID_TIME_RANGE);
             return;
-          case 4429:
+          case 4006:
             toast.error(SCHEDULE_ERROR_MESSAGES.DAILY_SCHEDULE_LIMIT);
             return;
           default:

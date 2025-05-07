@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { updateUserProfileImg } from '@api/user/updateUserProfileImg';
+import { patchUserProfileImg } from '@api/user/patchUserProfileImg';
 
 import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
@@ -25,7 +25,7 @@ export const useUpdateProfileImgMutation = ({ userId }: UpdateProfileImgParams) 
 
       try {
         console.log('프로필 이미지 업데이트 요청:', { userId, profileImg });
-        const response = await updateUserProfileImg({ userId, profileImg });
+        const response = await patchUserProfileImg({ userId, profileImg });
 
         if (!response.data) {
           throw new Error(USER_ERROR_MESSAGES.UPDATE_PROFILE_IMAGE_FAILED);
@@ -48,17 +48,35 @@ export const useUpdateProfileImgMutation = ({ userId }: UpdateProfileImgParams) 
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 400) {
-          toast.error(USER_ERROR_MESSAGES.INVALID_FORM);
-          return;
+        const errorCode = (error as AxiosError<{ errorCode?: number }>).response?.data?.errorCode;
+
+        switch (errorCode) {
+          case 3001:
+            toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+            return;
+          case 3003:
+            toast.error(USER_ERROR_MESSAGES.FILE_TOO_LARGE);
+            return;
+          case 3004:
+            toast.error(USER_ERROR_MESSAGES.UNSUPPORTED_FILE_TYPE);
+            return;
+          case 3005:
+            toast.error(USER_ERROR_MESSAGES.FILE_UPLOAD_ERROR);
+            return;
+          case 2001:
+            toast.error(USER_ERROR_MESSAGES.SERVER_ERROR);
+            return;
+          case 1005:
+            toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
+            return;
+          default:
+            toast.error(USER_ERROR_MESSAGES.UPDATE_PROFILE_IMAGE_FAILED);
+            console.error('프로필 이미지 업데이트 실패:', error);
         }
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
-          return;
-        }
+      } else {
+        toast.error(USER_ERROR_MESSAGES.UPDATE_PROFILE_IMAGE_FAILED);
+        console.error('프로필 이미지 업데이트 실패:', error);
       }
-      toast.error(USER_ERROR_MESSAGES.UPDATE_PROFILE_IMAGE_FAILED);
-      console.error('프로필 이미지 업데이트 실패:', error);
     },
   });
 };

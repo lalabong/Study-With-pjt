@@ -46,13 +46,13 @@ export const useDeleteScheduleMutation = () => {
         const errorCode = error?.response?.data?.errorCode;
 
         switch (errorCode) {
-          case 1401:
+          case 1005:
             toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
             return;
-          case 4403:
+          case 4002:
             toast.error(SCHEDULE_ERROR_MESSAGES.PERMISSION_DENIED);
             return;
-          case 4404:
+          case 4001:
             toast.error(SCHEDULE_ERROR_MESSAGES.SCHEDULE_NOT_FOUND);
             return;
           default:
