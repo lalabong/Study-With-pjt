@@ -10,6 +10,7 @@ import {
   SCHEDULE_ORDER_GAP,
   MIN_ORDER_GAP_THRESHOLD,
 } from '../constants/schedule.js';
+import { formatDateToYYYYMMDD } from '#src/utils/dateUtils';
 
 export const getUserSchedules: ControllerFn = async (
   req: Request,
@@ -62,7 +63,7 @@ export const createSchedule: ControllerFn = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { title, startTime, endTime, status = '대기중' } = req.body;
+    const { title, date, startTime, endTime, status = '대기중' } = req.body;
     const authUser = (req as AuthRequest).user;
 
     if (!authUser) {
@@ -91,11 +92,14 @@ export const createSchedule: ControllerFn = async (
     }
 
     // 일정 날짜의 시작과 끝 계산 (시작 시간 기준 날짜의 00:00:00부터 23:59:59까지)
-    const scheduleDateStart = new Date(startTime);
+    const scheduleDateStart = new Date(date);
     scheduleDateStart.setHours(0, 0, 0, 0);
 
     const scheduleDateEnd = new Date(scheduleDateStart);
     scheduleDateEnd.setHours(23, 59, 59, 999);
+
+    // date 필드를 위한 YYYY-MM-DD 형식의 문자열 생성
+    const dateString = formatDateToYYYYMMDD(date);
 
     const schedulesForDate = await prisma.schedule.findMany({
       where: {
@@ -137,6 +141,7 @@ export const createSchedule: ControllerFn = async (
     const newSchedule = await prisma.schedule.create({
       data: {
         title,
+        date: dateString, // date 필드에 날짜 문자열 저장
         startTime: startTime,
         endTime: endTime,
         status,
@@ -387,7 +392,6 @@ async function reorderAllSchedules(userCuid: string): Promise<void> {
     orderBy: [{ order: 'asc' }],
   });
 
-  // 1000 간격으로 새로 순서 부여
   const updates = schedules.map((schedule, index) =>
     prisma.schedule.update({
       where: { id: schedule.id },

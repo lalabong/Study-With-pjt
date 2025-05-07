@@ -67,7 +67,10 @@ const router = express.Router();
  *                             type: string
  *                           title:
  *                             type: string
- *                           startTime:
+ *                           date:
+ *                             type: string
+ *                             format: date
+ *                           startTime: 
  *                             type: string
  *                             format: date-time
  *                           endTime:
@@ -117,6 +120,10 @@ router.get('/user/:userId', getUserSchedules);
  *               title:
  *                 type: string
  *                 description: 일정 제목
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: 일정 날짜 (YYYY-MM-DD)
  *               startTime:
  *                 type: string
  *                 format: date-time
@@ -153,6 +160,9 @@ router.get('/user/:userId', getUserSchedules);
  *                           type: string
  *                         title:
  *                           type: string
+ *                         date:
+ *                           type: string
+ *                           format: date
  *                         startTime:
  *                           type: string
  *                           format: date-time
