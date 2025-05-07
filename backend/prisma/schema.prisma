@@ -12,9 +12,9 @@ datasource db {
 
 model User {
   id            String         @id @default(cuid()) @db.VarChar(36)
-  userId        String         @unique @db.VarChar(50) // 유저의 로그인 아이디
+  userId        String         @unique @db.VarChar(20) // 유저의 로그인 아이디
   password      String         @db.VarChar(255)
-  nickname      String         @unique @db.VarChar(50)
+  nickname      String         @unique @db.VarChar(10)
   profileImg    String?        @db.VarChar(255)
   totalStudyTime Int           @default(0) 
   createdAt     DateTime?      @default(now()) @db.Timestamp(0)
@@ -31,7 +31,7 @@ model User {
 
 model Room {
   id        String     @id @default(cuid()) @db.VarChar(36)
-  name      String     @db.VarChar(100)
+  name      String     @db.VarChar(50)
   ownerCuid   String
   createdAt DateTime?  @default(now()) @db.Timestamp(0)
   owner     User       @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
@@ -56,7 +56,8 @@ model RoomUser {
 model Schedule {
   id        String    @id @default(cuid()) @db.VarChar(36)
   userCuid    String
-  title     String    @db.VarChar(255)
+  title     String    @db.VarChar(50)
+  date      String    @db.VarChar(20)
   startTime DateTime  @db.DateTime(0)
   endTime   DateTime  @db.DateTime(0)
   order     Int       @default(0)

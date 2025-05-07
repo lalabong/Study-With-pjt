@@ -148,6 +148,7 @@ exports.Prisma.ScheduleScalarFieldEnum = {
   id: 'id',
   userCuid: 'userCuid',
   title: 'title',
+  date: 'date',
   startTime: 'startTime',
   endTime: 'endTime',
   order: 'order',
@@ -212,6 +213,7 @@ exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
   id: 'id',
   userCuid: 'userCuid',
   title: 'title',
+  date: 'date',
   status: 'status'
 };
 

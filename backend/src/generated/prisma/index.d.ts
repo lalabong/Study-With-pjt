@@ -4584,6 +4584,7 @@ export namespace Prisma {
     id: string | null
     userCuid: string | null
     title: string | null
+    date: string | null
     startTime: Date | null
     endTime: Date | null
     order: number | null
@@ -4595,6 +4596,7 @@ export namespace Prisma {
     id: string | null
     userCuid: string | null
     title: string | null
+    date: string | null
     startTime: Date | null
     endTime: Date | null
     order: number | null
@@ -4606,6 +4608,7 @@ export namespace Prisma {
     id: number
     userCuid: number
     title: number
+    date: number
     startTime: number
     endTime: number
     order: number
@@ -4627,6 +4630,7 @@ export namespace Prisma {
     id?: true
     userCuid?: true
     title?: true
+    date?: true
     startTime?: true
     endTime?: true
     order?: true
@@ -4638,6 +4642,7 @@ export namespace Prisma {
     id?: true
     userCuid?: true
     title?: true
+    date?: true
     startTime?: true
     endTime?: true
     order?: true
@@ -4649,6 +4654,7 @@ export namespace Prisma {
     id?: true
     userCuid?: true
     title?: true
+    date?: true
     startTime?: true
     endTime?: true
     order?: true
@@ -4747,6 +4753,7 @@ export namespace Prisma {
     id: string
     userCuid: string
     title: string
+    date: string
     startTime: Date
     endTime: Date
     order: number
@@ -4777,6 +4784,7 @@ export namespace Prisma {
     id?: boolean
     userCuid?: boolean
     title?: boolean
+    date?: boolean
     startTime?: boolean
     endTime?: boolean
     order?: boolean
@@ -4791,6 +4799,7 @@ export namespace Prisma {
     id?: boolean
     userCuid?: boolean
     title?: boolean
+    date?: boolean
     startTime?: boolean
     endTime?: boolean
     order?: boolean
@@ -4798,7 +4807,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type ScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userCuid" | "title" | "startTime" | "endTime" | "order" | "status" | "createdAt", ExtArgs["result"]["schedule"]>
+  export type ScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userCuid" | "title" | "date" | "startTime" | "endTime" | "order" | "status" | "createdAt", ExtArgs["result"]["schedule"]>
   export type ScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -4812,6 +4821,7 @@ export namespace Prisma {
       id: string
       userCuid: string
       title: string
+      date: string
       startTime: Date
       endTime: Date
       order: number
@@ -5190,6 +5200,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Schedule", 'String'>
     readonly userCuid: FieldRef<"Schedule", 'String'>
     readonly title: FieldRef<"Schedule", 'String'>
+    readonly date: FieldRef<"Schedule", 'String'>
     readonly startTime: FieldRef<"Schedule", 'DateTime'>
     readonly endTime: FieldRef<"Schedule", 'DateTime'>
     readonly order: FieldRef<"Schedule", 'Int'>
@@ -8428,6 +8439,7 @@ export namespace Prisma {
     id: 'id',
     userCuid: 'userCuid',
     title: 'title',
+    date: 'date',
     startTime: 'startTime',
     endTime: 'endTime',
     order: 'order',
@@ -8519,6 +8531,7 @@ export namespace Prisma {
     id: 'id',
     userCuid: 'userCuid',
     title: 'title',
+    date: 'date',
     status: 'status'
   };
 
@@ -8792,6 +8805,7 @@ export namespace Prisma {
     id?: StringFilter<"Schedule"> | string
     userCuid?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
+    date?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
     order?: IntFilter<"Schedule"> | number
@@ -8804,6 +8818,7 @@ export namespace Prisma {
     id?: SortOrder
     userCuid?: SortOrder
     title?: SortOrder
+    date?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
     order?: SortOrder
@@ -8820,6 +8835,7 @@ export namespace Prisma {
     NOT?: ScheduleWhereInput | ScheduleWhereInput[]
     userCuid?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
+    date?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
     order?: IntFilter<"Schedule"> | number
@@ -8832,6 +8848,7 @@ export namespace Prisma {
     id?: SortOrder
     userCuid?: SortOrder
     title?: SortOrder
+    date?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
     order?: SortOrder
@@ -8851,6 +8868,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Schedule"> | string
     userCuid?: StringWithAggregatesFilter<"Schedule"> | string
     title?: StringWithAggregatesFilter<"Schedule"> | string
+    date?: StringWithAggregatesFilter<"Schedule"> | string
     startTime?: DateTimeWithAggregatesFilter<"Schedule"> | Date | string
     endTime?: DateTimeWithAggregatesFilter<"Schedule"> | Date | string
     order?: IntWithAggregatesFilter<"Schedule"> | number
@@ -9234,6 +9252,7 @@ export namespace Prisma {
   export type ScheduleCreateInput = {
     id?: string
     title: string
+    date: string
     startTime: Date | string
     endTime: Date | string
     order?: number
@@ -9246,6 +9265,7 @@ export namespace Prisma {
     id?: string
     userCuid: string
     title: string
+    date: string
     startTime: Date | string
     endTime: Date | string
     order?: number
@@ -9256,6 +9276,7 @@ export namespace Prisma {
   export type ScheduleUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
@@ -9268,6 +9289,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userCuid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
@@ -9279,6 +9301,7 @@ export namespace Prisma {
     id?: string
     userCuid: string
     title: string
+    date: string
     startTime: Date | string
     endTime: Date | string
     order?: number
@@ -9289,6 +9312,7 @@ export namespace Prisma {
   export type ScheduleUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
@@ -9300,6 +9324,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userCuid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
@@ -9780,6 +9805,7 @@ export namespace Prisma {
     id?: SortOrder
     userCuid?: SortOrder
     title?: SortOrder
+    date?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
     order?: SortOrder
@@ -9795,6 +9821,7 @@ export namespace Prisma {
     id?: SortOrder
     userCuid?: SortOrder
     title?: SortOrder
+    date?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
     order?: SortOrder
@@ -9806,6 +9833,7 @@ export namespace Prisma {
     id?: SortOrder
     userCuid?: SortOrder
     title?: SortOrder
+    date?: SortOrder
     startTime?: SortOrder
     endTime?: SortOrder
     order?: SortOrder
@@ -10675,6 +10703,7 @@ export namespace Prisma {
   export type ScheduleCreateWithoutUserInput = {
     id?: string
     title: string
+    date: string
     startTime: Date | string
     endTime: Date | string
     order?: number
@@ -10685,6 +10714,7 @@ export namespace Prisma {
   export type ScheduleUncheckedCreateWithoutUserInput = {
     id?: string
     title: string
+    date: string
     startTime: Date | string
     endTime: Date | string
     order?: number
@@ -10867,6 +10897,7 @@ export namespace Prisma {
     id?: StringFilter<"Schedule"> | string
     userCuid?: StringFilter<"Schedule"> | string
     title?: StringFilter<"Schedule"> | string
+    date?: StringFilter<"Schedule"> | string
     startTime?: DateTimeFilter<"Schedule"> | Date | string
     endTime?: DateTimeFilter<"Schedule"> | Date | string
     order?: IntFilter<"Schedule"> | number
@@ -11721,6 +11752,7 @@ export namespace Prisma {
   export type ScheduleCreateManyUserInput = {
     id?: string
     title: string
+    date: string
     startTime: Date | string
     endTime: Date | string
     order?: number
@@ -11796,6 +11828,7 @@ export namespace Prisma {
   export type ScheduleUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
@@ -11806,6 +11839,7 @@ export namespace Prisma {
   export type ScheduleUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
@@ -11816,6 +11850,7 @@ export namespace Prisma {
   export type ScheduleUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    date?: StringFieldUpdateOperationsInput | string
     startTime?: DateTimeFieldUpdateOperationsInput | Date | string
     endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: IntFieldUpdateOperationsInput | number
