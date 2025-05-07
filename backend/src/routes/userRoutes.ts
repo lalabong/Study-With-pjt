@@ -78,7 +78,7 @@ const router = express.Router();
  *                   example: 사용자를 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3404
+ *                   example: 3001
  *       401:
  *         description: 인증 실패
  *         content:
@@ -94,7 +94,7 @@ const router = express.Router();
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1401
+ *                   example: 1005
  */
 router.get('/:userId', authMiddleware, getUserInfo);
 
@@ -228,7 +228,7 @@ router.get('/:userId', authMiddleware, getUserInfo);
  *                   example: 사용자를 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3404
+ *                   example: 3001
  *       401:
  *         description: 인증 실패
  *         content:
@@ -244,7 +244,7 @@ router.get('/:userId', authMiddleware, getUserInfo);
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1401
+ *                   example: 1005
  */
 router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
 
@@ -299,7 +299,7 @@ router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
  *                   example: 사용자를 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3404
+ *                   example: 3001
  *       401:
  *         description: 인증 실패
  *         content:
@@ -315,7 +315,7 @@ router.get('/:userId/timelogs', authMiddleware, getUserTimeLogs);
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1401
+ *                   example: 1005
  */
 router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
 
@@ -390,7 +390,7 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *                   example: 파일 업로드 오류가 발생했습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3004
+ *                   example: 3005
  *       404:
  *         description: 사용자를 찾을 수 없음
  *         content:
@@ -406,7 +406,7 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *                   example: 사용자를 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3404
+ *                   example: 3001
  *       413:
  *         description: 파일 크기가 너무 큼 (최대 5MB)
  *         content:
@@ -422,7 +422,7 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *                   example: 파일 크기가 너무 큽니다. 최대 5MB까지 업로드 가능합니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3002
+ *                   example: 3003
  *       415:
  *         description: 지원하지 않는 파일 형식 (jpg, jpeg, png, gif만 지원)
  *         content:
@@ -438,7 +438,7 @@ router.get('/:userId/totalStudyTime', authMiddleware, getUserTotalStudyTime);
  *                   example: 지원하지 않는 파일 형식입니다. (jpg, jpeg, png, gif만 가능)
  *                 errorCode:
  *                   type: integer
- *                   example: 3003
+ *                   example: 3004
  *       500:
  *         description: 서버 내부 오류
  *         content:
@@ -520,7 +520,7 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *                   example: 닉네임은 1자 이상 50자 이하여야 합니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3001
+ *                   example: 3002
  *       404:
  *         description: 사용자를 찾을 수 없습니다.
  *         content:
@@ -536,7 +536,7 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *                   example: 사용자를 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3404
+ *                   example: 3001
  *       409:
  *         description: 이미 존재하는 닉네임
  *         content:

@@ -92,7 +92,7 @@ const router = express.Router();
  *                   example: 사용자를 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3404
+ *                   example: 3001
  */
 router.get('/user/:userId', getUserSchedules);
 
@@ -181,7 +181,7 @@ router.get('/user/:userId', getUserSchedules);
  *                   example: 일정 이름을 입력해주세요.
  *                 errorCode:
  *                   type: integer
- *                   example: 4001
+ *                   example: 4004
  *       401:
  *         description: 인증 실패
  *         content:
@@ -197,7 +197,7 @@ router.get('/user/:userId', getUserSchedules);
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3401
+ *                   example: 3006
  *       422:
  *         description: 유효하지 않은 시간 범위
  *         content:
@@ -213,7 +213,7 @@ router.get('/user/:userId', getUserSchedules);
  *                   example: 시작 시간은 종료 시간보다 이전이어야 합니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4422
+ *                   example: 4003
  *       429:
  *         description: 일일 일정 한도 초과
  *         content:
@@ -229,7 +229,7 @@ router.get('/user/:userId', getUserSchedules);
  *                   example: 하루당 최대 20개까지 일정을 생성할 수 있습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4429
+ *                   example: 4006
  */
 router.post('/', authMiddleware, createSchedule);
 
@@ -321,7 +321,7 @@ router.post('/', authMiddleware, createSchedule);
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1401
+ *                   example: 1005
  *       403:
  *         description: 접근 권한 없음
  *         content:
@@ -337,7 +337,7 @@ router.post('/', authMiddleware, createSchedule);
  *                   example: 권한이 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4403
+ *                   example: 4002
  *       404:
  *         description: 일정을 찾을 수 없음
  *         content:
@@ -353,7 +353,7 @@ router.post('/', authMiddleware, createSchedule);
  *                   example: 일정을 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4404
+ *                   example: 4001
  *       422:
  *         description: 유효하지 않은 시간 범위
  *         content:
@@ -369,7 +369,7 @@ router.post('/', authMiddleware, createSchedule);
  *                   example: 시작 시간은 종료 시간보다 이전이어야 합니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4422
+ *                   example: 4003
  */
 router.patch('/:scheduleId', authMiddleware, updateSchedule);
 
@@ -418,7 +418,7 @@ router.patch('/:scheduleId', authMiddleware, updateSchedule);
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1401
+ *                   example: 1005
  *       403:
  *         description: 접근 권한 없음
  *         content:
@@ -434,7 +434,7 @@ router.patch('/:scheduleId', authMiddleware, updateSchedule);
  *                   example: 권한이 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4403
+ *                   example: 4002
  *       404:
  *         description: 일정을 찾을 수 없음
  *         content:
@@ -450,7 +450,7 @@ router.patch('/:scheduleId', authMiddleware, updateSchedule);
  *                   example: 일정을 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4404
+ *                   example: 4001
  */
 router.delete('/:scheduleId', authMiddleware, deleteSchedule);
 
@@ -533,7 +533,7 @@ router.delete('/:scheduleId', authMiddleware, deleteSchedule);
  *                   example: 로그인이 필요한 서비스입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 3401
+ *                   example: 3006
  *       403:
  *         description: 접근 권한 없음
  *         content:
@@ -549,7 +549,7 @@ router.delete('/:scheduleId', authMiddleware, deleteSchedule);
  *                   example: 권한이 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4403
+ *                   example: 4002
  *       404:
  *         description: 일정을 찾을 수 없음
  *         content:
@@ -565,7 +565,7 @@ router.delete('/:scheduleId', authMiddleware, deleteSchedule);
  *                   example: 일정을 찾을 수 없습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4404
+ *                   example: 4001
  *       422:
  *         description: 유효하지 않은 위치
  *         content:
@@ -581,7 +581,7 @@ router.delete('/:scheduleId', authMiddleware, deleteSchedule);
  *                   example: 유효하지 않은 위치입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 4422
+ *                   example: 4005
  */
 router.patch('/:scheduleId/order', authMiddleware, updateScheduleOrder);
 

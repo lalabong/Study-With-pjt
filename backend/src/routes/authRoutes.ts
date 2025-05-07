@@ -88,7 +88,7 @@ const router = express.Router();
  *                   example: 존재하지 않는 아이디입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1404
+ *                   example: 1013
  *       403:
  *         description: 비밀번호 불일치
  *         content:
@@ -104,7 +104,7 @@ const router = express.Router();
  *                   example: 비밀번호가 일치하지 않습니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1012
+ *                   example: 1014
  */
 router.post('/login', login);
 
@@ -252,7 +252,7 @@ router.post('/signup', signup);
  *                   example: 토큰이 필요합니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1011
+ *                   example: 1012
  *       410:
  *         description: 유효하지 않은 리프레시 토큰
  *         content:
@@ -268,7 +268,7 @@ router.post('/signup', signup);
  *                   example: 유효하지 않은 리프레시 토큰입니다.
  *                 errorCode:
  *                   type: integer
- *                   example: 1009
+ *                   example: 1010
  */
 router.post('/refreshAccessToken', refreshAccessToken);
 
