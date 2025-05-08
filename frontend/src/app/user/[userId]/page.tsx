@@ -9,22 +9,20 @@ import ProfileManager from '@components/mypage/Profile/ProfileManager';
 import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
 import TimeSection from '@components/mypage/TimeSection';
 
+import { getSchedules } from '@api/schedule/getSchedules';
+
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
-import { formatDateToString } from '@utils/date';
+import { formatDateToYYYYMMDD } from '@utils/date';
 
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
 
-import { getSchedules } from '@/api/schedule/getSchedules';
-
-interface UserProfilePageProps {
-  params: {
-    userId: string;
-  };
+export interface UserPageParams {
+  userId: string;
 }
 
-const UserProfilePage = async ({ params }: UserProfilePageProps) => {
+const UserProfilePage = async ({ params }: { params: Promise<UserPageParams> }) => {
   const { userId } = await params;
 
   const cookieStore = await cookies();
@@ -33,8 +31,8 @@ const UserProfilePage = async ({ params }: UserProfilePageProps) => {
   const isCurrentUser = currentUserId === userId;
 
   const now = new Date();
-  const startDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() - 1, 1));
-  const endDate = formatDateToString(new Date(now.getFullYear(), now.getMonth() + 2, 0));
+  const startDate = formatDateToYYYYMMDD(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+  const endDate = formatDateToYYYYMMDD(new Date(now.getFullYear(), now.getMonth() + 2, 0));
 
   const queryClient = getServerQueryClient();
 
