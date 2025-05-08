@@ -10,6 +10,7 @@ export interface Schedule {
   userCuid: string;
   createdAt: string;
   title: string;
+  date: string;
   startTime: string;
   endTime: string;
   status: '대기중' | '진행중' | '완료' | '취소';

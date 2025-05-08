@@ -6,8 +6,9 @@ import { ApiResponse, Schedule } from '@/types/api';
 
 interface PostScheduleRequest {
   title: string;
-  startTime: Date;
-  endTime: Date;
+  date: string;
+  startTime: Date | null;
+  endTime: Date | null;
 }
 
 interface PostScheduleResponse {
@@ -17,12 +18,13 @@ interface PostScheduleResponse {
 export const postSchedule = async (
   data: PostScheduleRequest,
 ): Promise<ApiResponse<PostScheduleResponse>> => {
-  const { title, startTime, endTime } = data;
+  const { title, date, startTime, endTime } = data;
 
   const requestData = {
     title,
-    startTime: startTime.toISOString(),
-    endTime: endTime.toISOString(),
+    date,
+    startTime: startTime?.toISOString(),
+    endTime: endTime?.toISOString(),
   };
 
   const response = await axiosInstance.post(SCHEDULE_ENDPOINTS.CREATE_SCHEDULE, requestData);

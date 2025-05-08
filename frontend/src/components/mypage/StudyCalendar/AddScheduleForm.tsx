@@ -13,6 +13,8 @@ import { useCreateScheduleMutation } from '@hooks/api/useCreateScheduleMutaion';
 
 import { useScheduleStore } from '@stores/scheduleStore';
 
+import { formatDateToYYYYMMDD } from '@utils/date';
+
 const AddScheduleForm = memo(() => {
   const [title, setTitle] = useState('');
 
@@ -49,8 +51,8 @@ const AddScheduleForm = memo(() => {
     if (!selectedDate || !title.trim()) return;
 
     // 시작 시간과 종료 시간을 Date 객체로 생성
-    let startDateTime: Date;
-    let endDateTime: Date;
+    let startDateTime: Date | null;
+    let endDateTime: Date | null;
 
     // 선택된 날짜를 기준으로 Date 객체 생성
     const selectedDateObj = selectedDate as Date;
@@ -60,9 +62,7 @@ const AddScheduleForm = memo(() => {
       startDateTime = new Date(selectedDateObj);
       startDateTime.setHours(startTime.hour(), startTime.minute(), 0, 0);
     } else {
-      // 시작 시간이 없으면 날짜의 00:00:00으로 설정
-      startDateTime = new Date(selectedDateObj);
-      startDateTime.setHours(0, 0, 0, 0);
+      startDateTime = null;
     }
 
     // 종료 시간 처리
@@ -70,13 +70,11 @@ const AddScheduleForm = memo(() => {
       endDateTime = new Date(selectedDateObj);
       endDateTime.setHours(endTime.hour(), endTime.minute(), 0, 0);
     } else {
-      // 종료 시간이 없으면 날짜의 23:59:59로 설정
-      endDateTime = new Date(selectedDateObj);
-      endDateTime.setHours(23, 59, 59, 999);
+      endDateTime = null;
     }
 
     // 종료 시간이 시작 시간보다 이전인 경우 조정
-    if (endDateTime < startDateTime) {
+    if (endDateTime && startDateTime && endDateTime < startDateTime) {
       endDateTime = new Date(startDateTime);
       endDateTime.setHours(startDateTime.getHours() + 1);
     }
@@ -84,6 +82,7 @@ const AddScheduleForm = memo(() => {
     createScheduleMutation.mutate(
       {
         title,
+        date: formatDateToYYYYMMDD(selectedDateObj),
         startTime: startDateTime,
         endTime: endDateTime,
       },
