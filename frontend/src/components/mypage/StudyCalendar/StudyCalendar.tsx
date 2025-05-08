@@ -16,7 +16,7 @@ import { useUserSchedulesQuery } from '@hooks/api/useUserSchedulesQuery';
 
 import { ScheduleItem, ScheduleStatus, useScheduleStore } from '@stores/scheduleStore';
 
-import { formatDateToString, getYearRange, isSameDate } from '@utils/date';
+import { formatDateToYYYYMMDD, getYearRange, isSameDate } from '@utils/date';
 
 import { Schedule } from '@/types/api';
 
@@ -36,8 +36,10 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
   // 기본 시작일과 종료일 계산 (현재 날짜 기준 전월 1일부터 다음달 마지막일까지)
   // 처음만 props로 받을지 고민.
   const [dateRange, setDateRange] = useState({
-    startDate: formatDateToString(new Date(activeDate.getFullYear(), activeDate.getMonth() - 1, 1)),
-    endDate: formatDateToString(new Date(activeDate.getFullYear(), activeDate.getMonth() + 2, 0)),
+    startDate: formatDateToYYYYMMDD(
+      new Date(activeDate.getFullYear(), activeDate.getMonth() - 1, 1),
+    ),
+    endDate: formatDateToYYYYMMDD(new Date(activeDate.getFullYear(), activeDate.getMonth() + 2, 0)),
   });
 
   const { data, refetch } = useUserSchedulesQuery({
@@ -102,6 +104,7 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
               startTime,
               endTime,
               status: (schedule.status as ScheduleStatus) || ('대기중' as ScheduleStatus),
+              order: schedule.order,
             };
           })
       : [];
@@ -155,8 +158,8 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     const year = date.getFullYear();
     const month = date.getMonth();
 
-    const newStartDate = formatDateToString(new Date(year, month - 1, 1)); // 지난 달 1일
-    const newEndDate = formatDateToString(new Date(year, month + 2, 0)); // 다음 달 말일
+    const newStartDate = formatDateToYYYYMMDD(new Date(year, month - 1, 1)); // 지난 달 1일
+    const newEndDate = formatDateToYYYYMMDD(new Date(year, month + 2, 0)); // 다음 달 말일
 
     setDateRange({
       startDate: newStartDate,
