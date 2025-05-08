@@ -8,8 +8,7 @@ import { toast } from 'react-toastify';
 
 import { getUserTotalStudyTime } from '@api/user/getUserTotalStudyTime';
 
-import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
-import { USER_QUERY_KEYS } from '@constants/queryKeys';
+import { USER_ERROR_MESSAGES, USER_QUERY_KEYS } from '@constants/index';
 
 interface UseUserTotalStudyTimeQueryParams {
   userId: string;

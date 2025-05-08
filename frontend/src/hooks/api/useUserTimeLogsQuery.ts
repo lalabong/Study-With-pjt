@@ -8,8 +8,7 @@ import { toast } from 'react-toastify';
 
 import { getUserTimeLogs } from '@api/user/getUserTimelogs';
 
-import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
-import { USER_QUERY_KEYS } from '@constants/queryKeys';
+import { USER_ERROR_MESSAGES, USER_QUERY_KEYS } from '@constants/index';
 
 interface UseUserTimeLogsQueryParams {
   userId: string;

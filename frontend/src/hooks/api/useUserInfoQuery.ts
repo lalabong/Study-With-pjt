@@ -8,8 +8,7 @@ import { toast } from 'react-toastify';
 
 import { getUserInfo } from '@api/user/getUserInfo';
 
-import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
-import { USER_QUERY_KEYS } from '@constants/queryKeys';
+import { USER_ERROR_MESSAGES, USER_QUERY_KEYS } from '@constants/index';
 
 interface UseUserInfoQueryParams {
   userId: string;

@@ -6,10 +6,10 @@ import { patchSchedule } from '@api/schedule/patchSchedule';
 
 import {
   SCHEDULE_ERROR_MESSAGES,
-  USER_ERROR_MESSAGES,
   SCHEDULE_SUCCESS_MESSAGES,
-} from '@constants/errorMessages';
-import { USER_QUERY_KEYS } from '@constants/queryKeys';
+  USER_ERROR_MESSAGES,
+  USER_QUERY_KEYS,
+} from '@constants/index';
 
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';

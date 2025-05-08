@@ -10,4 +10,8 @@ export const USER_SUCCESS_MESSAGES = {
 
 export const SCHEDULE_SUCCESS_MESSAGES = {
   FETCH_SCHEDULES_SUCCESS: '일정 조회에 성공했습니다.',
+  CREATE_SCHEDULE: '일정이 생성되었습니다.',
+  UPDATE_SCHEDULE: '일정이 수정되었습니다.',
+  DELETE_SCHEDULE: '일정이 삭제되었습니다.',
+  UPDATE_ORDER: '일정 순서가 변경되었습니다.',
 };

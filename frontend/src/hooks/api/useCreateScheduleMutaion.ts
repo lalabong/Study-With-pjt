@@ -9,8 +9,8 @@ import {
   SCHEDULE_ERROR_MESSAGES,
   SCHEDULE_SUCCESS_MESSAGES,
   USER_ERROR_MESSAGES,
-} from '@constants/errorMessages';
-import { USER_QUERY_KEYS } from '@constants/queryKeys';
+  USER_QUERY_KEYS,
+} from '@constants/index';
 
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
@@ -40,8 +40,8 @@ export const useCreateScheduleMutation = () => {
         addScheduleItem({
           id: newSchedule.id,
           name: newSchedule.title,
-          startTime: formatTimeToKorean(newSchedule.startTime),
-          endTime: formatTimeToKorean(newSchedule.endTime),
+          startTime: formatTimeToKorean(newSchedule?.startTime),
+          endTime: formatTimeToKorean(newSchedule?.endTime),
           status: '대기중',
           order: newSchedule.order,
         });

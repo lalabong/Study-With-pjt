@@ -62,10 +62,3 @@ export const SCHEDULE_ERROR_MESSAGES = {
   REQUIRED_FIELDS: '필수 항목을 모두 입력해주세요.',
   INVALID_POSITION: '유효하지 않은 위치입니다.',
 };
-
-export const SCHEDULE_SUCCESS_MESSAGES = {
-  CREATE_SCHEDULE: '일정이 생성되었습니다.',
-  UPDATE_SCHEDULE: '일정이 수정되었습니다.',
-  DELETE_SCHEDULE: '일정이 삭제되었습니다.',
-  UPDATE_ORDER: '일정 순서가 변경되었습니다.',
-};

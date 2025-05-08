@@ -7,8 +7,7 @@ import { toast } from 'react-toastify';
 
 import { postLogout } from '@api/user/postLogout';
 
-import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
-import { USER_SUCCESS_MESSAGES } from '@constants/successMessages';
+import { USER_ERROR_MESSAGES, USER_SUCCESS_MESSAGES } from '@constants/index';
 
 import { useAuthStore } from '@stores/authStore';
 

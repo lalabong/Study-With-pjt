@@ -5,11 +5,11 @@ import { toast } from 'react-toastify';
 import { patchScheduleOrder } from '@api/schedule/patchScheduleOrder';
 
 import {
+  SCHEDULE_SUCCESS_MESSAGES,
   SCHEDULE_ERROR_MESSAGES,
   USER_ERROR_MESSAGES,
-  SCHEDULE_SUCCESS_MESSAGES,
-} from '@constants/errorMessages';
-import { USER_QUERY_KEYS } from '@constants/queryKeys';
+  USER_QUERY_KEYS,
+} from '@constants/index';
 
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
