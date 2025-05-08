@@ -11,6 +11,7 @@ import {
   MIN_ORDER_GAP_THRESHOLD,
 } from '../constants/schedule.js';
 import { formatDateToYYYYMMDD } from '#src/utils/dateUtils';
+import { start } from 'repl';
 
 export const getUserSchedules: ControllerFn = async (
   req: Request,
@@ -81,7 +82,7 @@ export const createSchedule: ControllerFn = async (
       return;
     }
 
-    if (startTime >= endTime) {
+    if (startTime && endTime && startTime >= endTime) {
       createErrorResponse(
         res,
         422,
@@ -95,11 +96,9 @@ export const createSchedule: ControllerFn = async (
     const scheduleDateStart = new Date(date);
     scheduleDateStart.setHours(0, 0, 0, 0);
 
-    const scheduleDateEnd = new Date(scheduleDateStart);
+    const scheduleDateEnd = new Date(date);
     scheduleDateEnd.setHours(23, 59, 59, 999);
 
-    // date 필드를 위한 YYYY-MM-DD 형식의 문자열 생성
-    const dateString = formatDateToYYYYMMDD(date);
 
     const schedulesForDate = await prisma.schedule.findMany({
       where: {
@@ -138,20 +137,50 @@ export const createSchedule: ControllerFn = async (
     // 새 일정의 순서 결정 (마지막 일정 + 1000 또는 초기값)
     const newOrder = lastSchedule?.order ? lastSchedule.order + SCHEDULE_ORDER_GAP : 0;
 
+    let newStartTime = startTime ? new Date(startTime) : new Date(date);
+    let newEndTime = endTime ? new Date(endTime) : new Date(date);  
+
+    if (!startTime) {
+      newStartTime.setHours(0, 0, 0, 0);
+    }
+
+    if (!endTime) {
+      newEndTime.setHours(23, 59, 59, 999);
+    }
+
     const newSchedule = await prisma.schedule.create({
       data: {
         title,
-        date: dateString, // date 필드에 날짜 문자열 저장
-        startTime: startTime,
-        endTime: endTime,
+        date,
+        startTime: newStartTime,
+        endTime: newEndTime,
         status,
         userCuid: authUser.id,
         order: newOrder,
       },
     });
 
+    // 응답용 객체체
+    const responseSchedule: any = {
+      id: newSchedule.id,
+      title: newSchedule.title,
+      date: newSchedule.date,
+      status: newSchedule.status,
+      userCuid: newSchedule.userCuid,
+      order: newSchedule.order,
+      createdAt: newSchedule.createdAt
+    };
+
+    if (startTime) {
+      responseSchedule.startTime = newSchedule.startTime;
+    }
+    
+    if (endTime) {
+      responseSchedule.endTime = newSchedule.endTime;
+    }
+
     createSuccessResponse(res, 201, undefined, SCHEDULE_SUCCESS.CREATE_SCHEDULE, {
-      data: { schedule: newSchedule },
+      data: { schedule: responseSchedule },
     });
   } catch (error) {
     console.error('일정 생성 에러:', error);
