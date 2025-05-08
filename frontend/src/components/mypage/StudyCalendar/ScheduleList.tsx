@@ -25,7 +25,7 @@ const ScheduleList = memo(({ schedules }: { schedules: ScheduleItemType[] }) => 
         </div>
       ) : (
         <ul
-          className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] overflow-y-auto pr-1 no-scrollbar"
+          className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 no-scrollbar"
           aria-label="일정 목록"
         >
           {schedules.map((schedule) => (
