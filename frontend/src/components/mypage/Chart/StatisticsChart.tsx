@@ -8,13 +8,14 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
 import StatusMessage from '@components/common/StatusMessage';
 
+import { WEEK_DAYS_KO } from '@constants/calendar';
+
 import { useUserTimeLogsQuery } from '@hooks/api/useUserTimeLogsQuery';
 
 import { useAuthStore } from '@stores/authStore';
 
 import { addDays, addMonths, getCurrentDateString, isFutureDate } from '@utils/date';
 
-import { WEEK_DAYS_KO } from '@/constants/calendar';
 import { MonthlyTimeLog, WeeklyTimeLog } from '@/types/api';
 
 const ChartComponent = dynamic(() => import('@components/mypage/Chart/ChartWrapper'), {

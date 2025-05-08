@@ -6,7 +6,7 @@ import { HiCalendar } from 'react-icons/hi';
 
 import ScheduleItem from '@components/mypage/StudyCalendar/ScheduleItem';
 
-import { ScheduleItem as ScheduleItemType } from '@/stores/scheduleStore';
+import { ScheduleItem as ScheduleItemType } from '@stores/scheduleStore';
 
 const ScheduleList = memo(({ schedules }: { schedules: ScheduleItemType[] }) => {
   return (

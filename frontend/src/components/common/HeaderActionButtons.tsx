@@ -3,10 +3,9 @@
 import { HiBell, HiUserGroup } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
+import LogoutButton from '@components/mypage/Profile/LogoutButton';
 
-import { useAuthStore } from '@/stores/authStore';
-
-import { LogoutButton } from '../mypage';
+import { useAuthStore } from '@stores/authStore';
 
 interface HeaderActionButtonsProps {
   isHome?: boolean;

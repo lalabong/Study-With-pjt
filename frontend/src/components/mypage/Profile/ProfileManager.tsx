@@ -6,11 +6,10 @@ import StatusMessage from '@components/common/StatusMessage';
 import ProfileSection from '@components/mypage/Profile/ProfileSection';
 
 import { useUpdateNicknameMutation } from '@hooks/api/useUpdateNicknameMutation';
+import { useUpdateProfileImgMutation } from '@hooks/api/useUpdateProfileImageMutation';
 import { useUserInfoQuery } from '@hooks/api/useUserInfoQuery';
 
 import { useAuthStore } from '@stores/authStore';
-
-import { useUpdateProfileImgMutation } from '@/hooks/api/useUpdateProfileImageMutation';
 
 interface ProfileManagerProps {
   userId: string;
@@ -25,7 +24,7 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
 
   // 현재 사용자인 경우에는 쿼리를 비활성화
   const {
-    data: profileUser,
+    data: profileUserData,
     // isPending,
     // isError,
   } = useUserInfoQuery({
@@ -38,8 +37,8 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
       return loginUser;
     }
 
-    return profileUser;
-  }, [isCurrentUser, loginUser, profileUser]);
+    return profileUserData?.user;
+  }, [isCurrentUser, loginUser, profileUserData]);
 
   if (!user) {
     return <StatusMessage status="empty" message="사용자 정보를 찾을 수 없습니다." />;
