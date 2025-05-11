@@ -1,7 +1,8 @@
 import express from 'express';
 
 import {
-  getUserSchedules,
+  getUserScheduleDates,
+  getUserSchedulesByDate,
   createSchedule,
   updateSchedule,
   deleteSchedule,
@@ -13,10 +14,10 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/schedules/user/{userId}:
+ * /api/schedules/user/{userId}/dates:
  *   get:
- *     summary: 사용자 일정 조회
- *     description: 특정 사용자의 일정 목록을 조회합니다.
+ *     summary: 사용자의 일정이 있는 날짜만 조회
+ *     description: 특정 사용자의 일정이 있는 날짜 목록을 조회합니다.
  *     tags: [Schedules]
  *     security:
  *       - bearerAuth: []
@@ -41,7 +42,56 @@ const router = express.Router();
  *         description: 종료 날짜 (YYYY-MM-DD)
  *     responses:
  *       200:
- *         description: 일정 조회 성공
+ *         description: 일정 날짜 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 일정 조회에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     hasScheduleDates:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                         format: date
+ *                         example: "2023-10-15"
+ */
+router.get('/user/:userId/dates', getUserScheduleDates);
+
+/**
+ * @swagger
+ * /api/schedules/user/{userId}/byDate:
+ *   get:
+ *     summary: 사용자의 특정 날짜 일정 상세 조회
+ *     description: 사용자의 특정 날짜에 해당하는 모든 일정을 조회합니다.
+ *     tags: [Schedules]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 사용자 ID
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *         required: true
+ *         description: 조회할 날짜 (YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: 일정 상세 조회 성공
  *         content:
  *           application/json:
  *             schema:
@@ -80,24 +130,170 @@ const router = express.Router();
  *                             type: string
  *                           order:
  *                             type: integer
- *       404:
- *         description: 사용자를 찾을 수 없음
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: error
- *                 message:
- *                   type: string
- *                   example: 사용자를 찾을 수 없습니다.
- *                 errorCode:
- *                   type: integer
- *                   example: 3001
  */
-router.get('/user/:userId', getUserSchedules);
+router.get('/user/:userId/byDate', getUserSchedulesByDate);
+
+// /**
+//  * @swagger
+//  * /api/schedules/user/{userId}/all:
+//  *   get:
+//  *     summary: 사용자 모든 일정 조회 (날짜별 그룹화)
+//  *     description: 특정 사용자의 모든 일정을 날짜별로 그룹화하여 조회합니다.
+//  *     tags: [Schedules]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     parameters:
+//  *       - in: path
+//  *         name: userId
+//  *         schema:
+//  *           type: string
+//  *         required: true
+//  *         description: 사용자 ID
+//  *       - in: query
+//  *         name: startDate
+//  *         schema:
+//  *           type: string
+//  *           format: date
+//  *         description: 시작 날짜 (YYYY-MM-DD)
+//  *       - in: query
+//  *         name: endDate
+//  *         schema:
+//  *           type: string
+//  *           format: date
+//  *         description: 종료 날짜 (YYYY-MM-DD)
+//  *     responses:
+//  *       200:
+//  *         description: 일정 조회 성공
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 status:
+//  *                   type: string
+//  *                   example: success
+//  *                 message:
+//  *                   type: string
+//  *                   example: 일정 조회에 성공했습니다.
+//  *                 data:
+//  *                   type: object
+//  *                   properties:
+//  *                     schedulesByDate:
+//  *                       type: object
+//  *                       additionalProperties:
+//  *                         type: array
+//  *                         items:
+//  *                           type: object
+//  *                           properties:
+//  *                             id:
+//  *                               type: string
+//  *                             userCuid:
+//  *                               type: string
+//  *                             title:
+//  *                               type: string
+//  *                             date:
+//  *                               type: string
+//  *                               format: date
+//  *                             startTime: 
+//  *                               type: string
+//  *                               format: date-time
+//  *                             endTime:
+//  *                               type: string
+//  *                               format: date-time
+//  *                             status:
+//  *                               type: string
+//  *                             order:
+//  *                               type: integer
+//  */
+// router.get('/user/:userId/all', getUserAllSchedules);
+
+// /**
+//  * @swagger
+//  * /api/schedules/user/{userId}:
+//  *   get:
+//  *     summary: 사용자 일정 조회
+//  *     description: 특정 사용자의 일정 목록을 조회합니다.
+//  *     tags: [Schedules]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     parameters:
+//  *       - in: path
+//  *         name: userId
+//  *         schema:
+//  *           type: string
+//  *         required: true
+//  *         description: 사용자 ID
+//  *       - in: query
+//  *         name: startDate
+//  *         schema:
+//  *           type: string
+//  *           format: date
+//  *         description: 시작 날짜 (YYYY-MM-DD)
+//  *       - in: query
+//  *         name: endDate
+//  *         schema:
+//  *           type: string
+//  *           format: date
+//  *         description: 종료 날짜 (YYYY-MM-DD)
+//  *     responses:
+//  *       200:
+//  *         description: 일정 조회 성공
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 status:
+//  *                   type: string
+//  *                   example: success
+//  *                 message:
+//  *                   type: string
+//  *                   example: 일정 조회에 성공했습니다.
+//  *                 data:
+//  *                   type: object
+//  *                   properties:
+//  *                     schedules:
+//  *                       type: array
+//  *                       items:
+//  *                         type: object
+//  *                         properties:
+//  *                           id:
+//  *                             type: string
+//  *                           userCuid:
+//  *                             type: string
+//  *                           title:
+//  *                             type: string
+//  *                           date:
+//  *                             type: string
+//  *                             format: date
+//  *                           startTime: 
+//  *                             type: string
+//  *                             format: date-time
+//  *                           endTime:
+//  *                             type: string
+//  *                             format: date-time
+//  *                           status:
+//  *                             type: string
+//  *                           order:
+//  *                             type: integer
+//  *       404:
+//  *         description: 사용자를 찾을 수 없음
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 status:
+//  *                   type: string
+//  *                   example: error
+//  *                 message:
+//  *                   type: string
+//  *                   example: 사용자를 찾을 수 없습니다.
+//  *                 errorCode:
+//  *                   type: integer
+//  *                   example: 3001
+//  */
+// router.get('/user/:userId', getUserAllSchedules);
 
 /**
  * @swagger

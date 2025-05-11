@@ -13,7 +13,7 @@ import {
 import { formatDateToYYYYMMDD } from '#src/utils/dateUtils';
 import { start } from 'repl';
 
-export const getUserSchedules: ControllerFn = async (
+export const getUserScheduleDates: ControllerFn = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -37,13 +37,64 @@ export const getUserSchedules: ControllerFn = async (
 
     if (startDate && endDate) {
       whereClause.startTime = {
-        gte: new Date(startDate as string), // 시작 시간이 조회 시작 시간보다 크거나 같은 경우
-        lte: new Date(endDate as string), // 종료 시간이 조회 종료 시간보다 작거나 같은 경우
+        gte: new Date(startDate as string),
+        lte: new Date(endDate as string),
       };
     }
 
     const schedules = await prisma.schedule.findMany({
       where: whereClause,
+      select: {
+        date: true
+      },
+      distinct: ['date']
+    });
+
+    // 일정이 있는 날짜만 YYYY-MM-DD 포맷의 문자열 리스트로 변환
+    const hasScheduleDates = schedules.map(schedule => schedule.date);
+
+    createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_SCHEDULES, {
+      data: { hasScheduleDates },
+    });
+  } catch (error) {
+    console.error('일정 날짜 조회 에러:', error);
+    next(error);
+  }
+};
+
+export const getUserSchedulesByDate: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      createErrorResponse(
+        res,
+        400,
+        SCHEDULE_ERROR.REQUIRED_FIELDS,
+        ERROR_CODES.SCHEDULE_REQUIRED_FIELDS
+      );
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId },
+    });
+
+    if (!user) {
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
+      return;
+    }
+
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        userCuid: user.id,
+        date: date as string
+      },
       orderBy: {
         order: 'asc',
       },
@@ -53,10 +104,66 @@ export const getUserSchedules: ControllerFn = async (
       data: { schedules },
     });
   } catch (error) {
-    console.error('일정 조회 에러:', error);
+    console.error('일정 상세 조회 에러:', error);
     next(error);
   }
 };
+
+// export const getUserAllSchedules: ControllerFn = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<void> => {
+//   try {
+//     const { userId } = req.params;
+//     const { startDate, endDate } = req.query;
+
+//     const user = await prisma.user.findUnique({
+//       where: { userId },
+//     });
+
+//     if (!user) {
+//       createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
+//       return;
+//     }
+
+//     let whereClause: any = {
+//       userCuid: user.id,
+//     };
+
+//     if (startDate && endDate) {
+//       whereClause.startTime = {
+//         gte: new Date(startDate as string), // 시작 시간이 조회 시작 시간보다 크거나 같은 경우
+//         lte: new Date(endDate as string), // 종료 시간이 조회 종료 시간보다 작거나 같은 경우
+//       };
+//     }
+
+//     const schedules = await prisma.schedule.findMany({
+//       where: whereClause,
+//       orderBy: {
+//         order: 'asc',
+//       },
+//     });
+
+//     // 날짜별로 일정 그룹화
+//     const schedulesByDate: Record<string, any[]> = {};
+    
+//     schedules.forEach(schedule => {
+//       if (!schedulesByDate[schedule.date]) {
+//         schedulesByDate[schedule.date] = [];
+//       }
+      
+//       schedulesByDate[schedule.date].push(schedule);
+//     });
+
+//     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_SCHEDULES, {
+//       data: { schedulesByDate },
+//     });
+//   } catch (error) {
+//     console.error('일정 조회 에러:', error);
+//     next(error);
+//   }
+// };
 
 export const createSchedule: ControllerFn = async (
   req: Request,
@@ -135,8 +242,8 @@ export const createSchedule: ControllerFn = async (
     });
 
     // 새 일정의 순서 결정 (마지막 일정 + 1000 또는 초기값)
-    const newOrder = lastSchedule?.order ? lastSchedule.order + SCHEDULE_ORDER_GAP : 0;
-
+    const newOrder = lastSchedule ? (lastSchedule.order || 0) + SCHEDULE_ORDER_GAP : 0;
+    
     let newStartTime = startTime ? new Date(startTime) : new Date(date);
     let newEndTime = endTime ? new Date(endTime) : new Date(date);  
 
