@@ -2,12 +2,8 @@ import { cookies } from 'next/headers';
 
 import { dehydrate } from '@tanstack/react-query';
 
-import { Header } from '@components/common';
-import HeaderActionButtons from '@components/common/HeaderActionButtons';
-import { LogoutButton } from '@components/mypage';
-import ProfileManager from '@components/mypage/Profile/ProfileManager';
-import StudyCalendar from '@components/mypage/StudyCalendar/StudyCalendar';
-import TimeSection from '@components/mypage/TimeSection';
+import { Header, HeaderActionButtons } from '@components/common/index';
+import { LogoutButton, ProfileManager, StudyCalendar, TimeSection } from '@components/mypage/index';
 
 import { getSchedules } from '@api/schedule/getSchedules';
 
