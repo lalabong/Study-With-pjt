@@ -8,7 +8,7 @@ import { Value } from 'react-calendar/dist/esm/shared/types.js';
 import { GoDotFill } from 'react-icons/go';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
-import CalendarModal from '@components/mypage/StudyCalendar/CalendarModal';
+import AddScheduleForm from '@components/mypage/StudyCalendar/AddScheduleForm';
 import ScheduleList from '@components/mypage/StudyCalendar/ScheduleList';
 
 import { MONTHS, WEEK_DAYS_EN } from '@constants/calendar';
@@ -131,78 +131,110 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     updateDateRangeFromMonth(nextMonth);
   };
 
+  const [isAddMode, setIsAddMode] = useState(false);
+
+  const handleToggleAddMode = () => {
+    setIsAddMode((prev) => !prev);
+  };
+
   return (
     <div className="w-full flex flex-col lg:flex-row gap-6">
-      <div className="lg:w-1/2 flex flex-col min-h-[550px]">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <select
-              value={currentViewDate.getFullYear()}
-              onChange={handleYearChange}
-              className="rounded border border-gray-300 bg-white px-3 py-2 text-base"
-            >
-              {showYears.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
+      <div
+        className={`
+          flex flex-col
+          transition-all duration-1200 ease-in-out overflow-hidden 
+          ${
+            isAddMode
+              ? 'opacity-0 lg:w-0 pointer-events-none'
+              : 'opacity-100 lg:w-1/2 min-h-[550px]'
+          }
+        `}
+      >
+        <div
+          className={`transition-opacity duration-1200 ${isAddMode ? 'opacity-0' : 'opacity-100'}`}
+        >
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <select
+                value={currentViewDate.getFullYear()}
+                onChange={handleYearChange}
+                className="rounded border border-gray-300 bg-white px-3 py-2 text-base"
+              >
+                {showYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
 
-            <select
-              value={currentViewDate.getMonth()}
-              onChange={handleMonthChange}
-              className="rounded border border-gray-300 bg-white px-3 py-2 text-base"
-            >
-              {MONTHS.map((month, index) => (
-                <option key={month} value={index}>
-                  {month}
-                </option>
-              ))}
-            </select>
+              <select
+                value={currentViewDate.getMonth()}
+                onChange={handleMonthChange}
+                className="rounded border border-gray-300 bg-white px-3 py-2 text-base"
+              >
+                {MONTHS.map((month, index) => (
+                  <option key={month} value={index}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                className="rounded-full border border-gray-300 p-2 hover:bg-gray-100"
+                aria-label="이전 달 버튼"
+                onClick={handlePrevMonth}
+              >
+                <HiChevronLeft className="h-5 w-5" />
+              </button>
+
+              <button
+                className="rounded-full border border-gray-300 p-2 hover:bg-gray-100"
+                aria-label="다음 달 버튼"
+                onClick={handleNextMonth}
+              >
+                <HiChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex space-x-3">
-            <button
-              className="rounded-full border border-gray-300 p-2 hover:bg-gray-100"
-              aria-label="이전 달 버튼"
-              onClick={handlePrevMonth}
-            >
-              <HiChevronLeft className="h-5 w-5" />
-            </button>
-
-            <button
-              className="rounded-full border border-gray-300 p-2 hover:bg-gray-100"
-              aria-label="다음 달 버튼"
-              onClick={handleNextMonth}
-            >
-              <HiChevronRight className="h-5 w-5" />
-            </button>
+          <div className="calendar-container w-full flex-1 flex flex-col">
+            <Calendar
+              onClickDay={handleStudyDateClick}
+              onChange={handleDateChange}
+              value={selectedDate}
+              activeStartDate={currentViewDate}
+              onActiveStartDateChange={handleActiveStartDateChange}
+              className="w-full rounded-lg border-none text-base h-full flex-1"
+              formatShortWeekday={(locale, date) => WEEK_DAYS_EN[date.getDay()]}
+              formatDay={(locale, date) => date.getDate().toString()}
+              tileClassName={({ date }) => (isStudyDate(date) ? 'study-date' : '')}
+              tileContent={({ date }) =>
+                isStudyDate(date) ? <GoDotFill className="study-indicator-dot" /> : null
+              }
+            />
           </div>
-        </div>
-
-        <div className="calendar-container w-full flex-1 flex flex-col">
-          <Calendar
-            onClickDay={handleStudyDateClick}
-            onChange={handleDateChange}
-            value={selectedDate}
-            activeStartDate={currentViewDate}
-            onActiveStartDateChange={handleActiveStartDateChange}
-            className="w-full rounded-lg border-none text-base h-full flex-1"
-            formatShortWeekday={(locale, date) => WEEK_DAYS_EN[date.getDay()]}
-            formatDay={(locale, date) => date.getDate().toString()}
-            tileClassName={({ date }) => (isStudyDate(date) ? 'study-date' : '')}
-            tileContent={({ date }) =>
-              isStudyDate(date) ? <GoDotFill className="study-indicator-dot" /> : null
-            }
-          />
         </div>
       </div>
 
-      <div className="lg:w-1/2">
-        <ScheduleList />
+      <div
+        className={`
+           transition-all duration-500 ease-in-out lg:w-1/2
+         `}
+      >
+        <ScheduleList isAddMode={isAddMode} onToggleAddMode={handleToggleAddMode} />
       </div>
 
-      <CalendarModal />
+      <div
+        className={`
+           flex justify-center items-center overflow-hidden 
+           transition-all duration-1200 ease-in-out
+            ${isAddMode ? 'opacity-100 lg:w-1/2' : 'opacity-0 lg:w-0 transform pointer-events-none'}
+          `}
+      >
+        <AddScheduleForm onToggleAddMode={handleToggleAddMode} />
+      </div>
     </div>
   );
 };

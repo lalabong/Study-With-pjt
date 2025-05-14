@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { debounce } from 'lodash';
 import { HiCalendar } from 'react-icons/hi';
 
+import Button from '@components/common/Button';
 import ScheduleItem from '@components/mypage/StudyCalendar/ScheduleItem';
 
 import { useSchedulesByDateQuery } from '@hooks/api/useSchedulesByDateQuery';
@@ -14,7 +15,7 @@ import { useUpdateSchedulesOrderMutation } from '@hooks/api/useUpdateSchedulesOr
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
 
-import { formatDateToYYYYMMDD } from '@utils/date';
+import { formatDateToYYYYMMDD, getCurrentDateString } from '@utils/date';
 
 import { Schedule } from '@/types/api';
 
@@ -31,12 +32,18 @@ const reorder = (
   return result;
 };
 
-const ScheduleList = memo(() => {
+interface ScheduleListProps {
+  isAddMode: boolean;
+  onToggleAddMode: () => void;
+}
+
+const ScheduleList = memo(({ isAddMode, onToggleAddMode }: ScheduleListProps) => {
   const { filteredSchedules, setFilteredSchedules, selectedDate } = useScheduleStore();
 
   const userId = useAuthStore((state) => state.user?.userId);
 
-  const formattedDate = selectedDate instanceof Date ? formatDateToYYYYMMDD(selectedDate) : '';
+  const formattedDate =
+    selectedDate instanceof Date ? formatDateToYYYYMMDD(selectedDate) : getCurrentDateString();
   // 드래그 기능을 사용할 수 있는지 확인
   const canDrag = filteredSchedules.length > 0;
 
@@ -98,10 +105,17 @@ const ScheduleList = memo(() => {
       className="min-w-[280px] sm:min-h-[550px] sm:min-w-[300px] border border-gray-200 rounded-md p-6 lg:col-span-2"
       aria-labelledby="schedule-list-title"
     >
-      <h2 id="schedule-list-title" className="text-lg font-medium mb-4 flex items-center">
-        <HiCalendar className="mr-2 text-blue-500" aria-hidden="true" />
-        일정 목록
-      </h2>
+      <div className="flex justify-between">
+        <h2 id="schedule-list-title" className="text-lg font-medium mb-4 flex items-center">
+          <HiCalendar className="mr-2 text-blue-500" aria-hidden="true" />
+          일정 목록
+        </h2>
+        {!isAddMode && (
+          <Button variant="primary" size="sm" onClick={onToggleAddMode}>
+            일정 추가
+          </Button>
+        )}
+      </div>
 
       {isLoading ? (
         <div className="text-center py-8 text-gray-500">일정을 불러오는 중...</div>
@@ -123,7 +137,7 @@ const ScheduleList = memo(() => {
                   <ul
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden"
+                    className="list-none p-4 m-0 max-h-[250px] sm:max-h-[450px] pr-1 mt-2 overflow-y-auto overflow-x-hidden"
                     aria-label="일정 목록"
                   >
                     {filteredSchedules.map((schedule, index) => (
@@ -137,7 +151,7 @@ const ScheduleList = memo(() => {
                               ...provided.draggableProps.style,
                               opacity: snapshot.isDragging ? 0.8 : 1,
                             }}
-                            className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} m-4`}
+                            className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} mb-4`}
                             data-schedule-id={schedule.id}
                           >
                             <ScheduleItem schedule={schedule} />

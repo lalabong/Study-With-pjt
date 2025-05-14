@@ -4,7 +4,9 @@ import { memo, useState, useEffect } from 'react';
 
 import TextField from '@mui/material/TextField';
 import { TimePicker } from '@mui/x-date-pickers';
-import { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs, { Dayjs } from 'dayjs';
 import { HiPlus } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
@@ -15,7 +17,13 @@ import { useScheduleStore } from '@stores/scheduleStore';
 
 import { formatDateToYYYYMMDD } from '@utils/date';
 
-const AddScheduleForm = memo(() => {
+dayjs.locale('ko');
+
+interface AddScheduleFormProps {
+  onToggleAddMode: () => void;
+}
+
+const AddScheduleForm = memo(({ onToggleAddMode }: AddScheduleFormProps) => {
   const [title, setTitle] = useState('');
 
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
@@ -106,104 +114,117 @@ const AddScheduleForm = memo(() => {
   };
 
   return (
-    <section
-      className="border border-gray-200 p-6 rounded-md h-fit min-w-[280px] sm:min-w-[300px] lg:col-span-1"
-      aria-labelledby="add-schedule-title"
-    >
-      <h3 id="add-schedule-title" className="font-medium text-lg mb-3 flex items-center">
-        <HiPlus className="mr-1 text-blue-500" aria-hidden="true" />새 일정 추가
-      </h3>
-
-      <div className="mb-4">
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-          일정 이름
-        </label>
-
-        <TextField
-          id="title"
-          variant="outlined"
-          name="title"
-          value={title}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="일정 이름을 입력하세요"
-          aria-required="true"
-          autoComplete="off"
-          size="small"
-          sx={{
-            width: '100%',
-            '& .MuiInputBase-root': {
-              height: '40px',
-              maxWidth: '100%',
-              fontSize: '0.875rem',
-            },
-          }}
-        />
-      </div>
-
-      <div className="flex flex-row mb-4 w-full">
-        <div className="w-1/2 pr-1">
-          <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
-            시작 시간
-          </label>
-          <div className="w-full">
-            <TimePicker
-              {...timePickerBaseProps}
-              value={startTime}
-              onChange={(time) => handleTimeChange(time, 'startTime')}
-              slotProps={{
-                textField: {
-                  ...textFieldBaseProps,
-                  placeholder: '시작 시간',
-                  id: 'startTime',
-                  inputProps: {
-                    ...textFieldBaseProps.inputProps,
-                    'aria-label': '시작 시간 선택',
-                  },
-                },
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="w-1/2 pl-1">
-          <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
-            종료 시간
-          </label>
-          <div className="w-full">
-            <TimePicker
-              {...timePickerBaseProps}
-              value={endTime}
-              onChange={(time) => handleTimeChange(time, 'endTime')}
-              minTime={startTime || undefined}
-              slotProps={{
-                textField: {
-                  ...textFieldBaseProps,
-                  placeholder: '종료 시간',
-                  id: 'endTime',
-                  inputProps: {
-                    ...textFieldBaseProps.inputProps,
-                    'aria-label': '종료 시간 선택',
-                  },
-                },
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <Button
-        onClick={handleAddSchedule}
-        variant="primary"
-        size="md"
-        fullWidth
-        disabled={!title.trim() || createScheduleMutation.isPending}
-        aria-label="일정 추가하기"
-        className="mt-2"
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
+      <section
+        className="border border-gray-200 p-6 rounded-md h-fit min-w-[280px] sm:min-w-[300px] lg:col-span-1"
+        aria-labelledby="add-schedule-title"
       >
-        {createScheduleMutation.isPending ? '추가 중...' : '추가'}
-      </Button>
-    </section>
+        <h3 id="add-schedule-title" className="font-medium text-lg mb-3 flex items-center">
+          <HiPlus className="mr-1 text-blue-500" aria-hidden="true" />새 일정 추가
+        </h3>
+
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            일정 이름
+          </label>
+
+          <TextField
+            id="title"
+            variant="outlined"
+            name="title"
+            value={title}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="일정 이름을 입력하세요"
+            aria-required="true"
+            autoComplete="off"
+            size="small"
+            sx={{
+              width: '100%',
+              '& .MuiInputBase-root': {
+                height: '40px',
+                maxWidth: '100%',
+                fontSize: '0.875rem',
+              },
+            }}
+          />
+        </div>
+
+        <div className="flex flex-row mb-4 w-full">
+          <div className="w-1/2 pr-1">
+            <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+              시작 시간
+            </label>
+            <div className="w-full">
+              <TimePicker
+                {...timePickerBaseProps}
+                value={startTime}
+                onChange={(time) => handleTimeChange(time, 'startTime')}
+                slotProps={{
+                  textField: {
+                    ...textFieldBaseProps,
+                    placeholder: '시작 시간',
+                    id: 'startTime',
+                    inputProps: {
+                      ...textFieldBaseProps.inputProps,
+                      'aria-label': '시작 시간 선택',
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="w-1/2 pl-1">
+            <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
+              종료 시간
+            </label>
+            <div className="w-full">
+              <TimePicker
+                {...timePickerBaseProps}
+                value={endTime}
+                onChange={(time) => handleTimeChange(time, 'endTime')}
+                minTime={startTime || undefined}
+                slotProps={{
+                  textField: {
+                    ...textFieldBaseProps,
+                    placeholder: '종료 시간',
+                    id: 'endTime',
+                    inputProps: {
+                      ...textFieldBaseProps.inputProps,
+                      'aria-label': '종료 시간 선택',
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <Button
+          onClick={handleAddSchedule}
+          variant="primary"
+          size="md"
+          fullWidth
+          disabled={!title.trim() || createScheduleMutation.isPending}
+          aria-label="일정 추가하기"
+          className="mt-2"
+        >
+          {createScheduleMutation.isPending ? '추가 중...' : '추가'}
+        </Button>
+
+        <Button
+          onClick={onToggleAddMode}
+          variant="secondary"
+          size="md"
+          fullWidth
+          aria-label="일정 추가 모드 취소"
+          className="mt-2"
+        >
+          취소
+        </Button>
+      </section>
+    </LocalizationProvider>
   );
 });
 
