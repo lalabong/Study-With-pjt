@@ -30,14 +30,19 @@ export const useUserTotalStudyTimeQuery = ({
 
   useEffect(() => {
     if (query.error) {
-      const error = query.error as AxiosError;
-      if (error.response?.status === 401) {
-        toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
-      } else if (error.response?.status === 404) {
-        toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
-      } else {
-        toast.error(USER_ERROR_MESSAGES.FETCH_TOTAL_STUDY_TIME_FAILED);
-        console.error('사용자 총 학습 시간 조회 중 오류 발생:', error);
+      const error = query.error as AxiosError<{ errorCode?: number }>;
+      const errorCode = error.response?.data?.errorCode;
+
+      switch (errorCode) {
+        case 1005:
+          toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
+          break;
+        case 3001:
+          toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
+          break;
+        default:
+          toast.error(USER_ERROR_MESSAGES.FETCH_TIMELOGS_FAILED);
+          console.error('사용자 총 학습 시간 조회 중 오류 발생:', error);
       }
     }
   }, [query.error]);

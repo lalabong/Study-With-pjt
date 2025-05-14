@@ -1,4 +1,4 @@
-import { ScheduleStatus } from '@/stores/scheduleStore';
+import { ScheduleStatus } from '@/types/api';
 
 export const MONTHS = [
   '1월',
