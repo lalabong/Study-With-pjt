@@ -10,10 +10,12 @@ import { getScheduleDates } from '@api/schedule/getScheduleDates';
 
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
-import { getMonthRange } from '@utils/date';
+import { getCurrentDateString, getMonthRange } from '@utils/date';
 
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
+
+import getSchedulesByDate from '@/api/schedule/getSchedulesByDate';
 
 const MyPage = async () => {
   const cookieStore = await cookies();
@@ -25,10 +27,17 @@ const MyPage = async () => {
   const queryClient = getServerQueryClient();
 
   if (userId) {
-    await queryClient.prefetchQuery({
-      queryKey: [USER_QUERY_KEYS.USER_SCHEDULE_DATES, userId, startDate, endDate],
-      queryFn: async () => getScheduleDates({ userId, startDate, endDate }),
-    });
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: [USER_QUERY_KEYS.USER_SCHEDULE_DATES, userId, startDate, endDate],
+        queryFn: async () => getScheduleDates({ userId, startDate, endDate }),
+      }),
+
+      queryClient.prefetchQuery({
+        queryKey: [USER_QUERY_KEYS.USER_SCHEDULES_BY_DATE, userId, getCurrentDateString()],
+        queryFn: async () => getSchedulesByDate({ userId, date: getCurrentDateString() }),
+      }),
+    ]);
   }
 
   const dehydratedState = dehydrate(queryClient);
