@@ -4,27 +4,27 @@ import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { getSchedules } from '@api/schedule/getSchedules';
+import { getScheduleDates } from '@api/schedule/getScheduleDates';
 
-import { USER_ERROR_MESSAGES, USER_QUERY_KEYS } from '@constants/index';
+import { SCHEDULE_ERROR_MESSAGES, USER_ERROR_MESSAGES, USER_QUERY_KEYS } from '@constants/index';
 
-interface UseUserSchedulesQueryParams {
+interface UseScheduleDatesQueryParams {
   userId: string;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
   enabled?: boolean;
 }
 
-export const useUserSchedulesQuery = ({
+export const useScheduleDatesQuery = ({
   userId,
   startDate,
   endDate,
   enabled = true,
-}: UseUserSchedulesQueryParams) => {
+}: UseScheduleDatesQueryParams) => {
   const query = useQuery({
-    queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
+    queryKey: [USER_QUERY_KEYS.USER_SCHEDULE_DATES, userId, startDate, endDate],
     queryFn: async () => {
-      const response = await getSchedules({ userId, startDate, endDate });
+      const response = await getScheduleDates({ userId, startDate, endDate });
       return response.data;
     },
     enabled: !!userId && enabled,
@@ -36,12 +36,15 @@ export const useUserSchedulesQuery = ({
       const errorCode = error.response?.data?.errorCode;
 
       switch (errorCode) {
+        case 3006:
+          toast.error(USER_ERROR_MESSAGES.UNAUTHORIZED);
+          break;
         case 3001:
           toast.error(USER_ERROR_MESSAGES.USER_NOT_FOUND);
           break;
         default:
-          toast.error(USER_ERROR_MESSAGES.FETCH_SCHEDULES_FAILED);
-          console.error('사용자 일정 조회 중 오류 발생:', error);
+          toast.error(SCHEDULE_ERROR_MESSAGES.FETCH_SCHEDULE_DATES_FAILED);
+          console.error('일정 날짜 조회 중 오류 발생:', error);
       }
     }
   }, [query.error]);

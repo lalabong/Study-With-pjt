@@ -17,8 +17,11 @@ export const MYPAGE_ENDPOINTS = {
 };
 
 export const SCHEDULE_ENDPOINTS = {
-  GET_USER_SCHEDULES: (userId: string) => `${API_PREFIX}/schedules/user/${userId}`,
+  GET_SCHEDULE_DATES: (userId: string, startDate?: string, endDate?: string) =>
+    `${API_PREFIX}/schedules/user/${userId}/dates?startDate=${startDate}&endDate=${endDate}`,
+  GET_SCHEDULES_BY_DATE: (userId: string, date: string) =>
+    `${API_PREFIX}/schedules/user/${userId}/byDate?date=${date}`,
   CREATE_SCHEDULE: `${API_PREFIX}/schedules`,
   UPDATE_AND_DELETE_SCHEDULE: (scheduleId: string) => `${API_PREFIX}/schedules/${scheduleId}`,
-  UPDATE_SCHEDULE_ORDER: (scheduleId: string) => `${API_PREFIX}/schedules/${scheduleId}/order`,
+  UPDATE_SCHEDULE_ORDER: `${API_PREFIX}/schedules/order`,
 };

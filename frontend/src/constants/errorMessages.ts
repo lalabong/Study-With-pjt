@@ -51,6 +51,8 @@ export const API_ERROR_MESSAGES = {
 };
 
 export const SCHEDULE_ERROR_MESSAGES = {
+  FETCH_SCHEDULE_DATES_FAILED: '일정 날짜 조회에 실패했습니다.',
+  FETCH_SCHEDULES_BY_DATE_FAILED: '일정 조회에 실패했습니다.',
   CREATE_SCHEDULE_FAILED: '일정 생성에 실패했습니다.',
   UPDATE_SCHEDULE_FAILED: '일정 수정에 실패했습니다.',
   DELETE_SCHEDULE_FAILED: '일정 삭제에 실패했습니다.',
