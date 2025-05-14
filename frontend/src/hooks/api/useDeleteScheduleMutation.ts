@@ -14,7 +14,7 @@ import {
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
 
-import { getMonthRange } from '@utils/date';
+import { formatDateToYYYYMMDD } from '@utils/date';
 
 export const useDeleteScheduleMutation = () => {
   const queryClient = useQueryClient();
@@ -24,21 +24,21 @@ export const useDeleteScheduleMutation = () => {
   const selectedDate = useScheduleStore((state) => state.selectedDate);
   const removeScheduleItem = useScheduleStore((state) => state.removeScheduleItem);
 
-  const [startDate, endDate] = getMonthRange(selectedDate as Date);
-
   return useMutation({
     mutationFn: deleteSchedule,
     onSuccess: (_, variables) => {
       const { scheduleId } = variables;
 
-      // 로컬 상태 업데이트 (UI에 즉시 반영)
       removeScheduleItem(scheduleId);
 
       toast.success(SCHEDULE_SUCCESS_MESSAGES.DELETE_SCHEDULE);
 
-      // 캐시 무효화 후 백그라운드에서 리페치
       queryClient.invalidateQueries({
-        queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
+        queryKey: [
+          USER_QUERY_KEYS.USER_SCHEDULES_BY_DATE,
+          userId,
+          formatDateToYYYYMMDD(selectedDate as Date),
+        ],
       });
     },
     onError: (error: unknown) => {

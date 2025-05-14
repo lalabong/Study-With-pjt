@@ -14,7 +14,7 @@ import {
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
 
-import { formatTimeToKorean, getMonthRange } from '@utils/date';
+import { formatDateToYYYYMMDD, formatTimeToKorean } from '@utils/date';
 
 export const useUpdateScheduleMutation = () => {
   const queryClient = useQueryClient();
@@ -23,8 +23,6 @@ export const useUpdateScheduleMutation = () => {
 
   const selectedDate = useScheduleStore((state) => state.selectedDate);
   const updateScheduleItem = useScheduleStore((state) => state.updateScheduleItem);
-
-  const [startDate, endDate] = getMonthRange(selectedDate as Date);
 
   return useMutation({
     mutationFn: patchSchedule,
@@ -35,18 +33,25 @@ export const useUpdateScheduleMutation = () => {
       if (updatedSchedule) {
         // 로컬 상태 업데이트 (UI에 즉시 반영)
         updateScheduleItem(scheduleId, {
-          name: updatedSchedule.title,
-          startTime: formatTimeToKorean(updatedSchedule.startTime),
-          endTime: formatTimeToKorean(updatedSchedule.endTime),
+          title: updatedSchedule.title,
+          startTime: updatedSchedule.startTime
+            ? formatTimeToKorean(updatedSchedule.startTime)
+            : undefined,
+          endTime: updatedSchedule.endTime
+            ? formatTimeToKorean(updatedSchedule.endTime)
+            : undefined,
           status: updatedSchedule.status,
         });
       }
 
       toast.success(SCHEDULE_SUCCESS_MESSAGES.UPDATE_SCHEDULE);
 
-      // 캐시 무효화 후 백그라운드에서 리페치
       queryClient.invalidateQueries({
-        queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
+        queryKey: [
+          USER_QUERY_KEYS.USER_SCHEDULES_BY_DATE,
+          userId,
+          formatDateToYYYYMMDD(selectedDate as Date),
+        ],
       });
     },
     onError: (error: unknown) => {

@@ -15,7 +15,7 @@ import {
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
 
-import { formatTimeToKorean, getMonthRange } from '@utils/date';
+import { formatDateToYYYYMMDD, formatTimeToKorean } from '@utils/date';
 
 export const useCreateScheduleMutation = () => {
   const queryClient = useQueryClient();
@@ -25,30 +25,32 @@ export const useCreateScheduleMutation = () => {
   const selectedDate = useScheduleStore((state) => state.selectedDate);
   const addScheduleItem = useScheduleStore((state) => state.addScheduleItem);
 
-  const [startDate, endDate] = getMonthRange(selectedDate as Date);
-
   return useMutation({
     mutationFn: postSchedule,
     onSuccess: (response) => {
       toast.success(SCHEDULE_SUCCESS_MESSAGES.CREATE_SCHEDULE);
 
-      // 새로 생성된 일정 데이터
       const newSchedule = response?.data?.schedule;
 
       if (newSchedule) {
-        // 로컬 상태 업데이트 (UI에 즉시 반영)
         addScheduleItem({
           id: newSchedule.id,
-          name: newSchedule.title,
-          startTime: formatTimeToKorean(newSchedule?.startTime),
-          endTime: formatTimeToKorean(newSchedule?.endTime),
+          title: newSchedule.title,
+          startTime: newSchedule.startTime ? formatTimeToKorean(newSchedule.startTime) : undefined,
+          endTime: newSchedule.endTime ? formatTimeToKorean(newSchedule.endTime) : undefined,
           status: '대기중',
           order: newSchedule.order,
+          userCuid: newSchedule.userCuid,
+          createdAt: newSchedule.createdAt,
+          date: newSchedule.date,
         });
 
-        // 캐시 무효화 후 백그라운드에서 리페치
         queryClient.invalidateQueries({
-          queryKey: [USER_QUERY_KEYS.USER_SCHEDULES, userId, startDate, endDate],
+          queryKey: [
+            USER_QUERY_KEYS.USER_SCHEDULES_BY_DATE,
+            userId,
+            formatDateToYYYYMMDD(selectedDate as Date),
+          ],
         });
       }
     },
