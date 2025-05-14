@@ -14,7 +14,7 @@ import {
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
 
-import { formatDateToYYYYMMDD, formatTimeToKorean } from '@utils/date';
+import { formatDateToYYYYMMDD } from '@utils/date';
 
 export const useUpdateScheduleMutation = () => {
   const queryClient = useQueryClient();
@@ -34,12 +34,8 @@ export const useUpdateScheduleMutation = () => {
         // 로컬 상태 업데이트 (UI에 즉시 반영)
         updateScheduleItem(scheduleId, {
           title: updatedSchedule.title,
-          startTime: updatedSchedule.startTime
-            ? formatTimeToKorean(updatedSchedule.startTime)
-            : undefined,
-          endTime: updatedSchedule.endTime
-            ? formatTimeToKorean(updatedSchedule.endTime)
-            : undefined,
+          startTime: updatedSchedule.startTime,
+          endTime: updatedSchedule.endTime,
           status: updatedSchedule.status,
         });
       }
