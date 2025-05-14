@@ -19,7 +19,7 @@ interface UserProfileProps {
   className?: string;
 }
 
-const UserProfile = ({
+const UserPageProfile = ({
   nickname,
   profileImg,
   additionalInfo,
@@ -203,4 +203,4 @@ const UserProfile = ({
   );
 };
 
-export default UserProfile;
+export default UserPageProfile;

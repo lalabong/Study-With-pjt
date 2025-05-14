@@ -2,8 +2,9 @@
 
 import { HiPlus } from 'react-icons/hi';
 
-import { Button, UserProfile } from '@components/common';
+import { Button } from '@components/common';
 import StatusMessage from '@components/common/StatusMessage';
+import UserPageProfile from '@components/mypage/Profile/UserPageProfile';
 
 import { User } from '@stores/authStore';
 
@@ -34,7 +35,7 @@ const ProfileSection = ({
   return (
     <div className="rounded-lg mb-7 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <UserProfile
+        <UserPageProfile
           profileImg={user.profileImg}
           nickname={user.nickname}
           additionalInfo={user.createdAt}
