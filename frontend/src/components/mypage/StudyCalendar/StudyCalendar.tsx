@@ -11,7 +11,7 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import CalendarModal from '@components/mypage/StudyCalendar/CalendarModal';
 import ScheduleList from '@components/mypage/StudyCalendar/ScheduleList';
 
-import { MONTHS, WEEK_DAYS_KO } from '@constants/calendar';
+import { MONTHS, WEEK_DAYS_EN } from '@constants/calendar';
 
 import { useScheduleDatesQuery } from '@hooks/api/useScheduleDatesQuery';
 
@@ -188,7 +188,7 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
             activeStartDate={currentViewDate}
             onActiveStartDateChange={handleActiveStartDateChange}
             className="w-full rounded-lg border-none text-base h-full flex-1"
-            formatShortWeekday={(locale, date) => WEEK_DAYS_KO[date.getDay()]}
+            formatShortWeekday={(locale, date) => WEEK_DAYS_EN[date.getDay()]}
             formatDay={(locale, date) => date.getDate().toString()}
             tileClassName={({ date }) => (isStudyDate(date) ? 'study-date' : '')}
             tileContent={({ date }) =>

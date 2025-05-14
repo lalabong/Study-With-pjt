@@ -123,7 +123,7 @@ const ScheduleList = memo(() => {
                   <ul
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 no-scrollbar"
+                    className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden"
                     aria-label="일정 목록"
                   >
                     {filteredSchedules.map((schedule, index) => (
@@ -137,7 +137,7 @@ const ScheduleList = memo(() => {
                               ...provided.draggableProps.style,
                               opacity: snapshot.isDragging ? 0.8 : 1,
                             }}
-                            className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} mb-4`}
+                            className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} m-4`}
                             data-schedule-id={schedule.id}
                           >
                             <ScheduleItem schedule={schedule} />
@@ -151,7 +151,7 @@ const ScheduleList = memo(() => {
               </Droppable>
             </DragDropContext>
           ) : (
-            <ul className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 no-scrollbar">
+            <ul className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden">
               {filteredSchedules.map((schedule) => (
                 <li
                   key={schedule.id}
