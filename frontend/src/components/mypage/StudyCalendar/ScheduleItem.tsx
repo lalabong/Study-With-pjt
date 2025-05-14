@@ -77,6 +77,11 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
       e.preventDefault();
     }
 
+    if (status === schedule.status) {
+      setOpenStatusDropdownId(null);
+      return;
+    }
+
     updateScheduleMutation.mutate({
       scheduleId: schedule.id,
       status,
