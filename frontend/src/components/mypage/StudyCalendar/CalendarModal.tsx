@@ -16,17 +16,12 @@ import { formatDateToKorean } from '@utils/date';
 dayjs.locale('ko');
 
 const CalendarModal = () => {
-  const {
-    isOpenCalendarModal,
-    selectedDate,
-    closeCalendarModal,
-    setOpenStatusDropdownId: setOpenStatusDropdown,
-    filteredSchedules,
-  } = useScheduleStore();
+  const { isOpenCalendarModal, selectedDate, closeCalendarModal, setOpenStatusDropdownId } =
+    useScheduleStore();
 
   // 모달 닫기 핸들러
   const handleCloseModal = () => {
-    setOpenStatusDropdown(null);
+    setOpenStatusDropdownId(null);
     closeCalendarModal();
   };
 
@@ -38,7 +33,7 @@ const CalendarModal = () => {
         title={formatDateToKorean(selectedDate)}
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <ScheduleList schedules={filteredSchedules} />
+          <ScheduleList />
 
           <AddScheduleForm />
         </div>

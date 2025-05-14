@@ -1,6 +1,6 @@
 'use client';
 
-import { HiTrash, HiClock, HiChevronDown } from 'react-icons/hi';
+import { HiTrash, HiClock, HiChevronDown, HiMenuAlt4 } from 'react-icons/hi';
 
 import { STATUS_OPTIONS } from '@constants/calendar';
 
@@ -8,14 +8,13 @@ import { useDeleteScheduleMutation } from '@hooks/api/useDeleteScheduleMutation'
 import { useUpdateScheduleMutation } from '@hooks/api/useUpdateScheduleMutation';
 import { useClickOutside } from '@hooks/useClickOutside';
 
-import {
-  ScheduleItem as ScheduleItemType,
-  ScheduleStatus,
-  useScheduleStore,
-} from '@stores/scheduleStore';
+import { useScheduleStore } from '@stores/scheduleStore';
+
+import { Schedule, ScheduleStatus } from '@/types/api';
+import { formatTimeToKorean } from '@/utils/date';
 
 interface ScheduleItemProps {
-  schedule: ScheduleItemType;
+  schedule: Schedule;
 }
 
 const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
@@ -39,9 +38,11 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
     if (!schedule.startTime && !schedule.endTime) return null;
 
     if (schedule.startTime && schedule.endTime)
-      return `${schedule.startTime} - ${schedule.endTime}`;
+      return `${formatTimeToKorean(schedule.startTime)} - ${formatTimeToKorean(schedule.endTime)}`;
 
-    return schedule.startTime ? `${schedule.startTime}부터` : `${schedule.endTime}까지`;
+    return schedule.startTime
+      ? `${formatTimeToKorean(schedule.startTime)}부터`
+      : `${formatTimeToKorean(schedule.endTime)}까지`;
   };
 
   // 일정 삭제 핸들러
@@ -109,17 +110,22 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
 
   return (
     <div
-      className={`relative p-4 sm:p-5 mb-4 m-5 rounded-md border border-gray-200 transition-transform duration-200 hover:scale-[1.02] hover:shadow-md sm:max-w-full ${getStatusClass(schedule.status)}`}
+      className={`relative p-4 sm:p-5 mb-4 rounded-md border border-gray-200 transition-transform duration-200 hover:scale-[1.02] hover:shadow-md sm:max-w-full ${getStatusClass(schedule.status)} cursor-grab active:cursor-grabbing`}
       style={{ zIndex: isStatusOpen ? 10 : 1 }}
     >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full">
         <div className="flex-1 mb-3 sm:mb-0 sm:max-w-[calc(100%-150px)]">
-          <h3
-            className="font-medium text-base sm:text-lg"
-            style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}
-          >
-            {schedule.name}
-          </h3>
+          <div className="flex items-center">
+            <span className="text-gray-400 mr-2" aria-hidden="true">
+              <HiMenuAlt4 className="w-4 h-4" />
+            </span>
+            <h3
+              className="font-medium text-base sm:text-lg"
+              style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}
+            >
+              {schedule.title}
+            </h3>
+          </div>
 
           {getTimeDisplay() && (
             <div
@@ -187,7 +193,7 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
             onClick={handleDelete}
             onKeyDown={handleDeleteKeyDown}
             className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer p-1 rounded-full hover:bg-gray-100"
-            aria-label={`${schedule.name} 일정 삭제`}
+            aria-label={`${schedule.title} 일정 삭제`}
             tabIndex={0}
           >
             <HiTrash className="w-4 h-4 sm:w-5 sm:h-5" />

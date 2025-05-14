@@ -7,7 +7,7 @@ export const formatDateToYYYYMMDD = (date: Date): string => {
 };
 
 // ISO 날짜 문자열을 '오전/오후 HH:MM' 형식으로 변환
-export const formatTimeToKorean = (isoDateString: string): string => {
+export const formatTimeToKorean = (isoDateString?: string): string => {
   if (!isoDateString) return '';
 
   const date = new Date(isoDateString);
@@ -66,15 +66,6 @@ export const isFutureDate = (date: Date | string): boolean => {
   const compareDate = new Date(date);
   const today = new Date();
   return compareDate > today;
-};
-
-// 두 날짜가 같은지 확인
-export const isSameDate = (date1: Date, date2: Date) => {
-  return (
-    date1.getDate() === date2.getDate() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getFullYear() === date2.getFullYear()
-  );
 };
 
 // 연도 범위 생성 (현재 연도 기준 -2년 ~ +2년)

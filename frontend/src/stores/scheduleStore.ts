@@ -1,15 +1,6 @@
 import { create } from 'zustand';
 
-export type ScheduleStatus = '대기중' | '진행중' | '완료' | '취소';
-
-export interface ScheduleItem {
-  id: string;
-  name: string;
-  startTime?: string;
-  endTime?: string;
-  status: ScheduleStatus;
-  order: number;
-}
+import { Schedule } from '@/types/api';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -18,9 +9,9 @@ interface ScheduleState {
   isOpenCalendarModal: boolean; // 캘린더 모달 열림 여부
   selectedDate: Value; // 캘린더에서 선택한 날짜
   openStatusDropdownId: string | null; // 드롭다운을 연 일정의 id
-  filteredSchedules: ScheduleItem[]; // 캘린더에서 선택한 날짜의 일정 목록
+  filteredSchedules: Schedule[]; // 캘린더에서 선택한 날짜의 일정 목록
 
-  openCalendarModal: (date: Date, schedules: ScheduleItem[]) => void; // 캘린더 모달 열기
+  openCalendarModal: (date: Date) => void; // 캘린더 모달 열기
 
   closeCalendarModal: () => void; // 캘린더 모달 닫기
 
@@ -28,17 +19,18 @@ interface ScheduleState {
 
   setSelectedDate: (date: Value) => void; // 캘린더에서 선택한 날짜 설정
 
-  // 필터링된 일정 목록 직접 설정
-  setFilteredSchedules: (schedules: ScheduleItem[]) => void;
-
+  setFilteredSchedules: (schedules: Schedule[]) => void; // 필터링된 일정 목록 직접 설정
   // 일정 항목을 업데이트하는 함수
-  updateScheduleItem: (id: string, updatedSchedule: Partial<ScheduleItem>) => void;
+  updateScheduleItem: (id: string, updatedSchedule: Partial<Schedule>) => void;
 
   // 새 일정 추가 함수
-  addScheduleItem: (newSchedule: ScheduleItem) => void;
+  addScheduleItem: (newSchedule: Schedule) => void;
 
   // 일정 삭제 함수
   removeScheduleItem: (id: string) => void;
+
+  // 여러 일정의 순서를 한 번에 업데이트하는 함수
+  updateSchedulesOrder: (schedules: Schedule[]) => void;
 }
 
 export const useScheduleStore = create<ScheduleState>((set) => ({
@@ -49,11 +41,10 @@ export const useScheduleStore = create<ScheduleState>((set) => ({
 
   setSelectedDate: (date: Value) => set({ selectedDate: date }),
 
-  openCalendarModal: (date: Date, schedules: ScheduleItem[]) =>
+  openCalendarModal: (date: Date) =>
     set({
       isOpenCalendarModal: true,
       selectedDate: date,
-      filteredSchedules: schedules,
     }),
 
   closeCalendarModal: () =>
@@ -92,5 +83,11 @@ export const useScheduleStore = create<ScheduleState>((set) => ({
   removeScheduleItem: (id) =>
     set((state) => ({
       filteredSchedules: state.filteredSchedules.filter((schedule) => schedule.id !== id),
+    })),
+
+  // 일정 순서 업데이트
+  updateSchedulesOrder: (schedules) =>
+    set(() => ({
+      filteredSchedules: schedules,
     })),
 }));
