@@ -104,61 +104,6 @@ export const getUserSchedulesByDate: ControllerFn = async (
   }
 };
 
-// export const getUserAllSchedules: ControllerFn = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const { userId } = req.params;
-//     const { startDate, endDate } = req.query;
-
-//     const user = await prisma.user.findUnique({
-//       where: { userId },
-//     });
-
-//     if (!user) {
-//       createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
-//       return;
-//     }
-
-//     let whereClause: any = {
-//       userCuid: user.id,
-//     };
-
-//     if (startDate && endDate) {
-//       whereClause.startTime = {
-//         gte: new Date(startDate as string), // 시작 시간이 조회 시작 시간보다 크거나 같은 경우
-//         lte: new Date(endDate as string), // 종료 시간이 조회 종료 시간보다 작거나 같은 경우
-//       };
-//     }
-
-//     const schedules = await prisma.schedule.findMany({
-//       where: whereClause,
-//       orderBy: {
-//         order: 'asc',
-//       },
-//     });
-
-//     // 날짜별로 일정 그룹화
-//     const schedulesByDate: Record<string, any[]> = {};
-    
-//     schedules.forEach(schedule => {
-//       if (!schedulesByDate[schedule.date]) {
-//         schedulesByDate[schedule.date] = [];
-//       }
-      
-//       schedulesByDate[schedule.date].push(schedule);
-//     });
-
-//     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_SCHEDULES, {
-//       data: { schedulesByDate },
-//     });
-//   } catch (error) {
-//     console.error('일정 조회 에러:', error);
-//     next(error);
-//   }
-// };
 
 export const createSchedule: ControllerFn = async (
   req: Request,
@@ -238,52 +183,21 @@ export const createSchedule: ControllerFn = async (
 
     // 새 일정의 순서 결정 (마지막 일정 + 1 또는 초기값)
     const newOrder = lastSchedule ? (lastSchedule.order || 0) + 1 : 0;
-    
-    let newStartTime = startTime ? new Date(startTime) : new Date(date);
-    let newEndTime = endTime ? new Date(endTime) : new Date(date);  
 
-    if (!startTime) {
-      newStartTime.setHours(0, 0, 0, 0);
-    }
-
-    if (!endTime) {
-      newEndTime.setHours(23, 59, 59, 999);
-    }
-
-    // 데이터베이스 저장용 객체
     const newSchedule = await prisma.schedule.create({
       data: {
         title,
         date,
-        startTime: newStartTime,
-        endTime: newEndTime,
+        startTime: startTime ?? null,
+        endTime: endTime ?? null,
         status,
         userCuid: authUser.id,
         order: newOrder,
       },
     });
 
-    // 응답용 객체
-    const responseSchedule: any = {
-      id: newSchedule.id,
-      title: newSchedule.title,
-      date: newSchedule.date,
-      status: newSchedule.status,
-      userCuid: newSchedule.userCuid,
-      order: newSchedule.order,
-      createdAt: newSchedule.createdAt
-    };
-
-    if (startTime) {
-      responseSchedule.startTime = newSchedule.startTime;
-    }
-    
-    if (endTime) {
-      responseSchedule.endTime = newSchedule.endTime;
-    }
-
     createSuccessResponse(res, 201, undefined, SCHEDULE_SUCCESS.CREATE_SCHEDULE, {
-      data: { schedule: responseSchedule },
+      data: { schedule: newSchedule },
     });
   } catch (error) {
     console.error('일정 생성 에러:', error);
@@ -341,7 +255,7 @@ export const updateSchedule: ControllerFn = async (
       const end = endTime ? new Date(endTime) : existingSchedule.endTime;
 
       // 시작 시간이 종료 시간보다 이후인지 확인
-      if (start >= end) {
+      if (start && end && start >= end) {
         createErrorResponse(
           res,
           422,

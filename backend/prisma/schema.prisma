@@ -58,8 +58,8 @@ model Schedule {
   userCuid    String
   title     String    @db.VarChar(50)
   date      String    @db.VarChar(20)
-  startTime DateTime  @db.DateTime(0)
-  endTime   DateTime  @db.DateTime(0)
+  startTime DateTime?  @db.DateTime(0)
+  endTime   DateTime?  @db.DateTime(0)
   order     Int       @default(0)
   status    String    @default("대기중") @db.VarChar(10)
   createdAt DateTime? @default(now()) @db.Timestamp(0)
