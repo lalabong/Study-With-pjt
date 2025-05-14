@@ -6,14 +6,14 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 interface ScheduleState {
-  isOpenCalendarModal: boolean; // 캘린더 모달 열림 여부
+  // isOpenCalendarModal: boolean; // 캘린더 모달 열림 여부
   selectedDate: Value; // 캘린더에서 선택한 날짜
   openStatusDropdownId: string | null; // 드롭다운을 연 일정의 id
   filteredSchedules: Schedule[]; // 캘린더에서 선택한 날짜의 일정 목록
 
-  openCalendarModal: (date: Date) => void; // 캘린더 모달 열기
+  // openCalendarModal: (date: Date) => void; // 캘린더 모달 열기
 
-  closeCalendarModal: () => void; // 캘린더 모달 닫기
+  // closeCalendarModal: () => void; // 캘린더 모달 닫기
 
   setOpenStatusDropdownId: (id: string | null) => void; // 드롭다운을 연 일정의 id 설정
 
@@ -34,25 +34,25 @@ interface ScheduleState {
 }
 
 export const useScheduleStore = create<ScheduleState>((set) => ({
-  isOpenCalendarModal: false,
+  // isOpenCalendarModal: false,
   selectedDate: null,
   openStatusDropdownId: null,
   filteredSchedules: [],
 
   setSelectedDate: (date: Value) => set({ selectedDate: date }),
 
-  openCalendarModal: (date: Date) =>
-    set({
-      isOpenCalendarModal: true,
-      selectedDate: date,
-    }),
+  // openCalendarModal: (date: Date) =>
+  //   set({
+  //     isOpenCalendarModal: true,
+  //     selectedDate: date,
+  //   }),
 
-  closeCalendarModal: () =>
-    set(() => ({
-      isOpenCalendarModal: false,
-      selectedDate: null,
-      filteredSchedules: [],
-    })),
+  // closeCalendarModal: () =>
+  //   set(() => ({
+  //     isOpenCalendarModal: false,
+  //     selectedDate: null,
+  //     filteredSchedules: [],
+  //   })),
 
   setOpenStatusDropdownId: (id) =>
     set(() => ({
