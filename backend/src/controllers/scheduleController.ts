@@ -5,14 +5,9 @@ import { ControllerFn, AuthRequest } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
 import { AUTH_ERROR, SCHEDULE_ERROR, USER_ERROR, ERROR_CODES } from '../constants/errorMessages.js';
 import { SCHEDULE_SUCCESS } from '../constants/successMessages.js';
-import {
-  DAILY_SCHEDULE_LIMIT,
-  SCHEDULE_ORDER_GAP,
-  MIN_ORDER_GAP_THRESHOLD,
-} from '../constants/schedule.js';
-import { formatDateToYYYYMMDD } from '#src/utils/dateUtils';
-import { start } from 'repl';
+import { DAILY_SCHEDULE_LIMIT } from '../constants/schedule.js';
 
+// 사용자의 일정 날짜만 조회(선택한 달 +-1달)
 export const getUserScheduleDates: ControllerFn = async (
   req: Request,
   res: Response,
@@ -50,11 +45,10 @@ export const getUserScheduleDates: ControllerFn = async (
       distinct: ['date']
     });
 
-    // 일정이 있는 날짜만 YYYY-MM-DD 포맷의 문자열 리스트로 변환
-    const hasScheduleDates = schedules.map(schedule => schedule.date);
+    const scheduleDates = schedules.map(schedule => schedule.date);
 
     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_SCHEDULES, {
-      data: { hasScheduleDates },
+      data: { scheduleDates },
     });
   } catch (error) {
     console.error('일정 날짜 조회 에러:', error);
@@ -62,6 +56,7 @@ export const getUserScheduleDates: ControllerFn = async (
   }
 };
 
+// 특정 날짜의 일정 리스트 조회
 export const getUserSchedulesByDate: ControllerFn = async (
   req: Request,
   res: Response,
@@ -237,12 +232,12 @@ export const createSchedule: ControllerFn = async (
 
     // 사용자의 마지막 일정 순서 확인
     const lastSchedule = await prisma.schedule.findFirst({
-      where: { userCuid: authUser.id },
+      where: { userCuid: authUser.id, date },
       orderBy: [{ order: 'desc' }],
     });
 
-    // 새 일정의 순서 결정 (마지막 일정 + 1000 또는 초기값)
-    const newOrder = lastSchedule ? (lastSchedule.order || 0) + SCHEDULE_ORDER_GAP : 0;
+    // 새 일정의 순서 결정 (마지막 일정 + 1 또는 초기값)
+    const newOrder = lastSchedule ? (lastSchedule.order || 0) + 1 : 0;
     
     let newStartTime = startTime ? new Date(startTime) : new Date(date);
     let newEndTime = endTime ? new Date(endTime) : new Date(date);  
@@ -255,6 +250,7 @@ export const createSchedule: ControllerFn = async (
       newEndTime.setHours(23, 59, 59, 999);
     }
 
+    // 데이터베이스 저장용 객체
     const newSchedule = await prisma.schedule.create({
       data: {
         title,
@@ -267,7 +263,7 @@ export const createSchedule: ControllerFn = async (
       },
     });
 
-    // 응답용 객체체
+    // 응답용 객체
     const responseSchedule: any = {
       id: newSchedule.id,
       title: newSchedule.title,
@@ -295,6 +291,7 @@ export const createSchedule: ControllerFn = async (
   }
 };
 
+// 일정 수정(order 제외)
 export const updateSchedule: ControllerFn = async (
   req: Request,
   res: Response,
@@ -421,14 +418,14 @@ export const deleteSchedule: ControllerFn = async (
   }
 };
 
+// 일정 순서 일괄 변경
 export const updateScheduleOrder: ControllerFn = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { scheduleId } = req.params;
-    const { targetPosition } = req.body;
+    const { date, schedules } = req.body;
     const authUser = (req as AuthRequest).user;
 
     if (!authUser) {
@@ -436,104 +433,56 @@ export const updateScheduleOrder: ControllerFn = async (
       return;
     }
 
-    const existingSchedule = await prisma.schedule.findUnique({
-      where: { id: scheduleId },
-    });
-
-    if (!existingSchedule) {
+    if (!date || !schedules || !Array.isArray(schedules)) {
       createErrorResponse(
         res,
-        404,
-        SCHEDULE_ERROR.SCHEDULE_NOT_FOUND,
-        ERROR_CODES.SCHEDULE_NOT_FOUND
+        400,
+        SCHEDULE_ERROR.REQUIRED_FIELDS,
+        ERROR_CODES.SCHEDULE_REQUIRED_FIELDS
       );
       return;
     }
 
-    if (existingSchedule.userCuid !== authUser.id) {
-      createErrorResponse(
-        res,
-        403,
-        SCHEDULE_ERROR.PERMISSION_DENIED,
-        ERROR_CODES.SCHEDULE_PERMISSION_DENIED
-      );
-      return;
-    }
-
-    // 사용자의 모든 일정을 순서대로 가져옴
-    const userSchedules = await prisma.schedule.findMany({
-      where: { userCuid: authUser.id },
-      orderBy: [{ order: 'asc' }],
+    // 해당 날짜의 사용자 일정 모두 가져오기
+    const existingSchedules = await prisma.schedule.findMany({
+      where: {
+        userCuid: authUser.id,
+        date: date
+      }
     });
 
-    // 유효한 targetPosition 범위 확인
-    if (targetPosition < 0 || targetPosition >= userSchedules.length) {
-      createErrorResponse(
-        res,
-        422,
-        SCHEDULE_ERROR.INVALID_ORDER_POSITION,
-        ERROR_CODES.SCHEDULE_INVALID_ORDER_POSITION
-      );
-      return;
+    // 존재하는 일정 ID 맵 생성 (ID를 키로, 일정 객체를 값으로)
+    const existingScheduleMap = new Map(
+      existingSchedules.map(schedule => [schedule.id, schedule])
+    );
+
+    // 요청된 일정 ID 유효성 검사 (모든 ID가 사용자의 일정인지 확인)
+    for (const scheduleId of schedules) {
+      if (!existingScheduleMap.has(scheduleId)) {
+        createErrorResponse(
+          res,
+          404,
+          SCHEDULE_ERROR.SCHEDULE_NOT_FOUND,
+          ERROR_CODES.SCHEDULE_NOT_FOUND
+        );
+        return;
+      }
     }
 
-    let prevOrder = 0;
-    let nextOrder = 0;
-
-    if (targetPosition === 0) {
-      // 맨 앞으로 이동하는 경우
-      nextOrder = userSchedules[0]?.order ?? SCHEDULE_ORDER_GAP;
-      prevOrder = nextOrder - SCHEDULE_ORDER_GAP;
-    } else if (targetPosition === userSchedules.length - 1) {
-      // 맨 뒤로 이동하는 경우
-      prevOrder = userSchedules[userSchedules.length - 1]?.order ?? 0;
-      nextOrder = prevOrder + SCHEDULE_ORDER_GAP;
-    } else {
-      // 중간으로 이동하는 경우
-      prevOrder = userSchedules[targetPosition - 1]?.order ?? 0;
-      nextOrder = userSchedules[targetPosition]?.order ?? prevOrder + SCHEDULE_ORDER_GAP;
-    }
-
-    // 새 order 값 계산 (중간값)
-    const newOrder = Math.floor((prevOrder + nextOrder) / 2);
-
-    // 순서 간격이 너무 좁아졌는지 확인 (재정렬 필요 여부)
-    const needsReordering = nextOrder - prevOrder <= MIN_ORDER_GAP_THRESHOLD;
-
-    if (needsReordering) {
-      // 모든 일정 재정렬
-      await reorderAllSchedules(authUser.id);
-
-      // 재정렬 후 다시 위치 조정
-      return updateScheduleOrder(req, res, next);
-    }
-
-    const updatedSchedule = await prisma.schedule.update({
-      where: { id: scheduleId },
-      data: { order: newOrder },
+    // 트랜잭션으로 모든 일정 순서 업데이트
+    const updateOperations = schedules.map((scheduleId, index) => {
+      return prisma.schedule.update({
+        where: { id: scheduleId },
+        data: { order: index }
+      });
     });
 
-    createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.UPDATE_ORDER, {
-      data: { schedule: updatedSchedule },
-    });
+    await prisma.$transaction(updateOperations);
+
+    createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.UPDATE_ORDER);
   } catch (error) {
-    console.error('일정 순서 변경 에러:', error);
+    console.error('일정 순서 일괄 변경 에러:', error);
     next(error);
   }
 };
 
-async function reorderAllSchedules(userCuid: string): Promise<void> {
-  const schedules = await prisma.schedule.findMany({
-    where: { userCuid: userCuid },
-    orderBy: [{ order: 'asc' }],
-  });
-
-  const updates = schedules.map((schedule, index) =>
-    prisma.schedule.update({
-      where: { id: schedule.id },
-      data: { order: index * SCHEDULE_ORDER_GAP },
-    })
-  );
-
-  await prisma.$transaction(updates);
-}

@@ -31,7 +31,7 @@ export const ERROR_CODES = {
   SCHEDULE_PERMISSION_DENIED: 4002,
   SCHEDULE_INVALID_TIME_RANGE: 4003,
   SCHEDULE_REQUIRED_FIELDS: 4004,
-  SCHEDULE_INVALID_ORDER_POSITION: 4005,
+  // SCHEDULE_INVALID_ORDER_POSITION: 4005,
   SCHEDULE_DAILY_SCHEDULE_LIMIT: 4006,
 };
 
@@ -69,7 +69,7 @@ export const SCHEDULE_ERROR = {
   SCHEDULE_NOT_FOUND: '일정을 찾을 수 없습니다.',
   PERMISSION_DENIED: '권한이 없습니다.',
   INVALID_TIME_RANGE: '시작 시간은 종료 시간보다 이전이어야 합니다.',
-  REQUIRED_FIELDS: '일정 이름을 입력해주세요.',
-  INVALID_ORDER_POSITION: '유효하지 않은 위치입니다.',
+  REQUIRED_FIELDS: '필수 항목을 입력해주세요.',
+  // INVALID_ORDER_POSITION: '유효하지 않은 위치입니다.',
   DAILY_SCHEDULE_LIMIT: '하루당 최대 20개까지 일정을 생성할 수 있습니다.',
 };
