@@ -116,7 +116,7 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
       <Modal
         isOpen={isOpenCreateRoomModal}
         title="방 생성하기"
-        width="w-[30%]"
+        width="w-[30%] min-w-[330px]"
         onClose={() => {
           setIsOpenCreateRoomModal(false);
           setRoomName('');
