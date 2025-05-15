@@ -219,7 +219,7 @@ const AddScheduleForm = memo(({ onToggleAddMode }: AddScheduleFormProps) => {
           size="md"
           fullWidth
           aria-label="일정 추가 모드 취소"
-          className="mt-2"
+          className="mt-2 hidden lg:flex"
         >
           취소
         </Button>

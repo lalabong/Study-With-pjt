@@ -111,7 +111,12 @@ const ScheduleList = memo(({ isAddMode, onToggleAddMode }: ScheduleListProps) =>
           일정 목록
         </h2>
         {!isAddMode && (
-          <Button variant="primary" size="sm" onClick={onToggleAddMode}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={onToggleAddMode}
+            className="hidden lg:flex lg:justify-center lg:items-center"
+          >
             일정 추가
           </Button>
         )}
