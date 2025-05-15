@@ -40,7 +40,8 @@ const Button: React.FC<ButtonProps> = ({
     ? '!opacity-50 !cursor-not-allowed !bg-gray-300 !text-gray-500 !border-gray-300'
     : '';
 
-  const baseClasses = 'font-medium rounded-md transition-colors duration-300 cursor-pointer';
+  const baseClasses =
+    'flex items-center justify-center font-medium rounded-md transition-colors duration-300 cursor-pointer';
 
   const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className} ${fullWidth ? 'w-full' : ''} ${disabledClass}`;
 
