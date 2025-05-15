@@ -4,7 +4,7 @@ import { HiPlus } from 'react-icons/hi';
 
 import { Button } from '@components/common';
 import StatusMessage from '@components/common/StatusMessage';
-import UserPageProfile from '@components/mypage/Profile/UserPageProfile';
+import UserProfile from '@components/common/UserProfile';
 
 import { User } from '@stores/authStore';
 
@@ -35,7 +35,7 @@ const ProfileSection = ({
   return (
     <div className="rounded-lg mb-7 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <UserPageProfile
+        <UserProfile
           profileImg={user.profileImg}
           nickname={user.nickname}
           additionalInfo={user.createdAt}
@@ -44,9 +44,9 @@ const ProfileSection = ({
           onProfileImgChange={isCurrentUser ? onProfileUpdate?.profileImg : undefined}
         />
         {isCurrentUser && (
-          <Button size="sm" className="bg-blue-500">
+          <Button size="sm" className="bg-blue-500" onClick={onCreateRoom}>
             <span className="flex items-center gap-1">
-              <HiPlus className="h-4 w-4" onClick={onCreateRoom} />방 생성하기
+              <HiPlus className="h-4 w-4" />방 생성하기
             </span>
           </Button>
         )}

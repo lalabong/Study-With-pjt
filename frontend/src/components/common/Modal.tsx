@@ -8,10 +8,11 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  width?: string;
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, width, children }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,7 +58,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     >
       <div className="fixed inset-0 bg-black/70 transition-opacity" aria-hidden="true"></div>
 
-      <div className="relative z-50 w-full max-w-6xl p-4 mx-auto">
+      <div className={`relative z-50 max-w-6xl p-4 mx-auto ${width ? width : 'w-full'}`}>
         <div
           ref={modalRef}
           className="relative bg-white rounded-md shadow-xl max-h-[80vh] overflow-y-auto no-scrollbar"

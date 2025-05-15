@@ -1,7 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
+import { TextField } from '@mui/material';
+
+import { Button, Modal } from '@components/common';
 import StatusMessage from '@components/common/StatusMessage';
 import ProfileSection from '@components/mypage/Profile/ProfileSection';
 
@@ -19,6 +22,9 @@ interface ProfileManagerProps {
 const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
   const updateNicknameMutation = useUpdateNicknameMutation({ userId });
   const updateProfileImgMutation = useUpdateProfileImgMutation({ userId });
+
+  const [isOpenCreateRoomModal, setIsOpenCreateRoomModal] = useState(false);
+  const [roomName, setRoomName] = useState('');
 
   const loginUser = useAuthStore((state) => state.user);
 
@@ -72,24 +78,77 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
 
   // 방 생성 버튼 클릭 시 실행되는 함수
   const handleCreateRoom = () => {
-    // 방 생성 로직 구현
-    console.log('방 생성하기 버튼 클릭');
+    setRoomName('');
+    setIsOpenCreateRoomModal(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRoomName(e.target.value);
+  };
+
+  const handleAddRoom = () => {
+    // 방으로 이동하는 로직
+    console.log(roomName + '방으로 이동합니다.');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && roomName.trim()) {
+      handleAddRoom();
+    }
   };
 
   return (
-    <ProfileSection
-      user={user}
-      isCurrentUser={isCurrentUser}
-      onCreateRoom={handleCreateRoom}
-      onProfileUpdate={
-        isCurrentUser
-          ? {
-              nickname: handleNicknameUpdate,
-              profileImg: handleProfileImgUpdate,
-            }
-          : undefined
-      }
-    />
+    <>
+      <ProfileSection
+        user={user}
+        isCurrentUser={isCurrentUser}
+        onCreateRoom={handleCreateRoom}
+        onProfileUpdate={
+          isCurrentUser
+            ? {
+                nickname: handleNicknameUpdate,
+                profileImg: handleProfileImgUpdate,
+              }
+            : undefined
+        }
+      />
+
+      <Modal
+        isOpen={isOpenCreateRoomModal}
+        title="방 생성하기"
+        width="w-[30%]"
+        onClose={() => {
+          setIsOpenCreateRoomModal(false);
+          setRoomName('');
+        }}
+      >
+        <div className="flex flex-col gap-4">
+          <TextField
+            id="createRoom"
+            variant="outlined"
+            name="createRoom"
+            value={roomName}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="방 이름을 입력하세요"
+            aria-required="true"
+            autoComplete="off"
+            size="small"
+            sx={{
+              width: '100%',
+              '& .MuiInputBase-root': {
+                height: '40px',
+                maxWidth: '100%',
+                fontSize: '0.875rem',
+              },
+            }}
+          />
+          <Button variant="primary" onClick={handleAddRoom}>
+            생성하기
+          </Button>
+        </div>
+      </Modal>
+    </>
   );
 };
 
