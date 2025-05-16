@@ -126,57 +126,57 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   nickname: 'nickname',
   profileImg: 'profileImg',
-  totalStudyTime: 'totalStudyTime',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  totalStudyTime: 'totalStudyTime'
 };
 
 exports.Prisma.RoomScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  ownerCuid: 'ownerCuid',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  ownerCuid: 'ownerCuid'
 };
 
 exports.Prisma.RoomUserScalarFieldEnum = {
   id: 'id',
+  joinedAt: 'joinedAt',
   roomCuid: 'roomCuid',
-  userCuid: 'userCuid',
-  joinedAt: 'joinedAt'
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.ScheduleScalarFieldEnum = {
   id: 'id',
-  userCuid: 'userCuid',
   title: 'title',
-  date: 'date',
   startTime: 'startTime',
   endTime: 'endTime',
-  order: 'order',
   status: 'status',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  order: 'order',
+  userCuid: 'userCuid',
+  date: 'date'
 };
 
 exports.Prisma.TimeLogScalarFieldEnum = {
   id: 'id',
-  userCuid: 'userCuid',
-  roomCuid: 'roomCuid',
   totalTime: 'totalTime',
   date: 'date',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  roomCuid: 'roomCuid',
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.FriendScalarFieldEnum = {
-  userCuid: 'userCuid',
+  createdAt: 'createdAt',
   friendCuid: 'friendCuid',
-  createdAt: 'createdAt'
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.RefreshTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
-  userCuid: 'userCuid',
   expiresAt: 'expiresAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.SortOrder = {
@@ -211,21 +211,21 @@ exports.Prisma.RoomUserOrderByRelevanceFieldEnum = {
 
 exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
   id: 'id',
-  userCuid: 'userCuid',
   title: 'title',
-  date: 'date',
-  status: 'status'
+  status: 'status',
+  userCuid: 'userCuid',
+  date: 'date'
 };
 
 exports.Prisma.TimeLogOrderByRelevanceFieldEnum = {
   id: 'id',
-  userCuid: 'userCuid',
-  roomCuid: 'roomCuid'
+  roomCuid: 'roomCuid',
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.FriendOrderByRelevanceFieldEnum = {
-  userCuid: 'userCuid',
-  friendCuid: 'friendCuid'
+  friendCuid: 'friendCuid',
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {

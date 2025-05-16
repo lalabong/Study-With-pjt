@@ -1,8 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
   previewFeatures = []
-  binaryTargets = ["native"]
+  binaryTargets   = ["native"]
 }
 
 datasource db {
@@ -11,20 +11,20 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid()) @db.VarChar(36)
-  userId        String         @unique @db.VarChar(20) // 유저의 로그인 아이디
-  password      String         @db.VarChar(255)
-  nickname      String         @unique @db.VarChar(10)
-  profileImg    String?        @db.VarChar(255)
-  totalStudyTime Int           @default(0) 
-  createdAt     DateTime?      @default(now()) @db.Timestamp(0)
-  rooms         Room[]         @relation("RoomOwner")
-  roomUsers     RoomUser[]
-  schedules     Schedule[]
-  timeLogs      TimeLog[]
-  friendsTo     Friend[]       @relation("UserToFriend")
-  friendsFrom   Friend[]       @relation("FriendToUser")
-  refreshTokens RefreshToken[]
+  id             String         @id @default(cuid()) @db.VarChar(36)
+  userId         String         @unique @db.VarChar(20)
+  password       String         @db.VarChar(255)
+  nickname       String         @unique @db.VarChar(10)
+  profileImg     String?        @db.VarChar(255)
+  createdAt      DateTime?      @default(now()) @db.Timestamp(0)
+  totalStudyTime Int            @default(0)
+  friendsFrom    Friend[]       @relation("FriendToUser")
+  friendsTo      Friend[]       @relation("UserToFriend")
+  refreshTokens  RefreshToken[]
+  rooms          Room[]         @relation("RoomOwner")
+  roomUsers      RoomUser[]
+  schedules      Schedule[]
+  timeLogs       TimeLog[]
 
   @@map("user")
 }
@@ -32,73 +32,81 @@ model User {
 model Room {
   id        String     @id @default(cuid()) @db.VarChar(36)
   name      String     @db.VarChar(50)
-  ownerCuid   String
   createdAt DateTime?  @default(now()) @db.Timestamp(0)
+  ownerCuid String
   owner     User       @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
   roomUsers RoomUser[]
   timeLogs  TimeLog[]
 
+  @@index([ownerCuid], map: "room_ownerCuid_fkey")
   @@map("room")
 }
 
 model RoomUser {
   id       String    @id @default(cuid()) @db.VarChar(36)
-  roomCuid   String
-  userCuid   String
   joinedAt DateTime? @default(now()) @db.Timestamp(0)
+  roomCuid String
+  userCuid String
   room     Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
   user     User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@unique([roomCuid, userCuid])
+  @@index([userCuid], map: "room_user_userCuid_fkey")
   @@map("room_user")
 }
 
 model Schedule {
   id        String    @id @default(cuid()) @db.VarChar(36)
-  userCuid    String
   title     String    @db.VarChar(50)
-  date      String    @db.VarChar(20)
-  startTime DateTime?  @db.DateTime(0)
-  endTime   DateTime?  @db.DateTime(0)
-  order     Int       @default(0)
+  startTime DateTime? @db.DateTime(0)
+  endTime   DateTime? @db.DateTime(0)
   status    String    @default("대기중") @db.VarChar(10)
   createdAt DateTime? @default(now()) @db.Timestamp(0)
+  order     Int       @default(0)
+  userCuid  String
+  date      String    @db.VarChar(20)
   user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
+  @@index([userCuid], map: "schedule_userCuid_fkey")
   @@map("schedule")
 }
 
 model TimeLog {
   id        String    @id @default(cuid()) @db.VarChar(36)
-  userCuid    String
-  roomCuid    String
-  totalTime Int       /// 공부 시간(분 단위)
+  /// 공부 시간(분 단위)
+  totalTime Int
   date      DateTime  @db.Date
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
+  roomCuid  String
+  userCuid  String
   room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
+  @@index([roomCuid], map: "time_log_roomCuid_fkey")
+  @@index([userCuid], map: "time_log_userCuid_fkey")
   @@map("time_log")
 }
 
 model Friend {
-  userCuid    String
-  friendCuid  String
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
-  friend    User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
+  createdAt  DateTime? @default(now()) @db.Timestamp(0)
+  friendCuid String
+  userCuid   String
+  friend     User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
+  user       User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@id([userCuid, friendCuid])
+  @@index([friendCuid], map: "friend_friendCuid_fkey")
   @@map("friend")
 }
 
 model RefreshToken {
   id        String   @id @default(cuid()) @db.VarChar(36)
   token     String   @unique @db.VarChar(255)
-  userCuid    String
   expiresAt DateTime @db.DateTime(0)
   createdAt DateTime @default(now()) @db.Timestamp(0)
+  userCuid  String
   user      User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
+  @@index([userCuid], map: "refresh_token_userCuid_fkey")
   @@map("refresh_token")
 }
