@@ -15,13 +15,13 @@ const dotSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Study-With',
-  description: 'study-with project',
+  title: 'SWith | 공부 및 협업을 위한 플랫폼',
+  description: '일정을 관리하며 다른 사람들과 함께 효율적으로 공부 및 협업할 수 있는 플랫폼입니다.',
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={`${dotSans.className} no-scrollbar`}>
         <QueryProvider>
           <StoreHydrationProvider>
