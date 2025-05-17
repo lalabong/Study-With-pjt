@@ -18,8 +18,8 @@ model User {
   profileImg     String?        @db.VarChar(255)
   createdAt      DateTime?      @default(now()) @db.Timestamp(0)
   totalStudyTime Int            @default(0)
-  friendsFrom    Friend[]       @relation("FriendToUser")
-  friendsTo      Friend[]       @relation("UserToFriend")
+  friendsFrom    Friend[]       @relation("FriendToUser") // 친구 요청을 받은 유저들
+  friendsTo      Friend[]       @relation("UserToFriend") // 내가 친구 요청을 한 유저들
   refreshTokens  RefreshToken[]
   rooms          Room[]         @relation("RoomOwner")
   roomUsers      RoomUser[]
@@ -43,14 +43,13 @@ model Room {
 }
 
 model RoomUser {
-  id       String    @id @default(cuid()) @db.VarChar(36)
   joinedAt DateTime? @default(now()) @db.Timestamp(0)
   roomCuid String
   userCuid String
   room     Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
   user     User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
-  @@unique([roomCuid, userCuid])
+  @@id([roomCuid, userCuid])
   @@index([userCuid], map: "room_user_userCuid_fkey")
   @@map("room_user")
 }
@@ -73,8 +72,7 @@ model Schedule {
 
 model TimeLog {
   id        String    @id @default(cuid()) @db.VarChar(36)
-  /// 공부 시간(분 단위)
-  totalTime Int
+  totalTime Int // 공부 시간(분 단위)
   date      DateTime  @db.Date
   createdAt DateTime? @default(now()) @db.Timestamp(0)
   roomCuid  String
@@ -82,7 +80,7 @@ model TimeLog {
   room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
-  @@index([roomCuid], map: "time_log_roomCuid_fkey")
+  @@index([roomCuid])
   @@index([userCuid], map: "time_log_userCuid_fkey")
   @@map("time_log")
 }
@@ -91,6 +89,7 @@ model Friend {
   createdAt  DateTime? @default(now()) @db.Timestamp(0)
   friendCuid String
   userCuid   String
+  status     String    @default("신청중") // "신청중", "친구"
   friend     User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
   user       User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
 

@@ -138,7 +138,6 @@ exports.Prisma.RoomScalarFieldEnum = {
 };
 
 exports.Prisma.RoomUserScalarFieldEnum = {
-  id: 'id',
   joinedAt: 'joinedAt',
   roomCuid: 'roomCuid',
   userCuid: 'userCuid'
@@ -168,7 +167,8 @@ exports.Prisma.TimeLogScalarFieldEnum = {
 exports.Prisma.FriendScalarFieldEnum = {
   createdAt: 'createdAt',
   friendCuid: 'friendCuid',
-  userCuid: 'userCuid'
+  userCuid: 'userCuid',
+  status: 'status'
 };
 
 exports.Prisma.RefreshTokenScalarFieldEnum = {
@@ -204,7 +204,6 @@ exports.Prisma.RoomOrderByRelevanceFieldEnum = {
 };
 
 exports.Prisma.RoomUserOrderByRelevanceFieldEnum = {
-  id: 'id',
   roomCuid: 'roomCuid',
   userCuid: 'userCuid'
 };
@@ -225,7 +224,8 @@ exports.Prisma.TimeLogOrderByRelevanceFieldEnum = {
 
 exports.Prisma.FriendOrderByRelevanceFieldEnum = {
   friendCuid: 'friendCuid',
-  userCuid: 'userCuid'
+  userCuid: 'userCuid',
+  status: 'status'
 };
 
 exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
