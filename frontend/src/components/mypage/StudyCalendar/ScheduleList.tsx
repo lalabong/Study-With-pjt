@@ -33,160 +33,163 @@ const reorder = (
 };
 
 interface ScheduleListProps {
-  isAddMode: boolean;
-  onToggleAddMode: () => void;
+  isAddScheduleClick?: boolean;
+  onAddScheduleClick?: () => void;
+  classes?: string;
 }
 
-const ScheduleList = memo(({ isAddMode, onToggleAddMode }: ScheduleListProps) => {
-  const { filteredSchedules, setFilteredSchedules, selectedDate } = useScheduleStore();
+const ScheduleList = memo(
+  ({ isAddScheduleClick, onAddScheduleClick, classes }: ScheduleListProps) => {
+    const { filteredSchedules, setFilteredSchedules, selectedDate } = useScheduleStore();
 
-  const userId = useAuthStore((state) => state.user?.userId);
+    const userId = useAuthStore((state) => state.user?.userId);
 
-  const formattedDate =
-    selectedDate instanceof Date ? formatDateToYYYYMMDD(selectedDate) : getCurrentDateString();
-  // 드래그 기능을 사용할 수 있는지 확인
-  const canDrag = filteredSchedules.length > 0;
+    const formattedDate =
+      selectedDate instanceof Date ? formatDateToYYYYMMDD(selectedDate) : getCurrentDateString();
+    // 드래그 기능을 사용할 수 있는지 확인
+    const canDrag = filteredSchedules.length > 0;
 
-  const { data: scheduleData, isLoading } = useSchedulesByDateQuery({
-    userId: userId || '',
-    date: formattedDate,
-    enabled: !!userId && !!formattedDate,
-  });
+    const { data: scheduleData, isLoading } = useSchedulesByDateQuery({
+      userId: userId || '',
+      date: formattedDate,
+      enabled: !!userId && !!formattedDate,
+    });
 
-  useEffect(() => {
-    if (scheduleData?.schedules) {
-      setFilteredSchedules(scheduleData.schedules);
-    } else {
-      setFilteredSchedules([]);
-    }
-  }, [scheduleData]);
-
-  const updateSchedulesOrderMutation = useUpdateSchedulesOrderMutation();
-
-  // 디바운스된 API 업데이트 호출
-  const debouncedUpdateSchedules = useCallback(
-    debounce((updatedSchedules: Schedule[]) => {
-      if (selectedDate instanceof Date && userId) {
-        updateSchedulesOrderMutation.mutate({
-          date: formatDateToYYYYMMDD(selectedDate),
-          schedules: updatedSchedules,
-        });
+    useEffect(() => {
+      if (scheduleData?.schedules) {
+        setFilteredSchedules(scheduleData.schedules);
+      } else {
+        setFilteredSchedules([]);
       }
-    }, 300),
-    [updateSchedulesOrderMutation, selectedDate, userId],
-  );
+    }, [scheduleData]);
 
-  // 드래그 종료 시
-  const handleDragEnd = (result: DropResult) => {
-    try {
-      // 드롭 위치가 없으면 종료
-      if (!result.destination) return;
+    const updateSchedulesOrderMutation = useUpdateSchedulesOrderMutation();
 
-      // 위치가 변경되지 않았으면 종료
-      if (result.destination.index === result.source.index) return;
+    // 디바운스된 API 업데이트 호출
+    const debouncedUpdateSchedules = useCallback(
+      debounce((updatedSchedules: Schedule[]) => {
+        if (selectedDate instanceof Date && userId) {
+          updateSchedulesOrderMutation.mutate({
+            date: formatDateToYYYYMMDD(selectedDate),
+            schedules: updatedSchedules,
+          });
+        }
+      }, 300),
+      [updateSchedulesOrderMutation, selectedDate, userId],
+    );
 
-      // 순서 재정렬
-      const reorderedSchedules = reorder(
-        filteredSchedules,
-        result.source.index,
-        result.destination.index,
-      );
+    // 드래그 종료 시
+    const handleDragEnd = (result: DropResult) => {
+      try {
+        // 드롭 위치가 없으면 종료
+        if (!result.destination) return;
 
-      setFilteredSchedules(reorderedSchedules);
+        // 위치가 변경되지 않았으면 종료
+        if (result.destination.index === result.source.index) return;
 
-      debouncedUpdateSchedules(reorderedSchedules);
-    } catch (error) {
-      console.error('드래그 종료 처리 중 오류:', error);
-    }
-  };
+        // 순서 재정렬
+        const reorderedSchedules = reorder(
+          filteredSchedules,
+          result.source.index,
+          result.destination.index,
+        );
 
-  return (
-    <section
-      className="min-w-[280px] sm:min-h-[550px] sm:min-w-[300px] border border-gray-200 rounded-md p-6 lg:col-span-2"
-      aria-labelledby="schedule-list-title"
-    >
-      <div className="flex justify-between">
-        <h2 id="schedule-list-title" className="text-lg font-medium mb-4 flex items-center">
-          <HiCalendar className="mr-2 text-blue-500" aria-hidden="true" />
-          일정 목록
-        </h2>
-        {!isAddMode && (
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={onToggleAddMode}
-            className="hidden lg:flex lg:justify-center lg:items-center"
-          >
-            일정 추가
-          </Button>
-        )}
-      </div>
+        setFilteredSchedules(reorderedSchedules);
 
-      {isLoading ? (
-        <div className="text-center py-8 text-gray-500">일정을 불러오는 중...</div>
-      ) : filteredSchedules.length === 0 ? (
-        <div className="text-center py-8 text-gray-500" aria-live="polite">
-          일정이 없습니다. 새 일정을 추가해 보세요.
-        </div>
-      ) : (
-        <>
-          {canDrag ? (
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable
-                droppableId="schedule-list-droppable"
-                isDropDisabled={false}
-                isCombineEnabled={false}
-                ignoreContainerClipping={false}
-              >
-                {(provided) => (
-                  <ul
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="list-none p-4 m-0 max-h-[250px] sm:max-h-[450px] pr-1 mt-2 overflow-y-auto overflow-x-hidden"
-                    aria-label="일정 목록"
-                  >
-                    {filteredSchedules.map((schedule, index) => (
-                      <Draggable key={schedule.id} draggableId={schedule.id} index={index}>
-                        {(provided, snapshot) => (
-                          <li
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{
-                              ...provided.draggableProps.style,
-                              opacity: snapshot.isDragging ? 0.8 : 1,
-                            }}
-                            className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} mb-4`}
-                            data-schedule-id={schedule.id}
-                          >
-                            <ScheduleItem schedule={schedule} />
-                          </li>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </ul>
-                )}
-              </Droppable>
-            </DragDropContext>
-          ) : (
-            <ul className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden">
-              {filteredSchedules.map((schedule) => (
-                <li
-                  key={schedule.id}
-                  className="cursor-not-allowed mb-4"
-                  data-schedule-id={schedule.id}
-                >
-                  <ScheduleItem schedule={schedule} />
-                </li>
-              ))}
-            </ul>
+        debouncedUpdateSchedules(reorderedSchedules);
+      } catch (error) {
+        console.error('드래그 종료 처리 중 오류:', error);
+      }
+    };
+
+    return (
+      <section
+        className={`${classes} rounded-md p-6 bg-white`}
+        aria-labelledby="schedule-list-title"
+      >
+        <div className="flex justify-between">
+          <h2 id="schedule-list-title" className="text-lg font-medium mb-4 flex items-center">
+            <HiCalendar className="mr-2 text-blue-500" aria-hidden="true" />
+            일정 목록
+          </h2>
+          {!isAddScheduleClick && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={onAddScheduleClick}
+              className="hidden lg:flex lg:justify-center lg:items-center"
+            >
+              일정 추가
+            </Button>
           )}
-        </>
-      )}
-    </section>
-  );
-});
+        </div>
+
+        {isLoading ? (
+          <div className="text-center py-8 text-gray-500">일정을 불러오는 중...</div>
+        ) : filteredSchedules.length === 0 ? (
+          <div className="text-center py-8 text-gray-500" aria-live="polite">
+            일정이 없습니다. 새 일정을 추가해 보세요.
+          </div>
+        ) : (
+          <>
+            {canDrag ? (
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable
+                  droppableId="schedule-list-droppable"
+                  isDropDisabled={false}
+                  isCombineEnabled={false}
+                  ignoreContainerClipping={false}
+                >
+                  {(provided) => (
+                    <ul
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="list-none p-4 m-0 max-h-[250px] sm:max-h-[450px] pr-1 mt-2 overflow-y-auto overflow-x-hidden"
+                      aria-label="일정 목록"
+                    >
+                      {filteredSchedules.map((schedule, index) => (
+                        <Draggable key={schedule.id} draggableId={schedule.id} index={index}>
+                          {(provided, snapshot) => (
+                            <li
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                ...provided.draggableProps.style,
+                                opacity: snapshot.isDragging ? 0.8 : 1,
+                              }}
+                              className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} mb-4`}
+                              data-schedule-id={schedule.id}
+                            >
+                              <ScheduleItem schedule={schedule} />
+                            </li>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </ul>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            ) : (
+              <ul className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden">
+                {filteredSchedules.map((schedule) => (
+                  <li
+                    key={schedule.id}
+                    className="cursor-not-allowed mb-4"
+                    data-schedule-id={schedule.id}
+                  >
+                    <ScheduleItem schedule={schedule} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        )}
+      </section>
+    );
+  },
+);
 
 ScheduleList.displayName = 'ScheduleList';
 

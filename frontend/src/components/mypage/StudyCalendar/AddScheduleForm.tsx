@@ -20,10 +20,10 @@ import { formatDateToYYYYMMDD } from '@utils/date';
 dayjs.locale('ko');
 
 interface AddScheduleFormProps {
-  onToggleAddMode: () => void;
+  onAddScheduleClick: () => void;
 }
 
-const AddScheduleForm = memo(({ onToggleAddMode }: AddScheduleFormProps) => {
+const AddScheduleForm = memo(({ onAddScheduleClick }: AddScheduleFormProps) => {
   const [title, setTitle] = useState('');
 
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
@@ -214,7 +214,7 @@ const AddScheduleForm = memo(({ onToggleAddMode }: AddScheduleFormProps) => {
         </Button>
 
         <Button
-          onClick={onToggleAddMode}
+          onClick={onAddScheduleClick}
           variant="secondary"
           size="md"
           fullWidth

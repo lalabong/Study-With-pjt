@@ -131,10 +131,10 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     updateDateRangeFromMonth(nextMonth);
   };
 
-  const [isAddMode, setIsAddMode] = useState(false);
+  const [isAddScheduleClick, setIsAddScheduleClick] = useState(false);
 
-  const handleToggleAddMode = () => {
-    setIsAddMode((prev) => !prev);
+  const handleAddScheduleClick = () => {
+    setIsAddScheduleClick((prev) => !prev);
   };
 
   return (
@@ -144,14 +144,14 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
           flex flex-col
           transition-all duration-1200 ease-in-out overflow-hidden 
           ${
-            isAddMode
+            isAddScheduleClick
               ? 'lg:opacity-0 lg:w-0 pointer-events-none'
               : 'lg:opacity-100 lg:w-1/2 min-h-[550px]'
           }
         `}
       >
         <div
-          className={`transition-opacity duration-1200 ${isAddMode ? 'lg:opacity-0' : 'lg:opacity-100'}`}
+          className={`transition-opacity duration-1200 ${isAddScheduleClick ? 'lg:opacity-0' : 'lg:opacity-100'}`}
         >
           <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -223,17 +223,21 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
            transition-all duration-500 ease-in-out lg:w-1/2
          `}
       >
-        <ScheduleList isAddMode={isAddMode} onToggleAddMode={handleToggleAddMode} />
+        <ScheduleList
+          isAddScheduleClick={isAddScheduleClick}
+          onAddScheduleClick={handleAddScheduleClick}
+          classes="border border-gray-200 min-w-[280px] sm:min-h-[550px] sm:min-w-[300px] lg:col-span-2 "
+        />
       </div>
 
       <div
         className={`
            flex justify-center items-center overflow-hidden 
            transition-all duration-1200 ease-in-out
-            ${isAddMode ? 'lg:opacity-100 lg:w-1/2' : 'lg:opacity-0 lg:w-0 transform lg:pointer-events-none'}
+            ${isAddScheduleClick ? 'lg:opacity-100 lg:w-1/2' : 'lg:opacity-0 lg:w-0 transform lg:pointer-events-none'}
           `}
       >
-        <AddScheduleForm onToggleAddMode={handleToggleAddMode} />
+        <AddScheduleForm onAddScheduleClick={handleAddScheduleClick} />
       </div>
     </div>
   );
