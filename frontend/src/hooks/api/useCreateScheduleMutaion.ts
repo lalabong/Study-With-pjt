@@ -22,8 +22,7 @@ export const useCreateScheduleMutation = () => {
 
   const userId = useAuthStore((state) => state.user?.userId);
 
-  const selectedDate = useScheduleStore((state) => state.selectedDate);
-  const addScheduleItem = useScheduleStore((state) => state.addScheduleItem);
+  const { selectedDate, addScheduleItem, startDate, endDate } = useScheduleStore();
 
   return useMutation({
     mutationFn: postSchedule,
@@ -51,6 +50,9 @@ export const useCreateScheduleMutation = () => {
             userId,
             formatDateToYYYYMMDD(selectedDate as Date),
           ],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [USER_QUERY_KEYS.USER_SCHEDULE_DATES, userId, startDate, endDate],
         });
       }
     },
