@@ -31,21 +31,21 @@ export const getUserScheduleDates: ControllerFn = async (
     };
 
     if (startDate && endDate) {
-      whereClause.startTime = {
-        gte: new Date(startDate as string),
-        lte: new Date(endDate as string),
+      whereClause.date = {
+        gte: startDate as string,
+        lte: endDate as string,
       };
     }
 
     const schedules = await prisma.schedule.findMany({
       where: whereClause,
       select: {
-        date: true
+        date: true,
       },
-      distinct: ['date']
+      distinct: ['date'],
     });
 
-    const scheduleDates = schedules.map(schedule => schedule.date);
+    const scheduleDates = schedules.map((schedule) => schedule.date);
 
     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_SCHEDULES, {
       data: { scheduleDates },
@@ -88,7 +88,7 @@ export const getUserSchedulesByDate: ControllerFn = async (
     const schedules = await prisma.schedule.findMany({
       where: {
         userCuid: user.id,
-        date: date as string
+        date: date as string,
       },
       orderBy: {
         order: 'asc',
@@ -103,7 +103,6 @@ export const getUserSchedulesByDate: ControllerFn = async (
     next(error);
   }
 };
-
 
 export const createSchedule: ControllerFn = async (
   req: Request,
@@ -145,7 +144,6 @@ export const createSchedule: ControllerFn = async (
 
     const scheduleDateEnd = new Date(date);
     scheduleDateEnd.setHours(23, 59, 59, 999);
-
 
     const schedulesForDate = await prisma.schedule.findMany({
       where: {
@@ -361,13 +359,13 @@ export const updateScheduleOrder: ControllerFn = async (
     const existingSchedules = await prisma.schedule.findMany({
       where: {
         userCuid: authUser.id,
-        date: date
-      }
+        date: date,
+      },
     });
 
     // 존재하는 일정 ID 맵 생성 (ID를 키로, 일정 객체를 값으로)
     const existingScheduleMap = new Map(
-      existingSchedules.map(schedule => [schedule.id, schedule])
+      existingSchedules.map((schedule) => [schedule.id, schedule])
     );
 
     // 요청된 일정 ID 유효성 검사 (모든 ID가 사용자의 일정인지 확인)
@@ -387,7 +385,7 @@ export const updateScheduleOrder: ControllerFn = async (
     const updateOperations = schedules.map((scheduleId, index) => {
       return prisma.schedule.update({
         where: { id: scheduleId },
-        data: { order: index }
+        data: { order: index },
       });
     });
 
@@ -399,4 +397,3 @@ export const updateScheduleOrder: ControllerFn = async (
     next(error);
   }
 };
-
