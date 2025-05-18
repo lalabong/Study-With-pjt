@@ -26,27 +26,21 @@ interface StudyCalendarProps {
 }
 
 const StudyCalendar = ({ userId }: StudyCalendarProps) => {
-  // 초기값: 오늘
-  const activeDate = new Date();
+  const { selectedDate, setSelectedDate, startDate, endDate, setDateRange } = useScheduleStore();
 
-  const { selectedDate, setSelectedDate } = useScheduleStore();
+  const [currentViewDate, setCurrentViewDate] = useState<Date>(new Date()); // 현재 보고 있는 날짜(연/월/일) - 초깃값: 오늘
 
-  const [currentViewDate, setCurrentViewDate] = useState<Date>(activeDate); // 현재 보고 있는 날짜(연/월/일)
+  const [isAddScheduleMode, setIsAddScheduleMode] = useState(false);
 
-  // 기본 시작일과 종료일 계산 (현재 날짜 기준 전월 1일부터 다음달 마지막일까지)
-  const [dateRange, setDateRange] = useState({
-    startDate: formatDateToYYYYMMDD(
-      new Date(activeDate.getFullYear(), activeDate.getMonth() - 1, 1),
-    ),
-    endDate: formatDateToYYYYMMDD(new Date(activeDate.getFullYear(), activeDate.getMonth() + 2, 0)),
-  });
+  // 드롭다운 범위 표시할 연도 목록
+  const showYears = getYearRange(currentViewDate.getFullYear());
 
   // 일정 날짜들 조회 API 호출
   const { data: scheduleDatesData } = useScheduleDatesQuery({
     userId,
-    startDate: dateRange.startDate,
-    endDate: dateRange.endDate,
-    enabled: !!userId,
+    startDate: startDate || '',
+    endDate: endDate || '',
+    enabled: !!userId && !!startDate && !!endDate,
   });
 
   // 일정이 있는 날짜 목록(시작일 기준)
@@ -58,8 +52,10 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     }
   }, [scheduleDatesData]);
 
-  // 드롭다운 범위 표시할 연도 목록
-  const showYears = getYearRange(currentViewDate.getFullYear());
+  // 일정 추가 모드 핸들러
+  const handleAddScheduleMode = () => {
+    setIsAddScheduleMode((prev) => !prev);
+  };
 
   // 일정이 있는 날짜인지 확인
   const isStudyDate = (date: Date) => {
@@ -89,14 +85,9 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
   const updateDateRangeFromMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
-
     const newStartDate = formatDateToYYYYMMDD(new Date(year, month - 1, 1)); // 지난 달 1일
     const newEndDate = formatDateToYYYYMMDD(new Date(year, month + 2, 0)); // 다음 달 말일
-
-    setDateRange({
-      startDate: newStartDate,
-      endDate: newEndDate,
-    });
+    setDateRange(newStartDate, newEndDate);
   };
 
   // 월 드롭다운 변경 핸들러
@@ -131,12 +122,6 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
     updateDateRangeFromMonth(nextMonth);
   };
 
-  const [isAddScheduleClick, setIsAddScheduleClick] = useState(false);
-
-  const handleAddScheduleClick = () => {
-    setIsAddScheduleClick((prev) => !prev);
-  };
-
   return (
     <div className="w-full flex flex-col lg:flex-row gap-6">
       <div
@@ -144,14 +129,14 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
           flex flex-col
           transition-all duration-1200 ease-in-out overflow-hidden 
           ${
-            isAddScheduleClick
+            isAddScheduleMode
               ? 'lg:opacity-0 lg:w-0 pointer-events-none'
               : 'lg:opacity-100 lg:w-1/2 min-h-[550px]'
           }
         `}
       >
         <div
-          className={`transition-opacity duration-1200 ${isAddScheduleClick ? 'lg:opacity-0' : 'lg:opacity-100'}`}
+          className={`transition-opacity duration-1200 ${isAddScheduleMode ? 'lg:opacity-0' : 'lg:opacity-100'}`}
         >
           <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -224,8 +209,8 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
          `}
       >
         <ScheduleList
-          isAddScheduleClick={isAddScheduleClick}
-          onAddScheduleClick={handleAddScheduleClick}
+          isAddScheduleMode={isAddScheduleMode}
+          onAddScheduleMode={handleAddScheduleMode}
           classes="border border-gray-200 min-w-[280px] sm:min-h-[550px] sm:min-w-[300px] lg:col-span-2 "
         />
       </div>
@@ -234,10 +219,13 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
         className={`
            flex justify-center items-center overflow-hidden 
            transition-all duration-1200 ease-in-out
-            ${isAddScheduleClick ? 'lg:opacity-100 lg:w-1/2' : 'lg:opacity-0 lg:w-0 transform lg:pointer-events-none'}
+            ${isAddScheduleMode ? 'lg:opacity-100 lg:w-1/2' : 'lg:opacity-0 lg:w-0 transform lg:pointer-events-none'}
           `}
       >
-        <AddScheduleForm onAddScheduleClick={handleAddScheduleClick} />
+        <AddScheduleForm
+          containerClasses="border border-gray-200"
+          onAddScheduleMode={handleAddScheduleMode}
+        />
       </div>
     </div>
   );

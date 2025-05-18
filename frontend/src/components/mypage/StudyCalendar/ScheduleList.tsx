@@ -33,13 +33,13 @@ const reorder = (
 };
 
 interface ScheduleListProps {
-  isAddScheduleClick?: boolean;
-  onAddScheduleClick?: () => void;
+  isAddScheduleMode?: boolean;
+  onAddScheduleMode?: () => void;
   classes?: string;
 }
 
 const ScheduleList = memo(
-  ({ isAddScheduleClick, onAddScheduleClick, classes }: ScheduleListProps) => {
+  ({ isAddScheduleMode, onAddScheduleMode, classes }: ScheduleListProps) => {
     const { filteredSchedules, setFilteredSchedules, selectedDate } = useScheduleStore();
 
     const userId = useAuthStore((state) => state.user?.userId);
@@ -112,11 +112,11 @@ const ScheduleList = memo(
             <HiCalendar className="mr-2 text-blue-500" aria-hidden="true" />
             일정 목록
           </h2>
-          {!isAddScheduleClick && (
+          {!isAddScheduleMode && (
             <Button
               variant="primary"
               size="sm"
-              onClick={onAddScheduleClick}
+              onClick={onAddScheduleMode}
               className="hidden lg:flex lg:justify-center lg:items-center"
             >
               일정 추가
@@ -144,7 +144,7 @@ const ScheduleList = memo(
                     <ul
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="list-none p-4 m-0 max-h-[250px] sm:max-h-[450px] pr-1 mt-2 overflow-y-auto overflow-x-hidden"
+                      className="list-none p-4 m-0 max-h-[250px] sm:max-h-[450px] mt-2 overflow-y-auto overflow-x-hidden"
                       aria-label="일정 목록"
                     >
                       {filteredSchedules.map((schedule, index) => (

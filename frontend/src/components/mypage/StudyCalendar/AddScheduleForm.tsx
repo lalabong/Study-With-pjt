@@ -6,8 +6,9 @@ import TextField from '@mui/material/TextField';
 import { TimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { HiPlus } from 'react-icons/hi';
+import 'dayjs/locale/ko';
 
 import Button from '@components/common/Button';
 
@@ -17,13 +18,12 @@ import { useScheduleStore } from '@stores/scheduleStore';
 
 import { formatDateToYYYYMMDD } from '@utils/date';
 
-dayjs.locale('ko');
-
 interface AddScheduleFormProps {
-  onAddScheduleClick: () => void;
+  containerClasses?: string;
+  onAddScheduleMode: () => void;
 }
 
-const AddScheduleForm = memo(({ onAddScheduleClick }: AddScheduleFormProps) => {
+const AddScheduleForm = memo(({ containerClasses, onAddScheduleMode }: AddScheduleFormProps) => {
   const [title, setTitle] = useState('');
 
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
@@ -116,10 +116,10 @@ const AddScheduleForm = memo(({ onAddScheduleClick }: AddScheduleFormProps) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
       <section
-        className="border border-gray-200 p-6 rounded-md h-fit min-w-[280px] sm:min-w-[300px] lg:col-span-1"
+        className={`${containerClasses} p-6 rounded-md h-fit min-w-[280px] sm:min-w-[300px] lg:col-span-1`}
         aria-labelledby="add-schedule-title"
       >
-        <h3 id="add-schedule-title" className="font-medium text-lg mb-3 flex items-center">
+        <h3 id="add-schedule-title" className="font-medium text-lg mb-8 flex items-center">
           <HiPlus className="mr-1 text-blue-500" aria-hidden="true" />새 일정 추가
         </h3>
 
@@ -214,7 +214,7 @@ const AddScheduleForm = memo(({ onAddScheduleClick }: AddScheduleFormProps) => {
         </Button>
 
         <Button
-          onClick={onAddScheduleClick}
+          onClick={onAddScheduleMode}
           variant="secondary"
           size="md"
           fullWidth
