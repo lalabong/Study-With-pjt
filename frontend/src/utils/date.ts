@@ -74,8 +74,19 @@ export const getYearRange = (currentYear: number, range: number = 2): number[] =
 };
 
 // 현재 날짜를 기준으로 월 범위 생성 (현재 월 기준 -1달 ~ +1달)
-export const getMonthRange = (now: Date): [string, string] => {
+export const getMonthRange = (): [string, string] => {
+  const now = new Date();
   const startDate = formatDateToYYYYMMDD(new Date(now.getFullYear(), now.getMonth() - 1, 1));
   const endDate = formatDateToYYYYMMDD(new Date(now.getFullYear(), now.getMonth() + 2, 0));
   return [startDate, endDate];
+};
+
+// 숫자를 2자리 문자열로 변환
+export const formatToTwoDigits = (value: number) => {
+  return value.toString().padStart(2, '0');
+};
+
+// Date 객체를 HH:MM 형태의 문자열로 변경
+export const formatDateToHHMM = (date: Date) => {
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };

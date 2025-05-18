@@ -21,8 +21,7 @@ const MyPage = async () => {
   const cookieStore = await cookies();
   const userId = cookieStore.get('userId')?.value || '';
 
-  const now = new Date();
-  const [startDate, endDate] = getMonthRange(now);
+  const [startDate, endDate] = getMonthRange();
 
   const queryClient = getServerQueryClient();
 
