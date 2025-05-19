@@ -23,11 +23,11 @@ const ScheduleSection = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <ScheduleList
         isAddScheduleMode={isAddScheduleMode}
         onAddScheduleMode={handleAddScheduleMode}
-        classes="bg-white rounded-lg shadow-sm"
+        mainContainerClasses="flex flex-col bg-white rounded-lg shadow-sm max-h-[550px] sm:max-h-[750px]"
       />
       <div
         className={`
@@ -49,7 +49,7 @@ const ScheduleSection = () => {
           />
         </Modal>
       )}
-    </>
+    </div>
   );
 };
 
