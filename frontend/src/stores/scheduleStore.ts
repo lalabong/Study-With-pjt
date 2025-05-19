@@ -41,7 +41,7 @@ interface ScheduleState {
 
 export const useScheduleStore = create<ScheduleState>((set) => ({
   // isOpenCalendarModal: false,
-  selectedDate: null,
+  selectedDate: new Date(),
   openStatusDropdownId: null,
   filteredSchedules: [],
   startDate: getMonthRange()[0],
