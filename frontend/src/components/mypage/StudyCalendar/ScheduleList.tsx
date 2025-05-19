@@ -36,16 +36,10 @@ interface ScheduleListProps {
   isAddScheduleMode?: boolean;
   onAddScheduleMode?: () => void;
   mainContainerClasses?: string;
-  draggableContainerClasses?: string;
 }
 
 const ScheduleList = memo(
-  ({
-    isAddScheduleMode,
-    onAddScheduleMode,
-    mainContainerClasses,
-    draggableContainerClasses,
-  }: ScheduleListProps) => {
+  ({ isAddScheduleMode, onAddScheduleMode, mainContainerClasses }: ScheduleListProps) => {
     const { filteredSchedules, setFilteredSchedules, selectedDate } = useScheduleStore();
 
     const userId = useAuthStore((state) => state.user?.userId);
@@ -150,7 +144,7 @@ const ScheduleList = memo(
                     <ul
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className={`${draggableContainerClasses} flex-1 list-none p-4 m-0 mt-2 overflow-x-hidden overflow-y-auto`}
+                      className="flex-1 list-none p-4 m-0 mt-2 overflow-x-hidden overflow-y-auto"
                       aria-label="일정 목록"
                     >
                       {filteredSchedules.map((schedule, index) => (

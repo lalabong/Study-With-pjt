@@ -123,7 +123,7 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
   };
 
   return (
-    <div className="w-full flex flex-col lg:flex-row gap-6">
+    <div className="flex flex-col lg:flex-row gap-5 lg:gap-0">
       <div
         className={`
           flex flex-col
@@ -205,13 +205,13 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
 
       <div
         className={`
-           transition-all duration-500 ease-in-out lg:w-1/2
+           transition-all duration-500 ease-in-out lg:w-1/2 lg:ml-5
          `}
       >
         <ScheduleList
           isAddScheduleMode={isAddScheduleMode}
           onAddScheduleMode={handleAddScheduleMode}
-          classes="border border-gray-200 min-w-[280px] sm:min-h-[550px] sm:min-w-[300px] lg:col-span-2 "
+          mainContainerClasses="flex flex-col border border-gray-200 w-full max-h-[500px] sm:max-h-none sm:h-[642px] lg:col-span-2"
         />
       </div>
 
