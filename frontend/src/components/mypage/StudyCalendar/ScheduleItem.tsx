@@ -15,9 +15,10 @@ import { formatTimeToKorean } from '@/utils/date';
 
 interface ScheduleItemProps {
   schedule: Schedule;
+  isLast?: boolean;
 }
 
-const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
+const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
   const { openStatusDropdownId, setOpenStatusDropdownId } = useScheduleStore();
 
   const deleteScheduleMutation = useDeleteScheduleMutation();
@@ -115,7 +116,7 @@ const ScheduleItem = ({ schedule }: ScheduleItemProps) => {
 
   return (
     <div
-      className={`relative p-4 sm:p-5 mb-4 rounded-md border border-gray-200 transition-transform duration-200 hover:scale-[1.02] hover:shadow-md sm:max-w-full ${getStatusClass(schedule.status)} cursor-grab active:cursor-grabbing`}
+      className={`relative ${isLast ? 'mb-[100px] sm:mb-[145px]' : 'mb-4'} p-4 sm:p-5 rounded-md border border-gray-200 transition-transform duration-200 hover:scale-[1.02] hover:shadow-md sm:max-w-full ${getStatusClass(schedule.status)} cursor-grab active:cursor-grabbing`}
       style={{ zIndex: isStatusOpen ? 10 : 1 }}
     >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full">

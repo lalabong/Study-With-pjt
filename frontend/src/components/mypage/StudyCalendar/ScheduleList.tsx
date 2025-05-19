@@ -35,11 +35,17 @@ const reorder = (
 interface ScheduleListProps {
   isAddScheduleMode?: boolean;
   onAddScheduleMode?: () => void;
-  classes?: string;
+  mainContainerClasses?: string;
+  draggableContainerClasses?: string;
 }
 
 const ScheduleList = memo(
-  ({ isAddScheduleMode, onAddScheduleMode, classes }: ScheduleListProps) => {
+  ({
+    isAddScheduleMode,
+    onAddScheduleMode,
+    mainContainerClasses,
+    draggableContainerClasses,
+  }: ScheduleListProps) => {
     const { filteredSchedules, setFilteredSchedules, selectedDate } = useScheduleStore();
 
     const userId = useAuthStore((state) => state.user?.userId);
@@ -104,7 +110,7 @@ const ScheduleList = memo(
 
     return (
       <section
-        className={`${classes} rounded-md p-6 bg-white`}
+        className={`${mainContainerClasses} rounded-md p-6 bg-white`}
         aria-labelledby="schedule-list-title"
       >
         <div className="flex justify-between">
@@ -144,7 +150,7 @@ const ScheduleList = memo(
                     <ul
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="list-none p-4 m-0 max-h-[250px] sm:max-h-[450px] mt-2 overflow-y-auto overflow-x-hidden"
+                      className={`${draggableContainerClasses} flex-1 list-none p-4 m-0 mt-2 overflow-x-hidden overflow-y-auto`}
                       aria-label="일정 목록"
                     >
                       {filteredSchedules.map((schedule, index) => (
@@ -158,10 +164,13 @@ const ScheduleList = memo(
                                 ...provided.draggableProps.style,
                                 opacity: snapshot.isDragging ? 0.8 : 1,
                               }}
-                              className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''} mb-4`}
+                              className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''}`}
                               data-schedule-id={schedule.id}
                             >
-                              <ScheduleItem schedule={schedule} />
+                              <ScheduleItem
+                                schedule={schedule}
+                                isLast={index === filteredSchedules.length - 1}
+                              />
                             </li>
                           )}
                         </Draggable>
@@ -173,13 +182,16 @@ const ScheduleList = memo(
               </DragDropContext>
             ) : (
               <ul className="list-none p-0 m-0 max-h-[250px] sm:max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden">
-                {filteredSchedules.map((schedule) => (
+                {filteredSchedules.map((schedule, index) => (
                   <li
                     key={schedule.id}
-                    className="cursor-not-allowed mb-4"
+                    className="cursor-not-allowed"
                     data-schedule-id={schedule.id}
                   >
-                    <ScheduleItem schedule={schedule} />
+                    <ScheduleItem
+                      schedule={schedule}
+                      isLast={index === filteredSchedules.length - 1}
+                    />
                   </li>
                 ))}
               </ul>
