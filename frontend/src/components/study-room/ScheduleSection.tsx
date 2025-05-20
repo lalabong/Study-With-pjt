@@ -27,7 +27,7 @@ const ScheduleSection = () => {
       <ScheduleList
         isAddScheduleMode={isAddScheduleMode}
         onAddScheduleMode={handleAddScheduleMode}
-        mainContainerClasses="flex flex-col bg-white rounded-lg shadow-sm max-h-[550px] sm:max-h-[750px]"
+        mainContainerClasses="flex flex-col bg-white rounded-lg shadow-sm h-[550px] sm:h-[750px]"
       />
       <div
         className={`

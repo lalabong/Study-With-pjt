@@ -211,7 +211,7 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
         <ScheduleList
           isAddScheduleMode={isAddScheduleMode}
           onAddScheduleMode={handleAddScheduleMode}
-          mainContainerClasses="flex flex-col border border-gray-200 w-full max-h-[500px] sm:max-h-none sm:h-[642px] lg:col-span-2"
+          mainContainerClasses="flex flex-col border border-gray-200 w-full h-[500px] sm:h-[642px] lg:col-span-2"
         />
       </div>
 
