@@ -1,7 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
+
+import Image from 'next/image';
 
 const ImageSlider = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);

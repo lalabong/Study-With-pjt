@@ -1,12 +1,17 @@
 'use client';
 
+import { ReactNode } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
+
 import { HiArrowLeft } from 'react-icons/hi';
 
-import SocialLogin from '@/components/user/SocialLogin';
+import StatusMessage from '@components/common/StatusMessage';
+import SocialLogin from '@components/user/SocialLogin';
+
+import { useAuthStore } from '@stores/authStore';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -15,6 +20,11 @@ interface AuthLayoutProps {
 
 const AuthLayout = ({ children, showRegisterLink }: AuthLayoutProps) => {
   const router = useRouter();
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (isAuthenticated && user) {
+    return <StatusMessage status="loading" message="사용자 정보 확인 중..." className="h-screen" />;
+  }
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-100 via-blue-50 to-white">

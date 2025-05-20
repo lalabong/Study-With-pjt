@@ -1,27 +1,21 @@
 import { HiPlus, HiCalendar, HiChat } from 'react-icons/hi';
 
-import { Button, Header } from '@/components/common';
+import { Button, Header } from '@components/common';
+import HeaderActionButtons from '@components/common/HeaderActionButtons';
 import ImageSlider from '@components/landing/ImageSlider';
 
 const Home = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
     <div className="min-h-screen bg-white">
       <Header>
-        <Button href="/login" variant="text" size="md">
-          로그인
-        </Button>
-        <Button href="/signup" variant="primary" size="md">
-          회원가입
-        </Button>
+        <HeaderActionButtons isHome={true} />
       </Header>
 
       <section className="relative w-full h-[600px] overflow-hidden">
         <ImageSlider />
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 text-shadow-lg break-keep">
-            공부부터 취미까지, 함께 몰입하는 온라인 모임 공간
+            공부부터 협업까지, 함께 몰입하는 온라인 모임 공간
           </h1>
           <p className="text-xl text-white mb-8 max-w-2xl text-shadow-lg break-keep">
             SWITH에서 하루를 설계하고, 사람들과 함께 목표를 향해 나아가보세요.
@@ -73,7 +67,7 @@ const Home = () => {
 
       <footer className="bg-gray-100 py-6 px-4">
         <div className="max-w-6xl mx-auto pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
-          <p>&copy; {currentYear} SWith. All rights reserved.</p>
+          <p>&copy; SWith. All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -1,25 +1,34 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
-import { toast } from 'react-toastify';
 
-import { Button, Input } from '@/components/common';
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { USER_SUCCESS_MESSAGES } from '@/constants/successMessages';
-import { useValidateForm } from '@/hooks/useValidateForm';
-import { useAuthStore } from '@/stores/authStore';
+import { HiIdentification, HiLockClosed, HiEye, HiEyeOff } from 'react-icons/hi';
+
+import { Button, Input } from '@components/common';
+
+import { useLoginMutation } from '@hooks/api/useLoginMutaion';
+import { useValidateForm } from '@hooks/useValidateForm';
 
 const LoginForm = () => {
-  const router = useRouter();
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const { mutate: login } = useLoginMutation();
+
   const { errors, validateForm } = useValidateForm({
     userId: { value: userId, validate: true },
     password: { value: password, validate: true },
   });
+
+  const getRedirectPath = () => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      return searchParams.get('redirect') || '/mypage';
+    }
+    return '/mypage';
+  };
 
   const handleTogglePassword = (): void => {
     setShowPassword(!showPassword);
@@ -29,22 +38,20 @@ const LoginForm = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.warn('로그인 시도:', { userId, password });
-      const data = { userId, password };
-      try {
-        await useAuthStore.getState().login(
-          data,
-          () => {
-            toast.success(USER_SUCCESS_MESSAGES.LOGIN_SUCCESS);
-            router.push('/mypage');
+      setIsSubmitting(true);
+
+      const redirectPath = getRedirectPath();
+      login(
+        { userId, password },
+        {
+          onSuccess: () => {
+            window.location.href = redirectPath;
           },
-          (errorMsg) => {
-            toast.error(errorMsg);
+          onError: () => {
+            setIsSubmitting(false);
           },
-        );
-      } catch (error) {
-        console.error(USER_ERROR_MESSAGES.LOGIN_FAILED, error);
-      }
+        },
+      );
     }
   };
 
@@ -84,7 +91,7 @@ const LoginForm = () => {
       />
 
       <Button type="submit" variant="primary" size="md" fullWidth>
-        로그인
+        {isSubmitting ? '로그인 중...' : '로그인'}
       </Button>
     </form>
   );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { USER_ERROR_MESSAGES } from '@constants/errorMessages';
 
 type ValidateFormField = {
   value: string;
@@ -43,10 +43,6 @@ export const useValidateForm = (initialFields: ValidateFormFields) => {
           newErrors.password = USER_ERROR_MESSAGES.PASSWORD_FORMAT;
         }
       }
-    }
-
-    if (initialFields.nickname?.validate && initialFields.nickname.value.length < 2) {
-      newErrors.nickname = USER_ERROR_MESSAGES.NICKNAME_MIN_LENGTH;
     }
 
     if (

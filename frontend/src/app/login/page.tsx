@@ -1,13 +1,14 @@
-'use client';
-
-import AuthLayout from '@/components/user/AuthLayout';
-import LoginForm from '@/components/user/LoginForm';
+import AuthRoute from '@components/router/AuthRoute';
+import AuthLayout from '@components/user/AuthLayout';
+import LoginForm from '@components/user/LoginForm';
 
 const LoginPage = () => {
   return (
-    <AuthLayout showRegisterLink={true}>
-      <LoginForm />
-    </AuthLayout>
+    <AuthRoute>
+      <AuthLayout showRegisterLink={true}>
+        <LoginForm />
+      </AuthLayout>
+    </AuthRoute>
   );
 };
 

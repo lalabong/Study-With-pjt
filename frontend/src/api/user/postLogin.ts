@@ -1,29 +1,31 @@
-import { AUTH_ENDPOINTS } from '@/constants/api';
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { useAuthStore } from '@/stores/authStore';
-import { LoginRequest, LoginResponse } from '@/types/api';
+import { axiosInstance } from '@api/axiosInstance';
 
-import { axiosInstance } from '../axiosInstance';
+import { AUTH_ENDPOINTS } from '@constants/api';
 
-export const postLogin = async (data: LoginRequest): Promise<LoginResponse> => {
-  try {
-    const response = await axiosInstance.post(AUTH_ENDPOINTS.LOGIN, data);
-    console.log('로그인 응답:', response.data);
+import { User } from '@stores/authStore';
 
-    const { accessToken, user } = response.data;
+import { ApiResponse } from '@/types/api';
 
-    if (accessToken) {
-      useAuthStore.getState().setAccessToken(accessToken);
-    }
+export interface PostLoginRequest {
+  userId: string;
+  password: string;
+}
 
-    // 사용자 정보가 있으면 스토어에 저장(소셜 로그인 대비)
-    if (user) {
-      useAuthStore.getState().setUser(user);
-    }
+export interface PostLoginResponse {
+  accessToken: string;
+  user: User;
+}
 
-    return response.data;
-  } catch (error) {
-    console.error(USER_ERROR_MESSAGES.LOGIN_FAILED, error);
-    throw error;
-  }
+export const postLogin = async (
+  data: PostLoginRequest,
+): Promise<ApiResponse<PostLoginResponse>> => {
+  const { userId, password } = data;
+
+  const response = await axiosInstance.post(AUTH_ENDPOINTS.LOGIN, {
+    userId,
+    password,
+  });
+  console.log('로그인 응답:', response.data);
+
+  return response.data;
 };

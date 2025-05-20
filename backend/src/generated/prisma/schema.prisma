@@ -11,94 +11,101 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  userId        String         @unique @db.VarChar(50)
-  password      String         @db.VarChar(255)
-  nickname      String         @unique @db.VarChar(50)
-  profileImg    String?        @db.VarChar(255)
-  createdAt     DateTime?      @default(now()) @db.Timestamp(0)
-  rooms         Room[]         @relation("RoomOwner")
-  roomUsers     RoomUser[]
-  schedules     Schedule[]
-  timeLogs      TimeLog[]
-  friendsTo     Friend[]       @relation("UserToFriend")
-  friendsFrom   Friend[]       @relation("FriendToUser")
-  refreshTokens RefreshToken[]
+  id             String         @id @default(cuid()) @db.VarChar(36)
+  userId         String         @unique @db.VarChar(20)
+  password       String         @db.VarChar(255)
+  nickname       String         @unique @db.VarChar(10)
+  profileImg     String?        @db.VarChar(255)
+  createdAt      DateTime?      @default(now()) @db.Timestamp(0)
+  totalStudyTime Int            @default(0)
+  friendsFrom    Friend[]       @relation("FriendToUser") // 친구 요청을 받은 유저들
+  friendsTo      Friend[]       @relation("UserToFriend") // 내가 친구 요청을 한 유저들
+  refreshTokens  RefreshToken[]
+  rooms          Room[]         @relation("RoomOwner")
+  roomUsers      RoomUser[]
+  schedules      Schedule[]
+  timeLogs       TimeLog[]
 
   @@map("user")
 }
 
 model Room {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(100)
-  ownerId   Int
+  id        String     @id @default(cuid()) @db.VarChar(36)
+  name      String     @db.VarChar(50)
   createdAt DateTime?  @default(now()) @db.Timestamp(0)
-  owner     User       @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerCuid String
+  owner     User       @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
   roomUsers RoomUser[]
-  schedules Schedule[]
   timeLogs  TimeLog[]
 
+  @@index([ownerCuid], map: "room_ownerCuid_fkey")
   @@map("room")
 }
 
 model RoomUser {
-  id       Int       @id @default(autoincrement())
-  roomId   Int
-  userId   Int
   joinedAt DateTime? @default(now()) @db.Timestamp(0)
-  room     Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roomCuid String
+  userCuid String
+  room     Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
-  @@unique([roomId, userId])
+  @@id([roomCuid, userCuid])
+  @@index([userCuid], map: "room_user_userCuid_fkey")
   @@map("room_user")
 }
 
 model Schedule {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  roomId    Int
-  title     String    @db.VarChar(255)
-  startTime DateTime  @db.DateTime(0)
-  endTime   DateTime  @db.DateTime(0)
+  id        String    @id @default(cuid()) @db.VarChar(36)
+  title     String    @db.VarChar(50)
+  startTime DateTime? @db.DateTime(0)
+  endTime   DateTime? @db.DateTime(0)
   status    String    @default("대기중") @db.VarChar(10)
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  order     Int       @default(0)
+  userCuid  String
+  date      String    @db.VarChar(20)
+  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
+  @@index([userCuid], map: "schedule_userCuid_fkey")
   @@map("schedule")
 }
 
 model TimeLog {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  roomId    Int
-  totalTime DateTime  @db.Time(0)
+  id        String    @id @default(cuid()) @db.VarChar(36)
+  totalTime Int // 공부 시간(분 단위)
   date      DateTime  @db.Date
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  room      Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomCuid  String
+  userCuid  String
+  room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
+  @@index([roomCuid])
+  @@index([userCuid], map: "time_log_userCuid_fkey")
   @@map("time_log")
 }
 
 model Friend {
-  userId    Int
-  friendId  Int
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  user      User      @relation("UserToFriend", fields: [userId], references: [id], onDelete: Cascade)
-  friend    User      @relation("FriendToUser", fields: [friendId], references: [id], onDelete: Cascade)
+  createdAt  DateTime? @default(now()) @db.Timestamp(0)
+  friendCuid String
+  userCuid   String
+  status     String    @default("신청중") // "신청중", "친구"
+  friend     User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
+  user       User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
 
-  @@id([userId, friendId])
+  @@id([userCuid, friendCuid])
+  @@index([friendCuid], map: "friend_friendCuid_fkey")
   @@map("friend")
 }
 
 model RefreshToken {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid()) @db.VarChar(36)
   token     String   @unique @db.VarChar(255)
-  userId    Int
   expiresAt DateTime @db.DateTime(0)
   createdAt DateTime @default(now()) @db.Timestamp(0)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userCuid  String
+  user      User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
+  @@index([userCuid], map: "refresh_token_userCuid_fkey")
   @@map("refresh_token")
 }

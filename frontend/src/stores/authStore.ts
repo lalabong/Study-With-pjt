@@ -1,121 +1,55 @@
-import { AxiosError } from 'axios';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-import { postLogin } from '@/api/user/postLogin';
-import { USER_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { LoginRequest, SignupRequest } from '@/types/api';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface User {
   id: string;
   userId: string;
   nickname: string;
-  profileImage?: string | null;
+  profileImg?: string | null;
+  createdAt: string;
 }
 
 interface AuthState {
   accessToken: string | null;
   user: User | null;
+  isAuthenticated: boolean;
 
   setAccessToken: (token: string) => void;
   removeAccessToken: () => void;
   setUser: (user: User | null) => void;
-  logout: () => void;
-
-  login: (
-    data: LoginRequest,
-    onSuccess?: () => void,
-    onError?: (errorMessage: string) => void,
-  ) => Promise<void>;
-  signup: (
-    data: SignupRequest,
-    onSuccess?: () => void,
-    onError?: (errorMessage: string) => void,
-  ) => Promise<void>;
-
-  isAuthenticated: () => boolean;
+  clearAuthState: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       accessToken: null,
       user: null,
+      isAuthenticated: false,
 
       setAccessToken: (token: string) => set({ accessToken: token }),
-      removeAccessToken: () => set({ accessToken: null }),
+      removeAccessToken: () => set({ accessToken: null, isAuthenticated: false }),
       setUser: (user: User | null) => set({ user }),
-      logout: () => set({ accessToken: null, user: null }),
-
-      login: async (data: LoginRequest, onSuccess, onError) => {
-        try {
-          const response = await postLogin(data);
-
-          const { accessToken, user } = response;
-
-          if (accessToken) {
-            get().setAccessToken(accessToken);
-          }
-
-          if (user) {
-            get().setUser(user);
-          }
-
-          if (onSuccess) {
-            onSuccess();
-          }
-        } catch (error) {
-          const axiosError = error as AxiosError<{ message: string }>;
-          const errorMessage =
-            axiosError.response?.data?.message || USER_ERROR_MESSAGES.LOGIN_FAILED;
-
-          if (onError) {
-            onError(errorMessage);
-          }
-
-          throw error;
-        }
-      },
-
-      signup: async (data: SignupRequest, onSuccess, onError) => {
-        try {
-          // const response = await postSignup(data);
-
-          // // 응답에서 토큰과 사용자 정보 추출 (자동 로그인의 경우)
-          // const { accessToken, user } = response;
-
-          // // 자동 로그인이 설정된 경우 상태 업데이트
-          // if (accessToken) {
-          //   get().setAccessToken(accessToken);
-          // }
-
-          // if (user) {
-          //   get().setUser(user);
-          // }
-
-          if (onSuccess) {
-            onSuccess();
-          }
-        } catch (error) {
-          const axiosError = error as AxiosError<{ message: string }>;
-          const errorMessage =
-            axiosError.response?.data?.message || USER_ERROR_MESSAGES.SIGNUP_FAILED;
-
-          if (onError) {
-            onError(errorMessage);
-          }
-
-          throw error;
-        }
-      },
-
-      isAuthenticated: () => !!get().accessToken,
+      clearAuthState: () => set({ accessToken: null, user: null, isAuthenticated: false }),
     }),
     {
       name: 'auth-storage',
+      storage: createJSONStorage(() => {
+        // 서버 사이드 렌더링 시 localStorage가 없으므로 빈 객체 반환
+        if (typeof window === 'undefined') {
+          return {
+            getItem: () => null,
+            setItem: () => null,
+            removeItem: () => null,
+          };
+        }
+        return localStorage;
+      }),
+      skipHydration: true, // 서버 렌더링 중에는 hydration 건너뛰기 (클라이언트에서 명시적으로 처리)
       partialize: (state) => ({
         accessToken: state.accessToken,
         user: state.user,
+        isAuthenticated: state.isAuthenticated,
       }),
     },
   ),

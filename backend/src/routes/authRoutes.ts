@@ -56,7 +56,7 @@ const router = express.Router();
  *                       type: object
  *                       properties:
  *                         id:
- *                           type: number
+ *                           type: string
  *                           description: 사용자 ID (데이터베이스)
  *                         userId:
  *                           type: string
@@ -68,8 +68,13 @@ const router = express.Router();
  *                           type: string
  *                           nullable: true
  *                           description: 프로필 이미지 URL
- *       401:
- *         description: 로그인 실패
+ *                         createdAt:
+ *                           type: string
+ *                           format: date
+ *                           example: "2023-05-25"
+ *                           description: 가입일 (YYYY-MM-DD 형식)
+ *       404:
+ *         description: 사용자를 찾을 수 없음
  *         content:
  *           application/json:
  *             schema:
@@ -80,7 +85,26 @@ const router = express.Router();
  *                   example: error
  *                 message:
  *                   type: string
- *                   example: 아이디 또는 비밀번호가 올바르지 않습니다.
+ *                   example: 존재하지 않는 아이디입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1013
+ *       403:
+ *         description: 비밀번호 불일치
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 비밀번호가 일치하지 않습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1014
  */
 router.post('/login', login);
 
@@ -130,28 +154,6 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 회원가입이 완료되었습니다.
- *                 data:
- *                   type: object
- *                   properties:
- *                     accessToken:
- *                       type: string
- *                       description: JWT 액세스 토큰
- *                     user:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: number
- *                           description: 사용자 ID (데이터베이스)
- *                         userId:
- *                           type: string
- *                           description: 사용자 로그인 ID
- *                         nickname:
- *                           type: string
- *                           description: 사용자 닉네임
- *                         profileImg:
- *                           type: string
- *                           nullable: true
- *                           description: 프로필 이미지 URL
  *       400:
  *         description: 필수 필드 누락
  *         content:
@@ -165,8 +167,11 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 모든 필수 항목을 입력해 주세요.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1002
  *       409:
- *         description: 이미 사용 중인 ID 또는 닉네임
+ *         description: 이미 사용 중인 ID
  *         content:
  *           application/json:
  *             schema:
@@ -178,6 +183,25 @@ router.post('/login', login);
  *                 message:
  *                   type: string
  *                   example: 이미 사용 중인 아이디입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1003
+ *       422:
+ *         description: 이미 사용 중인 닉네임
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 이미 사용 중인 닉네임입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1004
  */
 router.post('/signup', signup);
 
@@ -213,8 +237,8 @@ router.post('/signup', signup);
  *                     accessToken:
  *                       type: string
  *                       description: 새로운 JWT 액세스 토큰
- *       401:
- *         description: 리프레시 토큰 없음 또는 유효하지 않음
+ *       400:
+ *         description: 리프레시 토큰 없음
  *         content:
  *           application/json:
  *             schema:
@@ -225,7 +249,26 @@ router.post('/signup', signup);
  *                   example: error
  *                 message:
  *                   type: string
- *                   example: 토큰이 필요합니다. 또는 유효하지 않은 리프레시 토큰입니다.
+ *                   example: 토큰이 필요합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1012
+ *       410:
+ *         description: 유효하지 않은 리프레시 토큰
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 유효하지 않은 리프레시 토큰입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 1010
  */
 router.post('/refreshAccessToken', refreshAccessToken);
 

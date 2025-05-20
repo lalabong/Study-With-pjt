@@ -8,6 +8,9 @@ import { prisma, testConnection } from './src/db.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 import routes from './src/routes/index.js';
 import { setupSwagger } from './src/utils/swagger.js';
+import path from 'path';
+
+import { handleFileUploadErrors } from './src/middlewares/fileMiddleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -16,16 +19,16 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Swagger 설정
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
 setupSwagger(app);
 
 testConnection();
@@ -43,6 +46,7 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
+app.use(handleFileUploadErrors);
 app.use(errorHandler);
 
 const server: Server = app.listen(PORT, () => {

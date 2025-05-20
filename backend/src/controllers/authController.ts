@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
+import { format } from 'date-fns';
 
 import prisma from '../lib/prisma.js';
 import {
@@ -11,7 +12,7 @@ import {
   SignupRequest,
 } from '../types/index.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
-import { AUTH_ERROR, AUTH_SUCCESS } from '../constants/index.js';
+import { AUTH_ERROR, AUTH_SUCCESS, ERROR_CODES } from '../constants/index.js';
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -25,6 +26,7 @@ const toSafeUser = (user: User): SafeUser => ({
   userId: user.userId,
   nickname: user.nickname,
   profileImg: user.profileImg,
+  createdAt: user.createdAt ? format(user.createdAt, 'yyyy-MM-dd') : null,
 });
 
 const verifyPassword = async (
@@ -55,24 +57,29 @@ const login: ControllerFn = async (
 
     const { user, isValid } = await verifyPassword(userId, password);
 
-    if (!user || !isValid) {
-      console.log(user ? '비밀번호 불일치:' : '사용자를 찾을 수 없음:', userId);
-      createErrorResponse(res, 401, AUTH_ERROR.INVALID_CREDENTIALS);
+    if (!user) {
+      console.log('사용자를 찾을 수 없음:', userId);
+      createErrorResponse(res, 404, AUTH_ERROR.USER_NOT_FOUND, ERROR_CODES.AUTH_USER_NOT_FOUND);
+      return;
+    }
+
+    if (!isValid) {
+      console.log('비밀번호 불일치:', userId);
+      createErrorResponse(res, 403, AUTH_ERROR.INVALID_PASSWORD, ERROR_CODES.AUTH_INVALID_PASSWORD);
       return;
     }
 
     const tokenPayload: UserPayload = {
       id: user.id,
       userId: user.userId,
-      nickname: user.nickname,
+      createdAt: user.createdAt,
     };
 
     const accessToken = generateAccessToken(tokenPayload);
-    
 
     const existingRefreshToken = req.cookies.refreshToken;
     let refreshToken = null;
-    
+
     if (existingRefreshToken) {
       const { payload: existingPayload } = await verifyRefreshToken(existingRefreshToken);
       // 기존 토큰이 유효하고 동일 사용자인 경우 그대로 사용
@@ -80,7 +87,7 @@ const login: ControllerFn = async (
         refreshToken = existingRefreshToken;
       }
     }
-    
+
     if (!refreshToken) {
       refreshToken = generateRefreshToken(tokenPayload);
       await saveRefreshToken(user.id, refreshToken);
@@ -97,9 +104,19 @@ const login: ControllerFn = async (
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
     });
 
+    res.cookie('userId', user.userId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS에서만 전송
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
+      path: '/',
+    });
+
     createSuccessResponse(res, 200, undefined, AUTH_SUCCESS.LOGIN_SUCCESS, {
-      accessToken,
-      user: safeUser,
+      data: {
+        accessToken,
+        user: safeUser,
+      },
     });
   } catch (error: unknown) {
     console.error('로그인 에러:', error);
@@ -116,14 +133,19 @@ const refreshAccessToken: ControllerFn = async (
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      createErrorResponse(res, 401, AUTH_ERROR.TOKEN_REQUIRED);
+      createErrorResponse(res, 400, AUTH_ERROR.TOKEN_REQUIRED, ERROR_CODES.AUTH_TOKEN_REQUIRED);
       return;
     }
 
     const { payload, newToken } = await verifyRefreshToken(refreshToken);
 
     if (!payload) {
-      createErrorResponse(res, 401, AUTH_ERROR.INVALID_REFRESH_TOKEN);
+      createErrorResponse(
+        res,
+        410,
+        AUTH_ERROR.INVALID_REFRESH_TOKEN,
+        ERROR_CODES.AUTH_INVALID_REFRESH_TOKEN
+      );
       return;
     }
 
@@ -182,7 +204,7 @@ const signup: ControllerFn = async (
     const { userId, password, nickname } = req.body as SignupRequest;
 
     if (!userId || !password || !nickname) {
-      createErrorResponse(res, 400, AUTH_ERROR.REQUIRED_FIELDS);
+      createErrorResponse(res, 400, AUTH_ERROR.REQUIRED_FIELDS, ERROR_CODES.AUTH_REQUIRED_FIELDS);
       return;
     }
 
@@ -191,7 +213,7 @@ const signup: ControllerFn = async (
     });
 
     if (existingUserId) {
-      createErrorResponse(res, 409, AUTH_ERROR.USER_ID_EXISTS);
+      createErrorResponse(res, 409, AUTH_ERROR.USER_ID_EXISTS, ERROR_CODES.AUTH_USER_ID_EXISTS);
       return;
     }
 
@@ -200,7 +222,7 @@ const signup: ControllerFn = async (
     });
 
     if (existingNickname) {
-      createErrorResponse(res, 409, AUTH_ERROR.NICKNAME_EXISTS);
+      createErrorResponse(res, 422, AUTH_ERROR.NICKNAME_EXISTS, ERROR_CODES.AUTH_NICKNAME_EXISTS);
       return;
     }
 
@@ -211,20 +233,18 @@ const signup: ControllerFn = async (
         userId,
         password: hashedPassword,
         nickname,
+        createdAt: new Date(),
       },
     });
 
     const tokenPayload: UserPayload = {
       id: newUser.id,
       userId: newUser.userId,
-      nickname: newUser.nickname,
+      createdAt: newUser.createdAt,
     };
 
-    const accessToken = generateAccessToken(tokenPayload);
     const refreshToken = generateRefreshToken(tokenPayload);
     await saveRefreshToken(newUser.id, refreshToken);
-
-    const safeUser = toSafeUser(newUser);
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -233,12 +253,10 @@ const signup: ControllerFn = async (
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
     });
 
-    createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE, {
-      accessToken,
-      user: safeUser,
-    });
+    createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE);
   } catch (error: unknown) {
     next(error);
+    console.error('회원가입 에러:', error);
   }
 };
 
