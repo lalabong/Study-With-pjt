@@ -127,7 +127,8 @@ exports.Prisma.UserScalarFieldEnum = {
   nickname: 'nickname',
   profileImg: 'profileImg',
   createdAt: 'createdAt',
-  totalStudyTime: 'totalStudyTime'
+  totalStudyTime: 'totalStudyTime',
+  roomCuid: 'roomCuid'
 };
 
 exports.Prisma.RoomScalarFieldEnum = {
@@ -135,12 +136,6 @@ exports.Prisma.RoomScalarFieldEnum = {
   name: 'name',
   createdAt: 'createdAt',
   ownerCuid: 'ownerCuid'
-};
-
-exports.Prisma.RoomUserScalarFieldEnum = {
-  joinedAt: 'joinedAt',
-  roomCuid: 'roomCuid',
-  userCuid: 'userCuid'
 };
 
 exports.Prisma.ScheduleScalarFieldEnum = {
@@ -194,7 +189,8 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   userId: 'userId',
   password: 'password',
   nickname: 'nickname',
-  profileImg: 'profileImg'
+  profileImg: 'profileImg',
+  roomCuid: 'roomCuid'
 };
 
 exports.Prisma.RoomOrderByRelevanceFieldEnum = {
@@ -203,15 +199,9 @@ exports.Prisma.RoomOrderByRelevanceFieldEnum = {
   ownerCuid: 'ownerCuid'
 };
 
-exports.Prisma.RoomUserOrderByRelevanceFieldEnum = {
-  roomCuid: 'roomCuid',
-  userCuid: 'userCuid'
-};
-
 exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
   id: 'id',
   title: 'title',
-  status: 'status',
   userCuid: 'userCuid',
   date: 'date'
 };
@@ -224,8 +214,7 @@ exports.Prisma.TimeLogOrderByRelevanceFieldEnum = {
 
 exports.Prisma.FriendOrderByRelevanceFieldEnum = {
   friendCuid: 'friendCuid',
-  userCuid: 'userCuid',
-  status: 'status'
+  userCuid: 'userCuid'
 };
 
 exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
@@ -233,12 +222,20 @@ exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
   token: 'token',
   userCuid: 'userCuid'
 };
+exports.ScheduleStatus = exports.$Enums.ScheduleStatus = {
+  대기중: '대기중',
+  진행중: '진행중',
+  완료: '완료'
+};
 
+exports.FriendStatus = exports.$Enums.FriendStatus = {
+  신청중: '신청중',
+  친구: '친구'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Room: 'Room',
-  RoomUser: 'RoomUser',
   Schedule: 'Schedule',
   TimeLog: 'TimeLog',
   Friend: 'Friend',

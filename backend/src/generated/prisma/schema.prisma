@@ -18,11 +18,11 @@ model User {
   profileImg     String?        @db.VarChar(255)
   createdAt      DateTime?      @default(now()) @db.Timestamp(0)
   totalStudyTime Int            @default(0)
+  roomCuid       String?
   friendsFrom    Friend[]       @relation("FriendToUser") // 친구 요청을 받은 유저들
   friendsTo      Friend[]       @relation("UserToFriend") // 내가 친구 요청을 한 유저들
   refreshTokens  RefreshToken[]
-  rooms          Room[]         @relation("RoomOwner")
-  roomUsers      RoomUser[]
+  room           Room?          @relation(fields: [roomCuid], references: [id], onDelete: SetNull)
   schedules      Schedule[]
   timeLogs       TimeLog[]
 
@@ -30,41 +30,28 @@ model User {
 }
 
 model Room {
-  id        String     @id @default(cuid()) @db.VarChar(36)
-  name      String     @db.VarChar(50)
-  createdAt DateTime?  @default(now()) @db.Timestamp(0)
-  ownerCuid String
-  owner     User       @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
-  roomUsers RoomUser[]
+  id        String    @id @default(cuid()) @db.VarChar(36)
+  name      String    @db.VarChar(50)
+  createdAt DateTime? @default(now()) @db.Timestamp(0)
+  ownerCuid String    @unique
+  users     User[]
   timeLogs  TimeLog[]
 
   @@index([ownerCuid], map: "room_ownerCuid_fkey")
   @@map("room")
 }
 
-model RoomUser {
-  joinedAt DateTime? @default(now()) @db.Timestamp(0)
-  roomCuid String
-  userCuid String
-  room     Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
-  user     User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
-
-  @@id([roomCuid, userCuid])
-  @@index([userCuid], map: "room_user_userCuid_fkey")
-  @@map("room_user")
-}
-
 model Schedule {
-  id        String    @id @default(cuid()) @db.VarChar(36)
-  title     String    @db.VarChar(50)
-  startTime DateTime? @db.DateTime(0)
-  endTime   DateTime? @db.DateTime(0)
-  status    String    @default("대기중") @db.VarChar(10)
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  order     Int       @default(0)
+  id        String         @id @default(cuid()) @db.VarChar(36)
+  title     String         @db.VarChar(50)
+  startTime DateTime?      @db.DateTime(0)
+  endTime   DateTime?      @db.DateTime(0)
+  status    ScheduleStatus @default(대기중)
+  createdAt DateTime?      @default(now()) @db.Timestamp(0)
+  order     Int            @default(0)
   userCuid  String
-  date      String    @db.VarChar(20)
-  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
+  date      String         @db.VarChar(20)
+  user      User           @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@index([userCuid], map: "schedule_userCuid_fkey")
   @@map("schedule")
@@ -86,12 +73,12 @@ model TimeLog {
 }
 
 model Friend {
-  createdAt  DateTime? @default(now()) @db.Timestamp(0)
+  createdAt  DateTime?    @default(now()) @db.Timestamp(0)
   friendCuid String
   userCuid   String
-  status     String    @default("신청중") // "신청중", "친구"
-  friend     User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
-  user       User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
+  status     FriendStatus @default(신청중)
+  friend     User         @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
+  user       User         @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@id([userCuid, friendCuid])
   @@index([friendCuid], map: "friend_friendCuid_fkey")
@@ -108,4 +95,15 @@ model RefreshToken {
 
   @@index([userCuid], map: "refresh_token_userCuid_fkey")
   @@map("refresh_token")
+}
+
+enum FriendStatus {
+  신청중
+  친구
+}
+
+enum ScheduleStatus {
+  대기중
+  진행중
+  완료
 }
