@@ -104,6 +104,57 @@ export const getUserSchedulesByDate: ControllerFn = async (
   }
 };
 
+// 특정 날짜에서 "진행중"인 일정들 중 최상단에 있는 일정 조회
+export const getTopRunningSchedule: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      createErrorResponse(
+        res,
+        400,
+        SCHEDULE_ERROR.REQUIRED_FIELDS,
+        ERROR_CODES.SCHEDULE_REQUIRED_FIELDS
+      );
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId },
+    });
+
+    if (!user) {
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
+      return;
+    }
+
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        userCuid: user.id,
+        date: date as string,
+        status: '진행중',
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    });
+
+    const topRunningSchedule = schedules[0];
+
+    createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_TOP_RUNNING_SCHEDULE, {
+      data: { topRunningSchedule },
+    });
+  } catch (error) {
+    console.error('진행중인 최상단 일정 조회 에러:', error);
+    next(error);
+  }
+};
+
 export const createSchedule: ControllerFn = async (
   req: Request,
   res: Response,

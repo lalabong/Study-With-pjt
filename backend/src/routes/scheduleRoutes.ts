@@ -7,6 +7,7 @@ import {
   updateSchedule,
   deleteSchedule,
   updateScheduleOrder,
+  getTopRunningSchedule,
 } from '../controllers/scheduleController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
@@ -154,7 +155,10 @@ router.get('/user/:userId/dates', authMiddleware, getUserScheduleDates);
  *                           date:
  *                             type: string
  *                             format: date
- *                           startTime: 
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           startTime:
  *                             type: string
  *                             format: date-time
  *                           endTime:
@@ -214,6 +218,107 @@ router.get('/user/:userId/dates', authMiddleware, getUserScheduleDates);
  *                   example: 3001
  */
 router.get('/user/:userId/byDate', authMiddleware, getUserSchedulesByDate);
+
+/**
+ * @swagger
+ * /api/schedules/user/{userId}/topRunningSchedule:
+ *   get:
+ *     summary: 사용자의 특정 날짜에서 진행중인 최상단 일정 조회
+ *     description: 사용자의 특정 날짜에서 '진행중' 상태인 일정들 중 가장 먼저 시작하는 일정을 조회합니다.
+ *     tags: [Schedules]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 사용자 ID
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *         required: true
+ *         description: 조회할 날짜 (YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: 최상단 진행중 일정 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 최상단 진행중 일정 조회에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     topRunningSchedule:
+ *                       type: object
+ *                       nullable: true
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         userCuid:
+ *                           type: string
+ *                         title:
+ *                           type: string
+ *                         date:
+ *                           type: string
+ *                           format: date
+ *                         startTime:
+ *                           type: string
+ *                           format: date-time
+ *                         endTime:
+ *                           type: string
+ *                           format: date-time
+ *                         status:
+ *                           type: string
+ *                         order:
+ *                           type: integer
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *       400:
+ *         description: 필수 필드 누락
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 필수 필드를 입력해주세요.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4004
+ *       404:
+ *         description: 사용자를 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3001
+ */
+router.get('/user/:userId/topRunningSchedule', authMiddleware, getTopRunningSchedule);
 
 /**
  * @swagger
