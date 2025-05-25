@@ -12,7 +12,7 @@ import { useUpdateNicknameMutation } from '@hooks/api/useUpdateNicknameMutation'
 import { useUpdateProfileImgMutation } from '@hooks/api/useUpdateProfileImageMutation';
 import { useUserInfoQuery } from '@hooks/api/useUserInfoQuery';
 
-import { useAuthStore } from '@stores/authStore';
+import { useAuthStore, User } from '@stores/authStore';
 
 interface ProfileManagerProps {
   userId: string;
@@ -43,7 +43,7 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
       return loginUser;
     }
 
-    return profileUserData?.user;
+    return profileUserData;
   }, [isCurrentUser, loginUser, profileUserData]);
 
   if (!user) {
@@ -100,7 +100,7 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
   return (
     <>
       <ProfileSection
-        user={user}
+        user={user as User}
         isCurrentUser={isCurrentUser}
         onCreateRoom={handleCreateRoom}
         onProfileUpdate={
