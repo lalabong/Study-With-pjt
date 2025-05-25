@@ -11,7 +11,7 @@ import { useClickOutside } from '@hooks/useClickOutside';
 import { useScheduleStore } from '@stores/scheduleStore';
 
 import { Schedule, ScheduleStatus } from '@/types/api';
-import { formatTimeToKorean } from '@/utils/date';
+import { getScheduleTimeDisplay, getStatusClass, getStatusTextClass } from '@/utils/schedule';
 
 interface ScheduleItemProps {
   schedule: Schedule;
@@ -34,17 +34,7 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
     isOpen: isStatusOpen,
   });
 
-  // 일정 시간 표시 함수
-  const getTimeDisplay = () => {
-    if (!schedule.startTime && !schedule.endTime) return null;
-
-    if (schedule.startTime && schedule.endTime)
-      return `${formatTimeToKorean(schedule.startTime)} - ${formatTimeToKorean(schedule.endTime)}`;
-
-    return schedule.startTime
-      ? `${formatTimeToKorean(schedule.startTime)}부터`
-      : `${formatTimeToKorean(schedule.endTime)}까지`;
-  };
+  const timeDisplay = getScheduleTimeDisplay(schedule);
 
   // 일정 삭제 핸들러
   const handleDelete = (e: React.MouseEvent) => {
@@ -133,7 +123,7 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
             </h3>
           </div>
 
-          {getTimeDisplay() && (
+          {timeDisplay && (
             <div
               className="text-gray-500 text-xs sm:text-sm mt-2 flex items-center"
               aria-label="일정 시간"
@@ -141,7 +131,7 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
               <span className="inline-block mr-1 sm:mr-2" aria-hidden="true">
                 <HiClock className="w-3 h-3 sm:w-4 sm:h-4" />
               </span>
-              <span>{getTimeDisplay()}</span>
+              <span>{timeDisplay}</span>
             </div>
           )}
         </div>
@@ -211,27 +201,3 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
 };
 
 export default ScheduleItem;
-
-// 상태 배경 색상 정의
-const getStatusClass = (status: ScheduleStatus) => {
-  const statusClassMap: Record<ScheduleStatus, string> = {
-    대기중: 'bg-white',
-    진행중: 'bg-blue-50',
-    완료: 'bg-green-50',
-    취소: 'bg-gray-50',
-  };
-
-  return statusClassMap[status];
-};
-
-// 상태 텍스트 색상 정의
-const getStatusTextClass = (status: ScheduleStatus) => {
-  const statusTextClassMap: Record<ScheduleStatus, string> = {
-    대기중: 'text-gray-700',
-    진행중: 'text-blue-600',
-    완료: 'text-green-600',
-    취소: 'text-gray-500',
-  };
-
-  return statusTextClassMap[status];
-};
