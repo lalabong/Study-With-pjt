@@ -158,7 +158,7 @@ const ScheduleList = memo(
                                 ...provided.draggableProps.style,
                                 opacity: snapshot.isDragging ? 0.8 : 1,
                               }}
-                              className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : ''}`}
+                              className={`${snapshot.isDragging ? 'dragging shadow-md bg-gray-50' : 'mb-4'}`}
                               data-schedule-id={schedule.id}
                             >
                               <ScheduleItem
