@@ -38,7 +38,7 @@ const ProfileSection = ({
         <UserProfile
           profileImg={user.profileImg}
           nickname={user.nickname}
-          additionalInfo={user.createdAt}
+          additionalInfo={`가입일: ${user.createdAt}`}
           editable={isCurrentUser}
           onNicknameChange={isCurrentUser ? onProfileUpdate?.nickname : undefined}
           onProfileImgChange={isCurrentUser ? onProfileUpdate?.profileImg : undefined}
