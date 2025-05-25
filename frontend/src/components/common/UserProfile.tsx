@@ -16,7 +16,7 @@ interface UserProfileProps {
   editable?: boolean;
   onNicknameChange?: (newNickname: string) => void;
   onProfileImgChange?: (newImage: string | File) => void;
-  className?: string;
+  mainContainerClasses?: string;
 }
 
 const UserProfile = ({
@@ -26,7 +26,7 @@ const UserProfile = ({
   editable = false,
   onNicknameChange,
   onProfileImgChange,
-  className = '',
+  mainContainerClasses = '',
 }: UserProfileProps) => {
   const [displayNickname, setDisplayNickname] = useState(nickname);
 
@@ -95,7 +95,7 @@ const UserProfile = ({
   };
 
   return (
-    <div className={`flex items-center ${className}`}>
+    <div className={`flex items-center ${mainContainerClasses}`}>
       <div className="relative mr-4">
         <div className="h-16 w-16 overflow-hidden rounded-full bg-gray-200">
           {profileImgPreview ? (
