@@ -106,4 +106,5 @@ enum ScheduleStatus {
   대기중
   진행중
   완료
+  취소
 }
