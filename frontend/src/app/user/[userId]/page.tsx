@@ -27,8 +27,7 @@ const UserProfilePage = async ({ params }: { params: Promise<UserPageParams> }) 
 
   const isCurrentUser = currentUserId === userId;
 
-  const now = new Date();
-  const [startDate, endDate] = getMonthRange(now);
+  const [startDate, endDate] = getMonthRange();
 
   const queryClient = getServerQueryClient();
 
@@ -62,7 +61,7 @@ const UserProfilePage = async ({ params }: { params: Promise<UserPageParams> }) 
 
           <div className="mt-8">
             <div className="rounded-lg bg-white px-8 py-6 shadow-sm">
-              <StudyCalendar userId={userId} />
+              <StudyCalendar userId={userId} isCurrentUser={isCurrentUser} />
             </div>
           </div>
 

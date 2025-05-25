@@ -8,6 +8,7 @@ import { Value } from 'react-calendar/dist/esm/shared/types.js';
 import { GoDotFill } from 'react-icons/go';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
+import ReadOnlyScheduleList from '@components/common/ReadOnlyScheduleList';
 import AddScheduleForm from '@components/mypage/StudyCalendar/AddScheduleForm';
 import ScheduleList from '@components/mypage/StudyCalendar/ScheduleList';
 
@@ -23,9 +24,10 @@ import '@components/mypage/StudyCalendar/studyCalendar.css';
 
 interface StudyCalendarProps {
   userId: string;
+  isCurrentUser: boolean;
 }
 
-const StudyCalendar = ({ userId }: StudyCalendarProps) => {
+const StudyCalendar = ({ userId, isCurrentUser }: StudyCalendarProps) => {
   const { selectedDate, setSelectedDate, startDate, endDate, setDateRange } = useScheduleStore();
 
   const [currentViewDate, setCurrentViewDate] = useState<Date>(new Date()); // 현재 보고 있는 날짜(연/월/일) - 초깃값: 오늘
@@ -208,11 +210,15 @@ const StudyCalendar = ({ userId }: StudyCalendarProps) => {
            transition-all duration-500 ease-in-out lg:w-1/2 lg:ml-5
          `}
       >
-        <ScheduleList
-          isAddScheduleMode={isAddScheduleMode}
-          onAddScheduleMode={handleAddScheduleMode}
-          mainContainerClasses="flex flex-col border border-gray-200 w-full h-[500px] sm:h-[642px] lg:col-span-2"
-        />
+        {isCurrentUser ? (
+          <ScheduleList
+            isAddScheduleMode={isAddScheduleMode}
+            onAddScheduleMode={handleAddScheduleMode}
+            mainContainerClasses="flex flex-col border border-gray-200 w-full h-[500px] sm:h-[642px] lg:col-span-2"
+          />
+        ) : (
+          <ReadOnlyScheduleList userId={userId} isUserPage={true} />
+        )}
       </div>
 
       <div

@@ -56,7 +56,7 @@ const MyPage = async () => {
 
             <div className="mt-8">
               <div className="rounded-lg bg-white px-8 py-6 shadow-sm">
-                <StudyCalendar userId={userId} />
+                <StudyCalendar userId={userId} isCurrentUser={true} />
               </div>
             </div>
 
