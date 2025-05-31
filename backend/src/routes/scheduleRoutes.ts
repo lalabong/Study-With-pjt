@@ -622,6 +622,46 @@ router.patch('/:scheduleId', authMiddleware, updateSchedule);
  *                 message:
  *                   type: string
  *                   example: 일정이 삭제되었습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     deletedSchedule:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           example: "cm123abc456def"
+ *                         title:
+ *                           type: string
+ *                           example: "프로젝트 회의"
+ *                         date:
+ *                           type: string
+ *                           example: "2024-01-15"
+ *                         startTime:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-01-15T09:00:00.000Z"
+ *                         endTime:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-01-15T10:00:00.000Z"
+ *                         status:
+ *                           type: string
+ *                           example: "완료"
+ *                         order:
+ *                           type: integer
+ *                           example: 0
+ *                         userCuid:
+ *                           type: string
+ *                           example: "cm123user456"
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-01-15T08:00:00.000Z"
+ *                         updatedAt:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2024-01-15T08:30:00.000Z"
  *       401:
  *         description: 인증 실패
  *         content:

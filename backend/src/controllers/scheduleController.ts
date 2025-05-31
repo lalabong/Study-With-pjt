@@ -372,11 +372,13 @@ export const deleteSchedule: ControllerFn = async (
       return;
     }
 
-    await prisma.schedule.delete({
+    const deletedSchedule = await prisma.schedule.delete({
       where: { id: scheduleId },
     });
 
-    createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.DELETE_SCHEDULE);
+    createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.DELETE_SCHEDULE, {
+      data: { deletedSchedule },
+    });
   } catch (error) {
     console.error('일정 삭제 에러:', error);
     next(error);
