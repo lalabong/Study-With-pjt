@@ -263,28 +263,8 @@ router.get('/user/:userId/byDate', authMiddleware, getUserSchedulesByDate);
  *                       type: object
  *                       nullable: true
  *                       properties:
- *                         id:
- *                           type: string
- *                         userCuid:
- *                           type: string
  *                         title:
  *                           type: string
- *                         date:
- *                           type: string
- *                           format: date
- *                         startTime:
- *                           type: string
- *                           format: date-time
- *                         endTime:
- *                           type: string
- *                           format: date-time
- *                         status:
- *                           type: string
- *                         order:
- *                           type: integer
- *                         createdAt:
- *                           type: string
- *                           format: date-time
  *       400:
  *         description: 필수 필드 누락
  *         content:

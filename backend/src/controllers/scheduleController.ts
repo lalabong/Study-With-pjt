@@ -133,18 +133,20 @@ export const getTopRunningSchedule: ControllerFn = async (
       return;
     }
 
-    const schedules = await prisma.schedule.findMany({
+    const topRunningSchedule = await prisma.schedule.findFirst({
       where: {
         userCuid: user.id,
         date: date as string,
         status: '진행중',
       },
+      select: {
+        title: true,
+      },
       orderBy: {
-        startTime: 'asc',
+        order: 'asc',
       },
     });
 
-    const topRunningSchedule = schedules[0];
 
     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_TOP_RUNNING_SCHEDULE, {
       data: { topRunningSchedule },
