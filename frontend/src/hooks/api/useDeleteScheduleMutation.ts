@@ -14,7 +14,7 @@ import {
 import { useAuthStore } from '@stores/authStore';
 import { useScheduleStore } from '@stores/scheduleStore';
 
-import { formatDateToYYYYMMDD } from '@utils/date';
+import { formatDateToYYYYMMDD, getCurrentDateString } from '@utils/date';
 
 export const useDeleteScheduleMutation = () => {
   const queryClient = useQueryClient();
@@ -26,8 +26,9 @@ export const useDeleteScheduleMutation = () => {
 
   return useMutation({
     mutationFn: deleteSchedule,
-    onSuccess: (_, variables) => {
+    onSuccess: (response, variables) => {
       const { scheduleId } = variables;
+      const deletedSchedule = response?.data?.deletedSchedule;
 
       removeScheduleItem(scheduleId);
 
@@ -40,6 +41,12 @@ export const useDeleteScheduleMutation = () => {
           formatDateToYYYYMMDD(selectedDate as Date),
         ],
       });
+
+      if (deletedSchedule?.status === '진행중') {
+        queryClient.invalidateQueries({
+          queryKey: [USER_QUERY_KEYS.USER_TOP_RUNNING_SCHEDULE, userId, getCurrentDateString()],
+        });
+      }
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {

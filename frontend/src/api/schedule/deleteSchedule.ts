@@ -2,13 +2,19 @@ import { axiosInstance } from '@api/axiosInstance';
 
 import { SCHEDULE_ENDPOINTS } from '@constants/api';
 
-import { ApiResponse } from '@/types/api';
+import { ApiResponse, Schedule } from '@/types/api';
 
 interface DeleteScheduleRequest {
   scheduleId: string;
 }
 
-export const deleteSchedule = async (data: DeleteScheduleRequest): Promise<ApiResponse<null>> => {
+interface DeleteScheduleResponse {
+  deletedSchedule: Schedule;
+}
+
+export const deleteSchedule = async (
+  data: DeleteScheduleRequest,
+): Promise<ApiResponse<DeleteScheduleResponse>> => {
   const { scheduleId } = data;
 
   const response = await axiosInstance.delete(
