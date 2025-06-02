@@ -10,8 +10,9 @@ import { useClickOutside } from '@hooks/useClickOutside';
 
 import { useScheduleStore } from '@stores/scheduleStore';
 
+import { getScheduleTimeDisplay, getStatusClass, getStatusTextClass } from '@utils/schedule';
+
 import { Schedule, ScheduleStatus } from '@/types/api';
-import { getScheduleTimeDisplay, getStatusClass, getStatusTextClass } from '@/utils/schedule';
 
 interface ScheduleItemProps {
   schedule: Schedule;
@@ -28,9 +29,14 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
 
   // 외부 클릭 감지 훅 사용
   useClickOutside(() => setOpenStatusDropdownId(null), {
-    containerSelector: '[data-modal-container="true"]',
-    exceptSelector: '[data-schedule-id',
-    elementId: schedule.id,
+    exceptSelector:
+      '[data-dropdown-trigger="' +
+      schedule.id +
+      '"], [data-dropdown-content="' +
+      schedule.id +
+      '"], [data-dropdown-option="' +
+      schedule.id +
+      '"]',
     isOpen: isStatusOpen,
   });
 
@@ -146,7 +152,7 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
               aria-expanded={isStatusOpen}
               aria-haspopup="listbox"
               tabIndex={0}
-              data-schedule-id={schedule.id}
+              data-dropdown-trigger={schedule.id}
             >
               {schedule.status}
               <HiChevronDown className="ml-1 w-3 h-3" />
@@ -163,7 +169,7 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
                   top: 'calc(100% + 0.5rem)',
                   pointerEvents: 'auto',
                 }}
-                data-schedule-id={schedule.id}
+                data-dropdown-content={schedule.id}
               >
                 {STATUS_OPTIONS.map((status) => (
                   <div
@@ -176,7 +182,7 @@ const ScheduleItem = ({ schedule, isLast }: ScheduleItemProps) => {
                     role="option"
                     aria-selected={status === schedule.status}
                     tabIndex={0}
-                    data-schedule-id={schedule.id}
+                    data-dropdown-option={schedule.id}
                   >
                     {status}
                   </div>

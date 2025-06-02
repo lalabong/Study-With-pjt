@@ -5,7 +5,6 @@ type ClickOutsideHandler = () => void;
 interface UseClickOutsideOptions {
   containerSelector?: string;
   exceptSelector?: string;
-  elementId?: string | number;
   isOpen?: boolean;
 }
 
@@ -14,8 +13,7 @@ interface UseClickOutsideOptions {
  * @param onClickOutside 외부 클릭 시 실행할 콜백 함수
  * @param options 설정 옵션
  * @param options.containerSelector 컨테이너 요소 선택자 (이 요소 내부 클릭만 감지)
- * @param options.exceptSelector 제외할 요소 선택자
- * @param options.elementId 제외할 요소의 ID
+ * @param options.exceptSelector 제외할 요소 선택자 (복합 선택자 지원)
  * @param options.isOpen 드롭다운/모달 등이 열려있는지 여부
  */
 
@@ -23,22 +21,22 @@ export const useClickOutside = (
   onClickOutside: ClickOutsideHandler,
   options: UseClickOutsideOptions = {},
 ) => {
-  const { containerSelector, exceptSelector, elementId, isOpen } = options;
+  const { containerSelector, exceptSelector, isOpen } = options;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // 컨테이너가 지정된 경우 컨테이너 내부 클릭인지 확인
-      if (containerSelector) {
-        const container = document.querySelector(containerSelector);
-        // 컨테이너가 없거나 컨테이너 외부 클릭인 경우 무시
-        if (!container || !container.contains(event.target as Node)) {
+      // 특정 요소를 제외하고 처리 (드롭다운 버튼 등)
+      if (exceptSelector) {
+        if ((event.target as Element).closest(exceptSelector)) {
           return;
         }
       }
 
-      // 특정 요소를 제외하고 처리
-      if (exceptSelector && elementId) {
-        if ((event.target as Element).closest(`${exceptSelector}="${elementId}"`)) {
+      // 컨테이너가 지정된 경우 컨테이너 외부 클릭인지 확인
+      if (containerSelector) {
+        const container = document.querySelector(containerSelector);
+        // 컨테이너가 있고 컨테이너 내부 클릭인 경우 무시
+        if (container && container.contains(event.target as Node)) {
           return;
         }
       }
@@ -53,5 +51,5 @@ export const useClickOutside = (
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClickOutside, containerSelector, exceptSelector, elementId, isOpen]);
+  }, [onClickOutside, containerSelector, exceptSelector, isOpen]);
 };
