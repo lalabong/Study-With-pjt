@@ -14,6 +14,7 @@ const putScheduleOrders = async ({ date, schedules }: PutScheduleOrdersProps): P
     date,
     schedules: schedules.map((schedule) => schedule.id),
   });
+  console.log('일정 순서 변경 응답:', response.data);
   return response.data;
 };
 
