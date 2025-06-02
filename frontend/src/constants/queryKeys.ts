@@ -4,4 +4,5 @@ export const USER_QUERY_KEYS = {
   USER_TOTAL_STUDY_TIME: 'user-total-study-time',
   USER_SCHEDULE_DATES: 'user-schedule-dates',
   USER_SCHEDULES_BY_DATE: 'user-schedules-by-date',
+  USER_TOP_RUNNING_SCHEDULE: 'user-top-running-schedule',
 };

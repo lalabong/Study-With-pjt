@@ -21,6 +21,8 @@ export const SCHEDULE_ENDPOINTS = {
     `${API_PREFIX}/schedules/user/${userId}/dates?startDate=${startDate}&endDate=${endDate}`,
   GET_SCHEDULES_BY_DATE: (userId: string, date: string) =>
     `${API_PREFIX}/schedules/user/${userId}/byDate?date=${date}`,
+  GET_TOP_RUNNING_SCHEDULE: (userId: string, date: string) =>
+    `${API_PREFIX}/schedules/user/${userId}/topRunningSchedule?date=${date}`,
   CREATE_SCHEDULE: `${API_PREFIX}/schedules`,
   UPDATE_AND_DELETE_SCHEDULE: (scheduleId: string) => `${API_PREFIX}/schedules/${scheduleId}`,
   UPDATE_SCHEDULE_ORDER: `${API_PREFIX}/schedules/order`,
