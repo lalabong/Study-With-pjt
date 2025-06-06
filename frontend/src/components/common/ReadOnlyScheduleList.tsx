@@ -35,7 +35,7 @@ const ReadOnlyScheduleList = memo(({ userId, isUserPage }: ReadOnlyScheduleListP
 
   return (
     <section
-      className="rounded-md p-6 flex flex-col border border-gray-200 w-full h-[500px] sm:h-[642px] lg:col-span-2"
+      className="rounded-md p-6 flex flex-col border border-gray-200 w-full h-full lg:col-span-2"
       aria-labelledby="schedule-list-title"
     >
       {isUserPage && (
@@ -51,7 +51,7 @@ const ReadOnlyScheduleList = memo(({ userId, isUserPage }: ReadOnlyScheduleListP
           일정이 없습니다.
         </div>
       ) : (
-        <ul className="list-none p-0 m-0 max-h-[450px] pr-1 overflow-y-auto overflow-x-hidden">
+        <ul className="list-none p-0 m-0 max-h-[550px] pr-1 overflow-y-auto overflow-x-hidden">
           {schedules.schedules.map((schedule) => (
             <li key={schedule.id} data-schedule-id={schedule.id}>
               <ReadOnlyScheduleItem schedule={schedule} />
