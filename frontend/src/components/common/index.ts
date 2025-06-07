@@ -5,3 +5,5 @@ export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as StatusMessage } from './StatusMessage';
 export { default as HeaderActionButtons } from './HeaderActionButtons';
 export { default as Modal } from './Modal';
+export { default as SearchInput } from './SearchInput';
+export { default as UserProfileSmall } from './UserProfileSmall';
