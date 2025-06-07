@@ -3,9 +3,11 @@
 import { HiBell, HiUserGroup } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
+import FriendsModal from '@components/friends/FriendsModal';
 import LogoutButton from '@components/mypage/Profile/LogoutButton';
 
 import { useAuthStore } from '@stores/authStore';
+import { useModalStore } from '@stores/modalStore';
 
 interface HeaderActionButtonsProps {
   isHome?: boolean;
@@ -13,19 +15,21 @@ interface HeaderActionButtonsProps {
 
 const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const setIsFriendsModalOpen = useModalStore((state) => state.setIsFriendsModalOpen);
 
-  const handleNotificationClick = () => {
+  const handleNotificationClick = (): void => {
     console.log('알림 버튼 클릭');
   };
 
-  const handleFriendClick = () => {
-    console.log('친구 버튼 클릭');
+  const handleFriendClick = (): void => {
+    setIsFriendsModalOpen(true);
   };
 
   // 홈 화면이 아닌 경우
   if (!isHome) {
     return (
       <div className="flex items-center gap-4">
+        <FriendsModal />
         <button
           className="rounded-full p-2 hover:bg-gray-100 cursor-pointer"
           aria-label="알림"
