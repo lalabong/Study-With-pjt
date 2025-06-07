@@ -21,3 +21,7 @@ export const SCHEDULE_SUCCESS = {
   UPDATE_ORDER: '일정 순서가 변경되었습니다.',
   GET_TOP_RUNNING_SCHEDULE: '진행중인 최상단 일정 조회에 성공했습니다.',
 };
+
+export const ROOM_SUCCESS = {
+  GET_PARTICIPANT_INFO: '참가자 정보 조회에 성공했습니다.',
+};

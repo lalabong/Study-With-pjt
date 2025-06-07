@@ -33,6 +33,9 @@ export const ERROR_CODES = {
   SCHEDULE_REQUIRED_FIELDS: 4004,
   // SCHEDULE_INVALID_ORDER_POSITION: 4005,
   SCHEDULE_DAILY_SCHEDULE_LIMIT: 4006,
+
+  // 방 관련 오류 (5000~5999)
+  ROOM_NOT_FOUND: 5001,
 };
 
 export const AUTH_ERROR = {
@@ -72,4 +75,8 @@ export const SCHEDULE_ERROR = {
   REQUIRED_FIELDS: '필수 항목을 입력해주세요.',
   // INVALID_ORDER_POSITION: '유효하지 않은 위치입니다.',
   DAILY_SCHEDULE_LIMIT: '하루당 최대 20개까지 일정을 생성할 수 있습니다.',
+};
+
+export const ROOM_ERROR = {
+  ROOM_NOT_FOUND: '방을 찾을 수 없습니다.',
 };

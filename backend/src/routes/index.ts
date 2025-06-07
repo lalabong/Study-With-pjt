@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 import authRoutes from './authRoutes.js';
 import userRoutes from './userRoutes.js';
 import scheduleRoutes from './scheduleRoutes.js';
+import roomRoutes from './roomRoutes.js';
 
 /**
  * @swagger
@@ -13,6 +14,8 @@ import scheduleRoutes from './scheduleRoutes.js';
  *     description: 사용자 정보 및 데이터 관련 API
  *   - name: Schedules
  *     description: 일정 관리 관련 API
+ *   - name: Rooms
+ *     description: 방 관리 관련 API
  *   - name: System
  *     description: 시스템 관련 API
  */
@@ -50,5 +53,6 @@ router.get('/health', (_req: Request, res: Response) => {
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/schedules', scheduleRoutes);
+router.use('/rooms', roomRoutes);
 
 export default router;
