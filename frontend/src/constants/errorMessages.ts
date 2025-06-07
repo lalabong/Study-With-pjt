@@ -64,3 +64,9 @@ export const SCHEDULE_ERROR_MESSAGES = {
   REQUIRED_FIELDS: '필수 항목을 모두 입력해주세요.',
   INVALID_POSITION: '유효하지 않은 위치입니다.',
 };
+
+export const ROOM_ERROR_MESSAGES = {
+  FETCH_PARTICIPANTS_FAILED: '참가자 목록 조회에 실패했습니다.',
+  ROOM_NOT_FOUND: '방을 찾을 수 없습니다.',
+  ACCESS_DENIED: '방에 접근할 권한이 없습니다.',
+};

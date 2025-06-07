@@ -15,3 +15,7 @@ export const SCHEDULE_SUCCESS_MESSAGES = {
   DELETE_SCHEDULE: '일정이 삭제되었습니다.',
   UPDATE_ORDER: '일정 순서가 변경되었습니다.',
 };
+
+export const ROOM_SUCCESS_MESSAGES = {
+  FETCH_PARTICIPANTS_SUCCESS: '참가자 정보 조회에 성공했습니다.',
+};

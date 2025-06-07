@@ -27,3 +27,7 @@ export const SCHEDULE_ENDPOINTS = {
   UPDATE_AND_DELETE_SCHEDULE: (scheduleId: string) => `${API_PREFIX}/schedules/${scheduleId}`,
   UPDATE_SCHEDULE_ORDER: `${API_PREFIX}/schedules/order`,
 };
+
+export const ROOM_ENDPOINTS = {
+  GET_PARTICIPANTS: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/participants`,
+};

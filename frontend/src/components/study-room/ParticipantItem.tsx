@@ -7,14 +7,11 @@ import { useTopRunningScheduleQuery } from '@hooks/api/useTopRunningScheduleQuer
 
 import { getCurrentDateString } from '@utils/date';
 
-import { Schedule } from '@/types/api';
-
 export interface Participant {
   id: string;
   userId: string;
   nickname: string;
-  profileImg?: string;
-  schedules: Schedule[];
+  profileImg: string | null;
 }
 
 interface ParticipantItemProps {

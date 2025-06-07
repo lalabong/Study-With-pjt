@@ -6,3 +6,7 @@ export const USER_QUERY_KEYS = {
   USER_SCHEDULES_BY_DATE: 'user-schedules-by-date',
   USER_TOP_RUNNING_SCHEDULE: 'user-top-running-schedule',
 };
+
+export const ROOM_QUERY_KEYS = {
+  ROOM_PARTICIPANTS: 'room-participants',
+};

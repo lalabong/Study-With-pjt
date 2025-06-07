@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { HiUsers } from 'react-icons/hi';
 
 import { Modal } from '@components/common';
 import ReadOnlyScheduleList from '@components/common/ReadOnlyScheduleList';
+
+import { useRoomParticipantsQuery } from '@hooks/api/useRoomParticipantsQuery';
+
+import { useRoomStore } from '@stores/roomStore';
 
 import ParticipantItem, { Participant } from './ParticipantItem';
 
@@ -13,58 +17,18 @@ const ParticipantsSection = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
 
-  // 임시 데이터 - 추후 API 연동 시 제거
-  const [participants] = useState<Participant[]>([
-    {
-      id: '1',
-      userId: 'test2',
-      nickname: 'Sarah Chen',
-      profileImg: 'https://randomuser.me/api/portraits/women/44.jpg',
-      schedules: [
-        {
-          id: '1',
-          userCuid: '1',
-          createdAt: '2024-01-01',
-          title: '알고리즘 문제 풀이',
-          date: '2024-01-01',
-          startTime: '2025-05-25T11:44:27.735Z',
-          endTime: '2025-05-25T11:44:27.735Z',
-          status: '진행중',
-          order: 1,
-        },
-        {
-          id: '2',
-          userCuid: '1',
-          createdAt: '2024-01-01',
-          title: 'React 프로젝트 개발',
-          date: '2024-01-01',
-          startTime: '2025-05-25T11:44:27.735Z',
-          endTime: '2025-05-25T11:44:27.735Z',
-          status: '대기중',
-          order: 2,
-        },
-      ],
-    },
-    {
-      id: '2',
-      userId: 'test3',
-      nickname: 'Mike Johnson',
-      profileImg: 'https://randomuser.me/api/portraits/men/32.jpg',
-      schedules: [
-        {
-          id: '4',
-          userCuid: '2',
-          createdAt: '2024-01-01',
-          title: '데이터베이스 설계',
-          date: '2024-01-01',
-          startTime: '2025-05-25T11:44:27.735Z',
-          endTime: '2025-05-25T11:44:27.735Z',
-          status: '완료',
-          order: 1,
-        },
-      ],
-    },
-  ]);
+  const { currentRoomId, participants, setParticipants } = useRoomStore();
+
+  const { data, isLoading, error } = useRoomParticipantsQuery({
+    roomId: currentRoomId || '',
+    enabled: !!currentRoomId,
+  });
+
+  useEffect(() => {
+    if (data?.participants) {
+      setParticipants(data.participants);
+    }
+  }, [data, setParticipants]);
 
   const handleViewDetails = (participant: Participant): void => {
     setSelectedParticipant(participant);
@@ -76,6 +40,18 @@ const ParticipantsSection = () => {
     setSelectedParticipant(null);
   };
 
+  if (!currentRoomId) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm p-6 max-h-[750px] overflow-auto">
+        <h2 className="text-xl font-medium mb-10 flex items-center">
+          <HiUsers className="mr-2 text-blue-500" aria-hidden="true" />
+          참가자
+        </h2>
+        <div className="text-center py-8 text-gray-500">참가 중인 방이 없습니다.</div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="bg-white rounded-lg shadow-sm p-6 max-h-[750px] overflow-auto">
@@ -84,7 +60,13 @@ const ParticipantsSection = () => {
           참가자
         </h2>
 
-        {participants.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-8 text-gray-500">참가자 목록을 불러오는 중...</div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">
+            참가자 목록을 불러오는데 실패했습니다.
+          </div>
+        ) : participants.length === 0 ? (
           <div className="text-center py-8 text-gray-500">현재 참가자가 없습니다.</div>
         ) : (
           <ul className="space-y-6">
