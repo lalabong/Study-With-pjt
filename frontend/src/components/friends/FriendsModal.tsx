@@ -18,7 +18,8 @@ const FriendsModal = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
-  const { isFriendsModalOpen, setIsFriendsModalOpen } = useModalStore();
+  const { isFriendsModalOpen, setIsFriendsModalOpen, setIsFriendRequestModalOpen } =
+    useModalStore();
 
   // 더미 데이터 - 추후 API 연동 시 제거
   const [friends] = useState<Friend[]>([
@@ -75,7 +76,8 @@ const FriendsModal = () => {
   };
 
   const handleAddFriend = (): void => {
-    console.log('친구 추가 플로팅 버튼 클릭');
+    setIsFriendsModalOpen(false);
+    setIsFriendRequestModalOpen(true);
   };
 
   const handleCloseModal = (): void => {

@@ -3,6 +3,7 @@
 import { HiBell, HiUserGroup } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
+import FriendRequestModal from '@components/friends/FriendRequestModal';
 import FriendsModal from '@components/friends/FriendsModal';
 import LogoutButton from '@components/mypage/Profile/LogoutButton';
 
@@ -30,6 +31,7 @@ const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
     return (
       <div className="flex items-center gap-4">
         <FriendsModal />
+        <FriendRequestModal />
         <button
           className="rounded-full p-2 hover:bg-gray-100 cursor-pointer"
           aria-label="알림"
