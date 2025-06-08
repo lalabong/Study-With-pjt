@@ -75,9 +75,9 @@ model TimeLog {
 
 model Friend {
   createdAt  DateTime? @default(now()) @db.Timestamp(0)
-  friendCuid String
-  userCuid   String
-  status     FriendStatus @default(신청중)
+  friendCuid String // 수신자(친구 요청을 받은 유저)
+  userCuid   String // 요청자(친구 요청을 한 유저)
+  status     FriendStatus @default(pending)
   friend     User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
   user       User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
 
@@ -99,8 +99,8 @@ model RefreshToken {
 }
 
 enum FriendStatus {
-  신청중
-  친구
+  pending
+  accepted
 }
 
 enum ScheduleStatus {
