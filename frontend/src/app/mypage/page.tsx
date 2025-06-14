@@ -7,6 +7,7 @@ import { LogoutButton, ProfileManager, StudyCalendar, TimeSection } from '@compo
 import ProtectedRoute from '@components/router/ProtectedRoute';
 
 import { getScheduleDates } from '@api/schedule/getScheduleDates';
+import getSchedulesByDate from '@api/schedule/getSchedulesByDate';
 
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
@@ -14,8 +15,6 @@ import { getCurrentDateString, getMonthRange } from '@utils/date';
 
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
 import { HydrationBoundary } from '@lib/react-query/HydrationBoundary';
-
-import getSchedulesByDate from '@/api/schedule/getSchedulesByDate';
 
 const MyPage = async () => {
   const cookieStore = await cookies();

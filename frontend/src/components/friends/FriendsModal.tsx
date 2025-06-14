@@ -6,12 +6,11 @@ import { HiUserAdd } from 'react-icons/hi';
 
 import { Modal, Button } from '@components/common';
 import SearchInput from '@components/common/SearchInput';
+import FriendItem, { Friend } from '@components/friends/FriendItem';
 
 import useDebounce from '@hooks/useDebounce';
 
 import { useModalStore } from '@stores/modalStore';
-
-import FriendItem, { Friend } from './FriendItem';
 
 const FriendsModal = () => {
   const [searchQuery, setSearchQuery] = useState('');

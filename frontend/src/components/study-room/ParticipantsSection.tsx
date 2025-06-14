@@ -6,12 +6,11 @@ import { HiUsers } from 'react-icons/hi';
 
 import { Modal } from '@components/common';
 import ReadOnlyScheduleList from '@components/common/ReadOnlyScheduleList';
+import ParticipantItem, { Participant } from '@components/study-room/ParticipantItem';
 
 import { useRoomParticipantsQuery } from '@hooks/api/useRoomParticipantsQuery';
 
 import { useRoomStore } from '@stores/roomStore';
-
-import ParticipantItem, { Participant } from './ParticipantItem';
 
 const ParticipantsSection = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

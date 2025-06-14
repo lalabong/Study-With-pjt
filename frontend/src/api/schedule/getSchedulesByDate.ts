@@ -1,8 +1,8 @@
+import { axiosInstance } from '@api/axiosInstance';
+
 import { SCHEDULE_ENDPOINTS } from '@constants/api';
 
 import { ApiResponse, Schedule } from '@/types/api';
-
-import { axiosInstance } from '../axiosInstance';
 
 interface GetSchedulesByDateRequest {
   userId: string;
