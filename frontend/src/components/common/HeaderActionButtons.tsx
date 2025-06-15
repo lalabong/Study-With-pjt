@@ -6,6 +6,7 @@ import Button from '@components/common/Button';
 import FriendRequestModal from '@components/friends/FriendRequestModal';
 import FriendsModal from '@components/friends/FriendsModal';
 import LogoutButton from '@components/mypage/Profile/LogoutButton';
+import NotificationModal from '@components/notification/NotificationModal';
 
 import { useAuthStore } from '@stores/authStore';
 import { useModalStore } from '@stores/modalStore';
@@ -17,9 +18,11 @@ interface HeaderActionButtonsProps {
 const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const setIsFriendsModalOpen = useModalStore((state) => state.setIsFriendsModalOpen);
+  const isNotificationModalOpen = useModalStore((state) => state.isNotificationModalOpen);
+  const setIsNotificationModalOpen = useModalStore((state) => state.setIsNotificationModalOpen);
 
   const handleNotificationClick = (): void => {
-    console.log('알림 버튼 클릭');
+    setIsNotificationModalOpen(true);
   };
 
   const handleFriendClick = (): void => {
@@ -32,6 +35,10 @@ const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
       <div className="flex items-center gap-4">
         <FriendsModal />
         <FriendRequestModal />
+        <NotificationModal
+          isOpen={isNotificationModalOpen}
+          onClose={() => setIsNotificationModalOpen(false)}
+        />
         <button
           className="rounded-full p-2 hover:bg-gray-100 cursor-pointer"
           aria-label="알림"
