@@ -25,3 +25,7 @@ export const SCHEDULE_SUCCESS = {
 export const ROOM_SUCCESS = {
   GET_PARTICIPANT_INFO: '참가자 정보 조회에 성공했습니다.',
 };
+
+export const FRIEND_SUCCESS = {
+  GET_FRIENDS: '친구 목록 조회에 성공했습니다.',
+};
