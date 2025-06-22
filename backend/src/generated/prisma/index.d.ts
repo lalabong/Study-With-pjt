@@ -49,8 +49,8 @@ export type RefreshToken = $Result.DefaultSelection<Prisma.$RefreshTokenPayload>
  */
 export namespace $Enums {
   export const FriendStatus: {
-  신청중: '신청중',
-  친구: '친구'
+  pending: 'pending',
+  accepted: 'accepted'
 };
 
 export type FriendStatus = (typeof FriendStatus)[keyof typeof FriendStatus]
@@ -5538,21 +5538,18 @@ export namespace Prisma {
   }
 
   export type FriendMinAggregateOutputType = {
-    createdAt: Date | null
     friendCuid: string | null
     userCuid: string | null
     status: $Enums.FriendStatus | null
   }
 
   export type FriendMaxAggregateOutputType = {
-    createdAt: Date | null
     friendCuid: string | null
     userCuid: string | null
     status: $Enums.FriendStatus | null
   }
 
   export type FriendCountAggregateOutputType = {
-    createdAt: number
     friendCuid: number
     userCuid: number
     status: number
@@ -5561,21 +5558,18 @@ export namespace Prisma {
 
 
   export type FriendMinAggregateInputType = {
-    createdAt?: true
     friendCuid?: true
     userCuid?: true
     status?: true
   }
 
   export type FriendMaxAggregateInputType = {
-    createdAt?: true
     friendCuid?: true
     userCuid?: true
     status?: true
   }
 
   export type FriendCountAggregateInputType = {
-    createdAt?: true
     friendCuid?: true
     userCuid?: true
     status?: true
@@ -5655,7 +5649,6 @@ export namespace Prisma {
   }
 
   export type FriendGroupByOutputType = {
-    createdAt: Date | null
     friendCuid: string
     userCuid: string
     status: $Enums.FriendStatus
@@ -5679,7 +5672,6 @@ export namespace Prisma {
 
 
   export type FriendSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    createdAt?: boolean
     friendCuid?: boolean
     userCuid?: boolean
     status?: boolean
@@ -5690,13 +5682,12 @@ export namespace Prisma {
 
 
   export type FriendSelectScalar = {
-    createdAt?: boolean
     friendCuid?: boolean
     userCuid?: boolean
     status?: boolean
   }
 
-  export type FriendOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"createdAt" | "friendCuid" | "userCuid" | "status", ExtArgs["result"]["friend"]>
+  export type FriendOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"friendCuid" | "userCuid" | "status", ExtArgs["result"]["friend"]>
   export type FriendInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     friend?: boolean | UserDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -5709,7 +5700,6 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      createdAt: Date | null
       friendCuid: string
       userCuid: string
       status: $Enums.FriendStatus
@@ -5796,8 +5786,8 @@ export namespace Prisma {
      * // Get first 10 Friends
      * const friends = await prisma.friend.findMany({ take: 10 })
      * 
-     * // Only select the `createdAt`
-     * const friendWithCreatedAtOnly = await prisma.friend.findMany({ select: { createdAt: true } })
+     * // Only select the `friendCuid`
+     * const friendWithFriendCuidOnly = await prisma.friend.findMany({ select: { friendCuid: true } })
      * 
      */
     findMany<T extends FriendFindManyArgs>(args?: SelectSubset<T, FriendFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FriendPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -6084,7 +6074,6 @@ export namespace Prisma {
    * Fields of the Friend model
    */
   interface FriendFieldRefs {
-    readonly createdAt: FieldRef<"Friend", 'DateTime'>
     readonly friendCuid: FieldRef<"Friend", 'String'>
     readonly userCuid: FieldRef<"Friend", 'String'>
     readonly status: FieldRef<"Friend", 'FriendStatus'>
@@ -7444,7 +7433,6 @@ export namespace Prisma {
 
 
   export const FriendScalarFieldEnum: {
-    createdAt: 'createdAt',
     friendCuid: 'friendCuid',
     userCuid: 'userCuid',
     status: 'status'
@@ -7877,7 +7865,6 @@ export namespace Prisma {
     AND?: FriendWhereInput | FriendWhereInput[]
     OR?: FriendWhereInput[]
     NOT?: FriendWhereInput | FriendWhereInput[]
-    createdAt?: DateTimeNullableFilter<"Friend"> | Date | string | null
     friendCuid?: StringFilter<"Friend"> | string
     userCuid?: StringFilter<"Friend"> | string
     status?: EnumFriendStatusFilter<"Friend"> | $Enums.FriendStatus
@@ -7886,7 +7873,6 @@ export namespace Prisma {
   }
 
   export type FriendOrderByWithRelationInput = {
-    createdAt?: SortOrderInput | SortOrder
     friendCuid?: SortOrder
     userCuid?: SortOrder
     status?: SortOrder
@@ -7900,7 +7886,6 @@ export namespace Prisma {
     AND?: FriendWhereInput | FriendWhereInput[]
     OR?: FriendWhereInput[]
     NOT?: FriendWhereInput | FriendWhereInput[]
-    createdAt?: DateTimeNullableFilter<"Friend"> | Date | string | null
     friendCuid?: StringFilter<"Friend"> | string
     userCuid?: StringFilter<"Friend"> | string
     status?: EnumFriendStatusFilter<"Friend"> | $Enums.FriendStatus
@@ -7909,7 +7894,6 @@ export namespace Prisma {
   }, "userCuid_friendCuid">
 
   export type FriendOrderByWithAggregationInput = {
-    createdAt?: SortOrderInput | SortOrder
     friendCuid?: SortOrder
     userCuid?: SortOrder
     status?: SortOrder
@@ -7922,7 +7906,6 @@ export namespace Prisma {
     AND?: FriendScalarWhereWithAggregatesInput | FriendScalarWhereWithAggregatesInput[]
     OR?: FriendScalarWhereWithAggregatesInput[]
     NOT?: FriendScalarWhereWithAggregatesInput | FriendScalarWhereWithAggregatesInput[]
-    createdAt?: DateTimeNullableWithAggregatesFilter<"Friend"> | Date | string | null
     friendCuid?: StringWithAggregatesFilter<"Friend"> | string
     userCuid?: StringWithAggregatesFilter<"Friend"> | string
     status?: EnumFriendStatusWithAggregatesFilter<"Friend"> | $Enums.FriendStatus
@@ -8282,47 +8265,40 @@ export namespace Prisma {
   }
 
   export type FriendCreateInput = {
-    createdAt?: Date | string | null
     status?: $Enums.FriendStatus
     friend: UserCreateNestedOneWithoutFriendsFromInput
     user: UserCreateNestedOneWithoutFriendsToInput
   }
 
   export type FriendUncheckedCreateInput = {
-    createdAt?: Date | string | null
     friendCuid: string
     userCuid: string
     status?: $Enums.FriendStatus
   }
 
   export type FriendUpdateInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
     friend?: UserUpdateOneRequiredWithoutFriendsFromNestedInput
     user?: UserUpdateOneRequiredWithoutFriendsToNestedInput
   }
 
   export type FriendUncheckedUpdateInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     friendCuid?: StringFieldUpdateOperationsInput | string
     userCuid?: StringFieldUpdateOperationsInput | string
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
   }
 
   export type FriendCreateManyInput = {
-    createdAt?: Date | string | null
     friendCuid: string
     userCuid: string
     status?: $Enums.FriendStatus
   }
 
   export type FriendUpdateManyMutationInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
   }
 
   export type FriendUncheckedUpdateManyInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     friendCuid?: StringFieldUpdateOperationsInput | string
     userCuid?: StringFieldUpdateOperationsInput | string
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
@@ -8797,21 +8773,18 @@ export namespace Prisma {
   }
 
   export type FriendCountOrderByAggregateInput = {
-    createdAt?: SortOrder
     friendCuid?: SortOrder
     userCuid?: SortOrder
     status?: SortOrder
   }
 
   export type FriendMaxOrderByAggregateInput = {
-    createdAt?: SortOrder
     friendCuid?: SortOrder
     userCuid?: SortOrder
     status?: SortOrder
   }
 
   export type FriendMinOrderByAggregateInput = {
-    createdAt?: SortOrder
     friendCuid?: SortOrder
     userCuid?: SortOrder
     status?: SortOrder
@@ -9483,13 +9456,11 @@ export namespace Prisma {
   }
 
   export type FriendCreateWithoutFriendInput = {
-    createdAt?: Date | string | null
     status?: $Enums.FriendStatus
     user: UserCreateNestedOneWithoutFriendsToInput
   }
 
   export type FriendUncheckedCreateWithoutFriendInput = {
-    createdAt?: Date | string | null
     userCuid: string
     status?: $Enums.FriendStatus
   }
@@ -9505,13 +9476,11 @@ export namespace Prisma {
   }
 
   export type FriendCreateWithoutUserInput = {
-    createdAt?: Date | string | null
     status?: $Enums.FriendStatus
     friend: UserCreateNestedOneWithoutFriendsFromInput
   }
 
   export type FriendUncheckedCreateWithoutUserInput = {
-    createdAt?: Date | string | null
     friendCuid: string
     status?: $Enums.FriendStatus
   }
@@ -9649,7 +9618,6 @@ export namespace Prisma {
     AND?: FriendScalarWhereInput | FriendScalarWhereInput[]
     OR?: FriendScalarWhereInput[]
     NOT?: FriendScalarWhereInput | FriendScalarWhereInput[]
-    createdAt?: DateTimeNullableFilter<"Friend"> | Date | string | null
     friendCuid?: StringFilter<"Friend"> | string
     userCuid?: StringFilter<"Friend"> | string
     status?: EnumFriendStatusFilter<"Friend"> | $Enums.FriendStatus
@@ -10325,13 +10293,11 @@ export namespace Prisma {
   }
 
   export type FriendCreateManyFriendInput = {
-    createdAt?: Date | string | null
     userCuid: string
     status?: $Enums.FriendStatus
   }
 
   export type FriendCreateManyUserInput = {
-    createdAt?: Date | string | null
     friendCuid: string
     status?: $Enums.FriendStatus
   }
@@ -10363,37 +10329,31 @@ export namespace Prisma {
   }
 
   export type FriendUpdateWithoutFriendInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
     user?: UserUpdateOneRequiredWithoutFriendsToNestedInput
   }
 
   export type FriendUncheckedUpdateWithoutFriendInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userCuid?: StringFieldUpdateOperationsInput | string
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
   }
 
   export type FriendUncheckedUpdateManyWithoutFriendInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userCuid?: StringFieldUpdateOperationsInput | string
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
   }
 
   export type FriendUpdateWithoutUserInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
     friend?: UserUpdateOneRequiredWithoutFriendsFromNestedInput
   }
 
   export type FriendUncheckedUpdateWithoutUserInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     friendCuid?: StringFieldUpdateOperationsInput | string
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
   }
 
   export type FriendUncheckedUpdateManyWithoutUserInput = {
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     friendCuid?: StringFieldUpdateOperationsInput | string
     status?: EnumFriendStatusFieldUpdateOperationsInput | $Enums.FriendStatus
   }

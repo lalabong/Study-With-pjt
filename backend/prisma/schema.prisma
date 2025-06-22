@@ -74,7 +74,6 @@ model TimeLog {
 }
 
 model Friend {
-  createdAt  DateTime? @default(now()) @db.Timestamp(0)
   friendCuid String // 수신자(친구 요청을 받은 유저)
   userCuid   String // 요청자(친구 요청을 한 유저)
   status     FriendStatus @default(pending)

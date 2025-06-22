@@ -160,7 +160,6 @@ exports.Prisma.TimeLogScalarFieldEnum = {
 };
 
 exports.Prisma.FriendScalarFieldEnum = {
-  createdAt: 'createdAt',
   friendCuid: 'friendCuid',
   userCuid: 'userCuid',
   status: 'status'
@@ -230,8 +229,8 @@ exports.ScheduleStatus = exports.$Enums.ScheduleStatus = {
 };
 
 exports.FriendStatus = exports.$Enums.FriendStatus = {
-  신청중: '신청중',
-  친구: '친구'
+  pending: 'pending',
+  accepted: 'accepted'
 };
 
 exports.Prisma.ModelName = {
