@@ -28,4 +28,5 @@ export const ROOM_SUCCESS = {
 
 export const FRIEND_SUCCESS = {
   GET_FRIENDS: '친구 목록 조회에 성공했습니다.',
+  DELETE_FRIEND: '친구 삭제에 성공했습니다.',
 };
