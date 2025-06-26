@@ -1,0 +1,78 @@
+name: CI Pipeline
+
+# 트리거 조건: main, develop 브랜치에 push 또는 PR이 생성될 때
+on:
+  pull_request:
+    branches: [main, develop]
+
+# 환경 변수 설정
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  # 코드 품질 검사 및 테스트 job
+  test:
+    name: 테스트 및 코드 품질 검사
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃(GitHub 저장소 코드를 runner에 다운로드, 모든 워크플로우의 첫 단계계)
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      # 2. Node.js 설정(runner에 Node.js 설치)
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # 3. 의존성 설치(package.json에 있는 의존성 설치)
+      - name: 의존성 설치
+        run: npm ci # npm install과 달리 프로덕션용이고고, 빠름
+
+      # 4. 코드 품질 검사 (ESLint)
+      - name: ESLint 검사
+        run: npm run lint
+
+      # 5. 코드 포맷팅 검사 (Prettier)
+      - name: Prettier 검사
+        run: npm run format -- --check
+
+      # 6. TypeScript 컴파일 검사
+      - name: TypeScript 빌드
+        run: npm run build
+
+      # 7. 테스트 실행
+      - name: 테스트 실행
+        run: npm test
+
+  # 빌드 job
+  build:
+    name: 빌드
+    runs-on: ubuntu-latest
+    needs: test # test job이 성공해야 실행
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 프로젝트 빌드
+        run: npm run build
+
+      # 빌드 결과물을 artifact로 저장
+      - name: 빌드 결과물 저장
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: dist/
+          retention-days: 7

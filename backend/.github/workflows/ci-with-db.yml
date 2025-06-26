@@ -1,0 +1,79 @@
+name: CI Pipeline with Database
+
+on:
+  push:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 2 * * *' # 매일 새벽 2시
+
+env:
+  NODE_VERSION: '22'
+  DATABASE_URL: 'mysql://swith:swith1234@localhost:3307/study_db'
+
+jobs:
+  test-with-db:
+    name: 데이터베이스와 함께 테스트
+    runs-on: ubuntu-latest
+
+    # MySQL 서비스 컨테이너 설정
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root1234
+          MYSQL_DATABASE: study_db
+        ports:
+          - 3307:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      # Prisma 클라이언트 생성
+      - name: Prisma 클라이언트 생성
+        run: npx prisma generate
+
+      # 데이터베이스 마이그레이션 실행
+      - name: 데이터베이스 마이그레이션
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      # 데이터베이스 시드 (선택사항)
+      # - name: 데이터베이스 시드
+      #   run: npx prisma db seed
+      #   env:
+      #     DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: ESLint 검사
+        run: npm run lint
+
+      - name: Prettier 검사
+        run: npm run format -- --check
+
+      - name: TypeScript 빌드
+        run: npm run build
+
+      # 데이터베이스 연결 테스트
+      - name: 데이터베이스 연결 테스트
+        run: |
+          node -e "
+          import { PrismaClient } from '@prisma/client';
+          const prisma = new PrismaClient();
+          prisma.\$connect().then(() => {
+            console.log('데이터베이스 연결 성공!');
+            return prisma.\$disconnect();
+          }).catch(console.error);
+          "
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
