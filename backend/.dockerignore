@@ -1,0 +1,49 @@
+# 의존성 및 빌드 결과물
+node_modules
+dist
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 환경 파일
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Git 관련
+.git
+.gitignore
+
+# GitHub Actions
+.github
+
+# 개발 도구
+.vscode
+.idea
+
+# 운영체제 파일
+.DS_Store
+Thumbs.db
+
+# 테스트 및 커버리지
+coverage
+.nyc_output
+
+# Docker 관련
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# 문서 및 기타
+README.md
+*.md
+LICENSE
+
+# 데이터베이스 파일
+mysql-data
+
+# 로컬 업로드 파일 (선택사항 - 실제 업로드 파일 유지 필요시 제거)
+uploads 

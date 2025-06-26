@@ -39,6 +39,15 @@ app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'SWith API Server' });
 });
 
+// 헬스 체크 엔드포인트 (Docker 배포용)
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime() 
+  });
+});
+
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     status: 'error',
