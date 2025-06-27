@@ -4,9 +4,11 @@ FROM node:22-alpine AS builder
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 패키지 파일 복사 및 의존성 설치
-# dev Dependencies 제외 설치, npm 캐시 삭제로 이미지 크기 최소화화
+# 패키지 파일과 Prisma 스키마 복사
 COPY package*.json ./
+COPY prisma ./prisma
+
+# 의존성 설치 (production only)
 RUN npm ci --only=production && npm cache clean --force
 
 # 소스 코드 복사
