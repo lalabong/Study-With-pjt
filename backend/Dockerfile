@@ -19,6 +19,8 @@ RUN npx prisma generate
 
 # TypeScript 빌드
 RUN npm run build
+# 생성된 Prisma 클라이언트를 dist 폴더에도 복사 (TypeScript 빌드 후)
+RUN cp -r src/generated dist/src/
 
 # 프로덕션 스테이지
 FROM node:22-alpine AS production

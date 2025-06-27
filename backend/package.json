@@ -25,7 +25,7 @@
     "format": "prettier --write .",
     "docker:build": "docker build -t study-with-backend .",
     "docker:run": "docker-compose up -d",
-    "postinstall": "if [ -f prisma/schema.prisma ]; then prisma generate; fi"
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
