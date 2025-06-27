@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  trailingSlash: false,
+  generateEtags: false,
   async headers() {
     return [
       {
