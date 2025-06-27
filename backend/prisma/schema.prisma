@@ -41,18 +41,17 @@ model Room {
   @@map("room")
 }
 
-
 model Schedule {
-  id        String    @id @default(cuid()) @db.VarChar(36)
-  title     String    @db.VarChar(50)
-  startTime DateTime? @db.DateTime(0)
-  endTime   DateTime? @db.DateTime(0)
-  status    ScheduleStatus    @default(대기중)
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  order     Int       @default(0)
+  id        String         @id @default(cuid()) @db.VarChar(36)
+  title     String         @db.VarChar(50)
+  startTime DateTime?      @db.DateTime(0)
+  endTime   DateTime?      @db.DateTime(0)
+  status    ScheduleStatus @default(대기중)
+  createdAt DateTime?      @default(now()) @db.Timestamp(0)
+  order     Int            @default(0)
   userCuid  String
-  date      String    @db.VarChar(20)
-  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
+  date      String         @db.VarChar(20)
+  user      User           @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@index([userCuid], map: "schedule_userCuid_fkey")
   @@map("schedule")
@@ -77,8 +76,8 @@ model Friend {
   friendCuid String // 수신자(친구 요청을 받은 유저)
   userCuid   String // 요청자(친구 요청을 한 유저)
   status     FriendStatus @default(pending)
-  friend     User      @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
-  user       User      @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
+  friend     User         @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
+  user       User         @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@id([userCuid, friendCuid])
   @@index([friendCuid], map: "friend_friendCuid_fkey")

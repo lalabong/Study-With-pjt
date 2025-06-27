@@ -225,7 +225,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\jiwon\\Desktop\\Study-With-pjt\\backend\\src\\generated\\prisma",
+      "value": "C:\\Users\\jiwon\\OneDrive\\Desktop\\Study-With-pjt\\backend\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -239,7 +239,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\jiwon\\Desktop\\Study-With-pjt\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\jiwon\\OneDrive\\Desktop\\Study-With-pjt\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
