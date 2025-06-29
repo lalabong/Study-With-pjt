@@ -11,10 +11,10 @@ export const getFriends: ControllerFn = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { userId } = req.params;
+    const { userCuid } = req.params;
 
     const user = await prisma.user.findUnique({
-      where: { userId },
+      where: { id: userCuid },
       select: { id: true },
     });
 
@@ -38,8 +38,8 @@ export const getFriends: ControllerFn = async (
         u.profileImg
       FROM user u
       INNER JOIN friend f ON (
-        (f.userCuid = ${user.id} AND f.friendCuid = u.id) OR
-        (f.friendCuid = ${user.id} AND f.userCuid = u.id)
+        (f.userCuid = ${userCuid} AND f.friendCuid = u.id) OR
+        (f.friendCuid = ${userCuid} AND f.userCuid = u.id)
       )
       WHERE f.status = 'accepted'
     `;
@@ -57,15 +57,17 @@ export const deleteFriend: ControllerFn = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { userId } = req.params;
+    const { userCuid } = req.params;
     const { friendCuid } = req.body;
 
-    const user = await prisma.user.findUnique({
-      where: { userId },
+    const users = await prisma.user.findMany({
+      where: {
+        id: { in: [userCuid, friendCuid] },
+      },
       select: { id: true },
     });
 
-    if (!user) {
+    if (users.length !== 2) {
       createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
       return;
     }
@@ -73,8 +75,8 @@ export const deleteFriend: ControllerFn = async (
     const existingFriend = await prisma.friend.findFirst({
       where: {
         OR: [
-          { userCuid: user.id, friendCuid },
-          { userCuid: friendCuid, friendCuid: user.id },
+          { userCuid, friendCuid },
+          { userCuid: friendCuid, friendCuid: userCuid },
         ],
       },
     });
@@ -83,11 +85,12 @@ export const deleteFriend: ControllerFn = async (
       createErrorResponse(res, 404, FRIEND_ERROR.FRIEND_NOT_FOUND, ERROR_CODES.FRIEND_NOT_FOUND);
       return;
     }
+
     await prisma.friend.deleteMany({
       where: {
         OR: [
-          { userCuid: user.id, friendCuid },
-          { userCuid: friendCuid, friendCuid: user.id },
+          { userCuid, friendCuid },
+          { userCuid: friendCuid, friendCuid: userCuid },
         ],
       },
     });
@@ -99,3 +102,80 @@ export const deleteFriend: ControllerFn = async (
   }
 };
 
+export const postFriendRequest: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userCuid } = req.params;
+    const { friendCuid } = req.body;
+
+    if (userCuid === friendCuid) {
+      createErrorResponse(
+        res,
+        400,
+        FRIEND_ERROR.FRIEND_SELF_REQUEST,
+        ERROR_CODES.FRIEND_SELF_REQUEST
+      );
+      return;
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        id: { in: [userCuid, friendCuid] },
+      },
+      select: { id: true, userId: true },
+    });
+
+    if (users.length !== 2) {
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
+      return;
+    }
+
+    const existingRelation = await prisma.friend.findFirst({
+      where: {
+        OR: [
+          { userCuid, friendCuid },
+          { userCuid: friendCuid, friendCuid: userCuid },
+        ],
+      },
+      select: { status: true, userCuid: true, friendCuid: true },
+    });
+
+    if (existingRelation) {
+      if (existingRelation.status === 'accepted') {
+        createErrorResponse(
+          res,
+          400,
+          FRIEND_ERROR.FRIEND_ALREADY_FRIENDS,
+          ERROR_CODES.FRIEND_ALREADY_FRIENDS
+        );
+        return;
+      }
+
+      if (existingRelation.status === 'pending') {
+        createErrorResponse(
+          res,
+          400,
+          FRIEND_ERROR.FRIEND_REQUEST_ALREADY_EXISTS,
+          ERROR_CODES.FRIEND_REQUEST_ALREADY_EXISTS
+        );
+        return;
+      }
+    }
+
+    await prisma.friend.create({
+      data: {
+        userCuid,
+        friendCuid,
+        status: 'pending',
+      },
+    });
+
+    createSuccessResponse(res, 200, undefined, FRIEND_SUCCESS.SEND_FRIEND_REQUEST);
+  } catch (error) {
+    console.error('친구 요청 전송 에러:', error);
+    next(error);
+  }
+};

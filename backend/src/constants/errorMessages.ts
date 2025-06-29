@@ -39,6 +39,9 @@ export const ERROR_CODES = {
 
   // 친구 관련 오류 (6000~6999)
   FRIEND_NOT_FOUND: 6001,
+  FRIEND_REQUEST_ALREADY_EXISTS: 6002,
+  FRIEND_SELF_REQUEST: 6003,
+  FRIEND_ALREADY_FRIENDS: 6004,
 };
 
 export const AUTH_ERROR = {
@@ -86,4 +89,7 @@ export const ROOM_ERROR = {
 
 export const FRIEND_ERROR = {
   FRIEND_NOT_FOUND: '친구를 찾을 수 없습니다.',
+  FRIEND_REQUEST_ALREADY_EXISTS: '이미 친구 요청이 존재합니다.',
+  FRIEND_SELF_REQUEST: '자기 자신에게는 친구 요청을 보낼 수 없습니다.',
+  FRIEND_ALREADY_FRIENDS: '이미 친구입니다.',
 };
