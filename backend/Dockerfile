@@ -17,6 +17,9 @@ COPY . .
 # Prisma 클라이언트 생성
 RUN npx prisma generate
 
+# 마이그레이션 실행
+RUN npx prisma migrate deploy
+
 # TypeScript 빌드
 RUN npm run build
 # 생성된 Prisma 클라이언트를 dist 폴더에도 복사 (TypeScript 빌드 후)
