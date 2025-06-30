@@ -17,9 +17,6 @@ COPY . .
 # Prisma 클라이언트 생성
 RUN npx prisma generate
 
-# 마이그레이션 실행
-RUN npx prisma migrate deploy
-
 # TypeScript 빌드
 RUN npm run build
 # 생성된 Prisma 클라이언트를 dist 폴더에도 복사 (TypeScript 빌드 후)
@@ -43,6 +40,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
 # 업로드 디렉토리 생성
 RUN mkdir -p /app/uploads/profiles && chown -R nextjs:nodejs /app/uploads
 
+
+# 시작 스크립트 생성 (마이그레이션 + 앱 실행)
+RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode dist/index.js' > start.sh
+RUN chmod +x start.sh
+RUN chown nextjs:nodejs start.sh
+
 # 사용자 변경(ROOT 권한 제거)
 USER nextjs
 
@@ -54,4 +57,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
 
 # 애플리케이션 시작
-CMD ["node", "dist/index.js"] 
+CMD ["./start.sh"]
+
