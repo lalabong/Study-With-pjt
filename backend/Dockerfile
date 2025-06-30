@@ -40,12 +40,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
 # 업로드 디렉토리 생성
 RUN mkdir -p /app/uploads/profiles && chown -R nextjs:nodejs /app/uploads
 
-
-# 시작 스크립트 생성 (마이그레이션 + 앱 실행)
-RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode dist/index.js' > start.sh
-RUN chmod +x start.sh
-RUN chown nextjs:nodejs start.sh
-
 # 사용자 변경(ROOT 권한 제거)
 USER nextjs
 
@@ -56,6 +50,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
 
-# 애플리케이션 시작
-CMD ["./start.sh"]
+CMD ["npm", "start"]
 

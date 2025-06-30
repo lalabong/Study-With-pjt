@@ -18,7 +18,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "build": "prisma generate && tsc",
-    "start": "tsx index.ts",
+    "start": "npx prisma migrate deploy && node dist/index.js",
     "dev": "tsx watch index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
