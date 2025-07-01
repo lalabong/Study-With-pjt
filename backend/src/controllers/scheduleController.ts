@@ -158,13 +158,13 @@ export const getTopRunningSchedule: ControllerFn = async (
 };
 
 export const createSchedule: ControllerFn = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { title, date, startTime, endTime, status = '대기중' } = req.body;
-    const authUser = (req as AuthRequest).user;
+    const authUser = req.user;
 
     if (!authUser) {
       createErrorResponse(res, 401, USER_ERROR.UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
@@ -258,14 +258,14 @@ export const createSchedule: ControllerFn = async (
 
 // 일정 수정(order 제외)
 export const updateSchedule: ControllerFn = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { scheduleId } = req.params;
     const { title, startTime, endTime, status } = req.body;
-    const authUser = (req as AuthRequest).user;
+    const authUser = req.user;
 
     if (!authUser) {
       createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED, ERROR_CODES.AUTH_UNAUTHORIZED);
@@ -335,13 +335,13 @@ export const updateSchedule: ControllerFn = async (
 };
 
 export const deleteSchedule: ControllerFn = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { scheduleId } = req.params;
-    const authUser = (req as AuthRequest).user;
+    const authUser = req.user;
 
     if (!authUser) {
       createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED, ERROR_CODES.AUTH_UNAUTHORIZED);
@@ -387,16 +387,16 @@ export const deleteSchedule: ControllerFn = async (
 
 // 일정 순서 일괄 변경
 export const updateScheduleOrder: ControllerFn = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const { date, schedules } = req.body;
-    const authUser = (req as AuthRequest).user;
+    const authUser = req.user;
 
     if (!authUser) {
-      createErrorResponse(res, 401, USER_ERROR.UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
+      createErrorResponse(res, 401, AUTH_ERROR.UNAUTHORIZED, ERROR_CODES.AUTH_UNAUTHORIZED);
       return;
     }
 

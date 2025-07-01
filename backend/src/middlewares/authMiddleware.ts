@@ -4,7 +4,7 @@ import { AuthRequest, UserPayload } from '../types/index.js';
 import { createErrorResponse } from '../utils/responseUtils.js';
 import { AUTH_ERROR, ERROR_CODES } from '../constants/index.js';
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -27,7 +27,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction): void =
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string) as UserPayload;
 
-    (req as AuthRequest).user = decoded;
+    req.user = decoded;
 
     next();
   } catch (error) {
