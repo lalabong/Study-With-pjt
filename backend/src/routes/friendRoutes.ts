@@ -1,5 +1,5 @@
 import express from 'express';
-import { getFriends, deleteFriend, postFriendRequest } from '../controllers/friendController.js';
+import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest } from '../controllers/friendController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -371,5 +371,170 @@ router.delete('/:userCuid', authMiddleware, deleteFriend);
  *                   example: 2001
  */
 router.post('/:userCuid/request', authMiddleware, postFriendRequest);
+
+/**
+ * @swagger
+ * /api/friends/{userCuid}/request:
+ *   delete:
+ *     summary: 친구 요청 취소
+ *     description: 사용자가 보낸 친구 요청을 취소합니다. 본인이 보낸 pending 상태의 친구 요청만 취소할 수 있습니다.
+ *     tags: [Friends]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userCuid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 요청자의 고유 ID (CUID)
+ *         example: "cm123abc456def"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - friendCuid
+ *             properties:
+ *               friendCuid:
+ *                 type: string
+ *                 description: 친구 요청을 취소할 대상 사용자의 고유 ID (CUID)
+ *                 example: "cm456def789ghi"
+ *     responses:
+ *       200:
+ *         description: 친구 요청 취소 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
+ *                 message:
+ *                   type: string
+ *                   example: 친구 요청 취소에 성공했습니다.
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                 errorCode:
+ *                   type: integer
+ *             examples:
+ *               requiredField:
+ *                 summary: 필수 필드 누락
+ *                 value:
+ *                   status: error
+ *                   message: 친구 ID를 입력해주세요.
+ *                   errorCode: 6006
+ *               selfRequest:
+ *                 summary: 자기 자신에게 친구 요청 취소 시도
+ *                 value:
+ *                   status: error
+ *                   message: 자기 자신에게는 친구 요청을 보낼 수 없습니다.
+ *                   errorCode: 6003
+ *               alreadyFriends:
+ *                 summary: 이미 친구인 경우
+ *                 value:
+ *                   status: error
+ *                   message: 이미 친구입니다.
+ *                   errorCode: 6004
+ *               cannotCancel:
+ *                 summary: 취소할 수 없는 친구 요청
+ *                 value:
+ *                   status: error
+ *                   message: 취소할 수 없는 친구 요청입니다.
+ *                   errorCode: 6008
+ *       403:
+ *         description: 권한 없음 (본인의 친구 요청이 아님)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 본인의 친구 요청만 취소할 수 있습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 6007
+ *       404:
+ *         description: 사용자 또는 친구 요청을 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                 errorCode:
+ *                   type: integer
+ *             examples:
+ *               userNotFound:
+ *                 summary: 사용자를 찾을 수 없음
+ *                 value:
+ *                   status: error
+ *                   message: 사용자를 찾을 수 없습니다.
+ *                   errorCode: 3001
+ *               requestNotFound:
+ *                 summary: 친구 요청을 찾을 수 없음
+ *                 value:
+ *                   status: error
+ *                   message: 친구 요청을 찾을 수 없습니다.
+ *                   errorCode: 6005
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3006
+ *       500:
+ *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 서버 내부 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 2001
+ */
+router.delete('/:userCuid/request', authMiddleware, deleteFriendRequest);
 
 export default router;
