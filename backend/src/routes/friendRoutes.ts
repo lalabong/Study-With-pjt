@@ -1,8 +1,143 @@
 import express from 'express';
-import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest } from '../controllers/friendController.js';
+import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest, getUserByNickname } from '../controllers/friendController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
+
+/**
+ * @swagger
+ * /api/friends/search:
+ *   get:
+ *     summary: 닉네임으로 사용자 검색
+ *     description: 닉네임으로 사용자를 검색합니다. 자기 자신은 제외되며, 다른 사용자들의 친구 관계 상태(pending, accepted)가 함께 표시됩니다. 최소 2자 이상의 검색어가 필요합니다.
+ *     tags: [Friends]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: nickname
+ *         schema:
+ *           type: string
+ *           minLength: 2
+ *         required: true
+ *         description: 검색할 닉네임 (최소 2자 이상)
+ *         example: "친구"
+ *     responses:
+ *       200:
+ *         description: 사용자 검색 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     users:
+ *                       type: array
+ *                       description: 검색된 사용자 목록 (최대 20개)
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             description: 사용자의 고유 ID (CUID)
+ *                             example: "cm123abc456def"
+ *                           userId:
+ *                             type: string
+ *                             description: 사용자의 로그인 ID
+ *                             example: "user123"
+ *                           nickname:
+ *                             type: string
+ *                             description: 사용자의 닉네임
+ *                             example: "친구닉네임"
+ *                           profileImg:
+ *                             type: string
+ *                             nullable: true
+ *                             description: 사용자의 프로필 이미지 URL
+ *                             example: "https://example.com/profile.jpg"
+ *                           status:
+ *                             type: string
+ *                             nullable: true
+ *                             description: |
+ *                               현재 사용자와의 친구 관계 상태:
+ *                               - null: 아무 관계 없음 (친구 요청 가능)
+ *                               - pending_sent: 내가 보낸 친구 요청 대기중 (취소 가능)
+ *                               - pending_received: 내가 받은 친구 요청 대기중 (수락/거절 가능)
+ *                               - accepted: 이미 친구 (삭제 가능)
+ *                             example: "pending_sent"
+ *                             enum: ["pending_sent", "pending_received", "accepted"]
+ *                     count:
+ *                       type: integer
+ *                       description: 검색된 사용자 수
+ *                       example: 5
+ *                 message:
+ *                   type: string
+ *                   example: 유저 닉네임으로 유저 검색에 성공했습니다.
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                 errorCode:
+ *                   type: integer
+ *             examples:
+ *               missingNickname:
+ *                 summary: 닉네임 누락
+ *                 value:
+ *                   status: error
+ *                   message: 친구 ID를 입력해주세요.
+ *                   errorCode: 6006
+ *               invalidLength:
+ *                 summary: 검색어 길이 부족
+ *                 value:
+ *                   status: error
+ *                   message: 검색어는 최소 2자 이상이어야 합니다.
+ *                   errorCode: 6009
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3006
+ *       500:
+ *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 서버 내부 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 2001
+ */
+router.get('/search', authMiddleware, getUserByNickname);
 
 /**
  * @swagger

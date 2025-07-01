@@ -297,3 +297,81 @@ export const deleteFriendRequest: ControllerFn = async (
     next(error);
   }
 };
+
+export const getUserByNickname: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { nickname } = req.query as { nickname: string };
+    const currentUserId = req.user?.id;
+
+    if (!currentUserId) {
+      createErrorResponse(
+        res,
+        401,
+        USER_ERROR.UNAUTHORIZED,
+        ERROR_CODES.USER_UNAUTHORIZED
+      );
+      return;
+    }
+
+    if (!nickname || typeof nickname !== 'string') {
+      createErrorResponse(
+        res,
+        400,
+        FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD,
+        ERROR_CODES.FRIEND_REQUEST_REQUIRED_FIELD
+      );
+      return;
+    }
+
+    const trimmedNickname = nickname.trim();
+    if (trimmedNickname.length < 2) {
+      createErrorResponse(
+        res,
+        400,
+        FRIEND_ERROR.FRIEND_SEARCH_INVALID_NICKNAME,
+        ERROR_CODES.FRIEND_SEARCH_INVALID_NICKNAME
+      );
+      return;
+    }
+
+    interface UserSearchResult {
+      id: string;
+      userId: string;
+      nickname: string;
+      profileImg: string | null;
+      status: string | null;
+    }
+
+    const usersWithStatus = await prisma.$queryRaw<UserSearchResult[]>`
+      SELECT DISTINCT
+        u.id,
+        u.userId,
+        u.nickname,
+        u.profileImg,
+        CASE 
+          WHEN f.status IS NULL THEN NULL
+          WHEN f.status = 'accepted' THEN 'accepted'
+          WHEN f.userCuid = ${currentUserId} AND f.status = 'pending' THEN 'pending_sent'
+          WHEN f.friendCuid = ${currentUserId} AND f.status = 'pending' THEN 'pending_received'
+          ELSE f.status
+        END as status
+      FROM user u
+      LEFT JOIN friend f ON (
+        (f.userCuid = ${currentUserId} AND f.friendCuid = u.id) OR
+        (f.friendCuid = ${currentUserId} AND f.userCuid = u.id)
+      )
+      WHERE u.nickname LIKE ${`%${trimmedNickname}%`}
+        AND u.id != ${currentUserId}
+      ORDER BY u.nickname ASC
+    `;
+    
+    createSuccessResponse(res, 200, { users: usersWithStatus, count: usersWithStatus.length }, FRIEND_SUCCESS.SEARCH_USER_BY_NICKNAME);
+  } catch (error) {
+    console.error('유저 닉네임으로 유저 검색 에러:', error);
+    next(error);
+  } 
+}
