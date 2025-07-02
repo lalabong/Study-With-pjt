@@ -1,5 +1,5 @@
 import express from 'express';
-import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest, getUserByNickname, getReceivedFriendRequests } from '../controllers/friendController.js';
+import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest, getUserByNickname, getReceivedFriendRequests, postAcceptFriendRequest } from '../controllers/friendController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -776,5 +776,130 @@ router.post('/:userCuid/request', authMiddleware, postFriendRequest);
  */
 router.delete('/:userCuid/request', authMiddleware, deleteFriendRequest);
 
+/**
+ * @swagger
+ * /api/friends/{userCuid}/request/accept:
+ *   post:
+ *     summary: 친구 요청 수락
+ *     description: 사용자가 받은 친구 요청을 수락합니다. pending 상태의 친구 요청만 수락할 수 있습니다.
+ *     tags: [Friends]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userCuid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 수락하는 사용자의 고유 ID (CUID)
+ *         example: "cm123abc456def"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - friendCuid
+ *             properties:
+ *               friendCuid:
+ *                 type: string
+ *                 description: 친구 요청을 보낸 사용자의 고유 ID (CUID)
+ *                 example: "cm456def789ghi"
+ *     responses:
+ *       200:
+ *         description: 친구 요청 수락 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   nullable: true
+ *                   example: null
+ *                 message:
+ *                   type: string
+ *                   example: 친구 요청 수락에 성공했습니다.
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                 errorCode:
+ *                   type: integer
+ *             examples:
+ *               requiredField:
+ *                 summary: 필수 필드 누락
+ *                 value:
+ *                   status: error
+ *                   message: friendCuid는 필수 입력 항목입니다.
+ *                   errorCode: 6001
+ *               alreadyFriends:
+ *                 summary: 이미 친구인 경우
+ *                 value:
+ *                   status: error
+ *                   message: 이미 친구입니다.
+ *                   errorCode: 6004
+ *       404:
+ *         description: 친구 요청을 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 친구 요청을 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 6005
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3006
+ *       500:
+ *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 서버 내부 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 2001
+ */
+router.post('/:userCuid/request/accept', authMiddleware, postAcceptFriendRequest);
 
 export default router;
