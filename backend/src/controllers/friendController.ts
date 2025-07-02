@@ -375,3 +375,42 @@ export const getUserByNickname: ControllerFn = async (
     next(error);
   } 
 }
+
+export const getReceivedFriendRequests: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userCuid } = req.params;
+
+    const receivedFriendRequests = await prisma.friend.findMany({
+      where: { 
+        friendCuid: userCuid, 
+        status: 'pending' 
+      },
+      select: {
+        userCuid: true,
+        status: true,
+        user: {
+          select: {
+            id: true,
+            userId: true,
+            nickname: true,
+            profileImg: true,
+          },
+        },
+      },
+      orderBy: {
+        user: {
+          createdAt: 'desc' 
+        }
+      }
+    });
+
+    createSuccessResponse(res, 200, { receivedFriendRequests }, FRIEND_SUCCESS.GET_RECEIVED_FRIEND_REQUESTS);
+  } catch (error) {
+    console.error('받은 친구 요청 목록 조회 에러:', error);
+    next(error);
+  }
+}

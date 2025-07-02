@@ -32,4 +32,5 @@ export const FRIEND_SUCCESS = {
   SEND_FRIEND_REQUEST: '친구 요청 전송에 성공했습니다.',
   DELETE_FRIEND_REQUEST: '친구 요청 취소에 성공했습니다.',
   SEARCH_USER_BY_NICKNAME: '유저 닉네임으로 유저 검색에 성공했습니다.',
+  GET_RECEIVED_FRIEND_REQUESTS: '받은 친구 요청 목록 조회에 성공했습니다.',
 };

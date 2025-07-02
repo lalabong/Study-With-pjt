@@ -1,5 +1,5 @@
 import express from 'express';
-import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest, getUserByNickname } from '../controllers/friendController.js';
+import { getFriends, deleteFriend, postFriendRequest, deleteFriendRequest, getUserByNickname, getReceivedFriendRequests } from '../controllers/friendController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -246,6 +246,110 @@ router.get('/search', authMiddleware, getUserByNickname);
  *                   example: 2001
  */
 router.get('/:userCuid', authMiddleware, getFriends);
+
+/**
+ * @swagger
+ * /api/friends/{userCuid}/requests/received:
+ *   get:
+ *     summary: 받은 친구 요청 목록 조회
+ *     description: 사용자가 받은 친구 요청 목록을 조회합니다. status가 'pending'인 요청들만 반환되며, 최근 요청 순으로 정렬됩니다.
+ *     tags: [Friends]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userCuid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 사용자의 고유 ID (CUID)
+ *         example: "cm123abc456def"
+ *     responses:
+ *       200:
+ *         description: 받은 친구 요청 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     receivedFriendRequests:
+ *                       type: array
+ *                       description: 받은 친구 요청 목록
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           userCuid:
+ *                             type: string
+ *                             description: 요청을 보낸 사용자의 고유 ID (CUID)
+ *                             example: "cm456def789ghi"
+ *                           status:
+ *                             type: string
+ *                             description: 친구 요청 상태
+ *                             example: "pending"
+ *                           user:
+ *                             type: object
+ *                             description: 요청을 보낸 사용자 정보
+ *                             properties:
+ *                               id:
+ *                                 type: string
+ *                                 description: 사용자의 고유 ID (CUID)
+ *                                 example: "cm456def789ghi"
+ *                               userId:
+ *                                 type: string
+ *                                 description: 사용자의 로그인 ID
+ *                                 example: "sender123"
+ *                               nickname:
+ *                                 type: string
+ *                                 description: 사용자의 닉네임
+ *                                 example: "요청보낸친구"
+ *                               profileImg:
+ *                                 type: string
+ *                                 nullable: true
+ *                                 description: 사용자의 프로필 이미지 URL
+ *                                 example: "https://example.com/profile.jpg"
+ *                 message:
+ *                   type: string
+ *                   example: 받은 친구 요청 목록 조회에 성공했습니다.
+ *       401:
+ *         description: 인증 실패
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 로그인이 필요한 서비스입니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3006
+ *       500:
+ *         description: 서버 내부 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 서버 내부 오류가 발생했습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 2001
+ */
+router.get('/:userCuid/requests/received', authMiddleware, getReceivedFriendRequests);
 
 /**
  * @swagger
@@ -671,5 +775,6 @@ router.post('/:userCuid/request', authMiddleware, postFriendRequest);
  *                   example: 2001
  */
 router.delete('/:userCuid/request', authMiddleware, deleteFriendRequest);
+
 
 export default router;
