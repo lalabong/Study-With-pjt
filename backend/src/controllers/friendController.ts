@@ -484,3 +484,70 @@ export const postAcceptFriendRequest: ControllerFn = async (
     next(error);
   }
 }
+
+
+export const deleteRejectFriendRequest: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userCuid } = req.params;
+    const { friendCuid } = req.body;
+
+    if (!friendCuid) {
+      createErrorResponse(
+        res,
+        400,
+        FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD,
+        ERROR_CODES.FRIEND_REQUEST_REQUIRED_FIELD
+      );
+      return;
+    }
+
+    const existingRelation = await prisma.friend.findUnique({
+      where: {
+        userCuid_friendCuid: {
+          userCuid: friendCuid,
+          friendCuid: userCuid,
+        },
+      },
+    });
+
+    if (!existingRelation) {
+      createErrorResponse(
+        res,
+        404,
+        FRIEND_ERROR.FRIEND_REQUEST_NOT_FOUND,
+        ERROR_CODES.FRIEND_REQUEST_NOT_FOUND
+      );
+      return;
+    }
+
+    if (existingRelation.status !== 'pending') {
+      if (existingRelation.status === 'accepted') {
+        createErrorResponse(
+          res,
+          400,
+          FRIEND_ERROR.FRIEND_ALREADY_FRIENDS,
+          ERROR_CODES.FRIEND_ALREADY_FRIENDS
+        );
+        return;
+      }
+    }
+
+    await prisma.friend.delete({
+      where: {
+        userCuid_friendCuid: {
+          userCuid: friendCuid,
+          friendCuid: userCuid,
+        },
+      },
+    });
+
+    createSuccessResponse(res, 200, undefined, FRIEND_SUCCESS.REJECT_FRIEND_REQUEST);
+  } catch (error) {
+    console.error('친구 요청 거절 에러:', error);
+    next(error);
+  }
+}
