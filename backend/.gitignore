@@ -19,7 +19,6 @@ yarn-error.log*
 
 # Build output
 dist/
-*.js
 !jest.config.js
 build/
 coverage/
