@@ -4,20 +4,22 @@ on:
   push:
     branches: [main]
 
-env:
-  NODE_VERSION: '22'
+# NODE_VERSION은 .nvmrc 파일에서 자동으로 읽어옴
 
 jobs:
   test:
     name: 배포 전 테스트
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root1234
-          MYSQL_DATABASE: study_db
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         ports:
           - 3307:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -26,18 +28,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: 'backend/.nvmrc'
           cache: 'npm'
 
       - run: npm ci
       - run: npx prisma generate
       - run: npx prisma migrate deploy
         env:
-          DATABASE_URL: 'mysql://root:password@localhost:3306/test_db'
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - run: npm run lint
       - run: npm run build
 
-  # Docker 이미지 빌드 및 푸시 
+  # Docker 이미지 빌드 및 푸시
   # build-and-push:
   #   name: Docker 이미지 빌드 및 푸시
   #   runs-on: ubuntu-latest
