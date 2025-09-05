@@ -225,7 +225,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\jiwon\\OneDrive\\Desktop\\Study-With-pjt\\backend\\src\\generated\\prisma",
+      "value": "/app/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -234,12 +234,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "linux-musl-openssl-3.0.x",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "linux-musl-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\jiwon\\OneDrive\\Desktop\\Study-With-pjt\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "/app/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -261,8 +265,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"../src/generated/prisma\"\n  previewFeatures = []\n  binaryTargets   = [\"native\"]\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id             String         @id @default(cuid()) @db.VarChar(36)\n  userId         String         @unique @db.VarChar(20)\n  password       String         @db.VarChar(255)\n  nickname       String         @unique @db.VarChar(10)\n  profileImg     String?        @db.VarChar(255)\n  createdAt      DateTime?      @default(now()) @db.Timestamp(0)\n  totalStudyTime Int            @default(0)\n  roomCuid       String?\n  friendsFrom    Friend[]       @relation(\"FriendToUser\") // 친구 요청을 받은 유저들\n  friendsTo      Friend[]       @relation(\"UserToFriend\") // 내가 친구 요청을 한 유저들\n  refreshTokens  RefreshToken[]\n  room           Room?          @relation(fields: [roomCuid], references: [id], onDelete: SetNull)\n  schedules      Schedule[]\n  timeLogs       TimeLog[]\n\n  @@map(\"user\")\n}\n\nmodel Room {\n  id        String    @id @default(cuid()) @db.VarChar(36)\n  name      String    @db.VarChar(50)\n  createdAt DateTime? @default(now()) @db.Timestamp(0)\n  ownerCuid String    @unique\n  users     User[]\n  timeLogs  TimeLog[]\n\n  @@index([ownerCuid], map: \"room_ownerCuid_fkey\")\n  @@map(\"room\")\n}\n\nmodel Schedule {\n  id        String         @id @default(cuid()) @db.VarChar(36)\n  title     String         @db.VarChar(50)\n  startTime DateTime?      @db.DateTime(0)\n  endTime   DateTime?      @db.DateTime(0)\n  status    ScheduleStatus @default(대기중)\n  createdAt DateTime?      @default(now()) @db.Timestamp(0)\n  order     Int            @default(0)\n  userCuid  String\n  date      String         @db.VarChar(20)\n  user      User           @relation(fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@index([userCuid], map: \"schedule_userCuid_fkey\")\n  @@map(\"schedule\")\n}\n\nmodel TimeLog {\n  id        String    @id @default(cuid()) @db.VarChar(36)\n  totalTime Int // 공부 시간(분 단위)\n  date      DateTime  @db.Date\n  createdAt DateTime? @default(now()) @db.Timestamp(0)\n  roomCuid  String\n  userCuid  String\n  room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)\n  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@index([roomCuid])\n  @@index([userCuid], map: \"time_log_userCuid_fkey\")\n  @@map(\"time_log\")\n}\n\nmodel Friend {\n  friendCuid String // 수신자(친구 요청을 받은 유저)\n  userCuid   String // 요청자(친구 요청을 한 유저)\n  status     FriendStatus @default(pending)\n  friend     User         @relation(\"FriendToUser\", fields: [friendCuid], references: [id], onDelete: Cascade)\n  user       User         @relation(\"UserToFriend\", fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@id([userCuid, friendCuid])\n  @@index([friendCuid], map: \"friend_friendCuid_fkey\")\n  @@map(\"friend\")\n}\n\nmodel RefreshToken {\n  id        String   @id @default(cuid()) @db.VarChar(36)\n  token     String   @unique @db.VarChar(255)\n  expiresAt DateTime @db.DateTime(0)\n  createdAt DateTime @default(now()) @db.Timestamp(0)\n  userCuid  String\n  user      User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@index([userCuid], map: \"refresh_token_userCuid_fkey\")\n  @@map(\"refresh_token\")\n}\n\nenum FriendStatus {\n  pending\n  accepted\n}\n\nenum ScheduleStatus {\n  대기중\n  진행중\n  완료\n  취소\n}\n",
-  "inlineSchemaHash": "e30ffcbba0c645ac6b048d51a5044586c551a063b302690cc099a77ef63bbff8",
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client-js\"\n  output          = \"../src/generated/prisma\"\n  previewFeatures = []\n  binaryTargets   = [\"native\", \"linux-musl-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id             String         @id @default(cuid()) @db.VarChar(36)\n  userId         String         @unique @db.VarChar(20)\n  password       String         @db.VarChar(255)\n  nickname       String         @unique @db.VarChar(10)\n  profileImg     String?        @db.VarChar(255)\n  createdAt      DateTime?      @default(now()) @db.Timestamp(0)\n  totalStudyTime Int            @default(0)\n  roomCuid       String?\n  friendsFrom    Friend[]       @relation(\"FriendToUser\") // 친구 요청을 받은 유저들\n  friendsTo      Friend[]       @relation(\"UserToFriend\") // 내가 친구 요청을 한 유저들\n  refreshTokens  RefreshToken[]\n  room           Room?          @relation(fields: [roomCuid], references: [id], onDelete: SetNull)\n  schedules      Schedule[]\n  timeLogs       TimeLog[]\n\n  @@map(\"user\")\n}\n\nmodel Room {\n  id        String    @id @default(cuid()) @db.VarChar(36)\n  name      String    @db.VarChar(50)\n  createdAt DateTime? @default(now()) @db.Timestamp(0)\n  ownerCuid String    @unique\n  users     User[]\n  timeLogs  TimeLog[]\n\n  @@index([ownerCuid], map: \"room_ownerCuid_fkey\")\n  @@map(\"room\")\n}\n\nmodel Schedule {\n  id        String         @id @default(cuid()) @db.VarChar(36)\n  title     String         @db.VarChar(50)\n  startTime DateTime?      @db.DateTime(0)\n  endTime   DateTime?      @db.DateTime(0)\n  status    ScheduleStatus @default(대기중)\n  createdAt DateTime?      @default(now()) @db.Timestamp(0)\n  order     Int            @default(0)\n  userCuid  String\n  date      String         @db.VarChar(20)\n  user      User           @relation(fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@index([userCuid], map: \"schedule_userCuid_fkey\")\n  @@map(\"schedule\")\n}\n\nmodel TimeLog {\n  id        String    @id @default(cuid()) @db.VarChar(36)\n  totalTime Int // 공부 시간(분 단위)\n  date      DateTime  @db.Date\n  createdAt DateTime? @default(now()) @db.Timestamp(0)\n  roomCuid  String\n  userCuid  String\n  room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)\n  user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@index([roomCuid])\n  @@index([userCuid], map: \"time_log_userCuid_fkey\")\n  @@map(\"time_log\")\n}\n\nmodel Friend {\n  friendCuid String // 수신자(친구 요청을 받은 유저)\n  userCuid   String // 요청자(친구 요청을 한 유저)\n  status     FriendStatus @default(pending)\n  friend     User         @relation(\"FriendToUser\", fields: [friendCuid], references: [id], onDelete: Cascade)\n  user       User         @relation(\"UserToFriend\", fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@id([userCuid, friendCuid])\n  @@index([friendCuid], map: \"friend_friendCuid_fkey\")\n  @@map(\"friend\")\n}\n\nmodel RefreshToken {\n  id        String   @id @default(cuid()) @db.VarChar(36)\n  token     String   @unique @db.VarChar(255)\n  expiresAt DateTime @db.DateTime(0)\n  createdAt DateTime @default(now()) @db.Timestamp(0)\n  userCuid  String\n  user      User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)\n\n  @@index([userCuid], map: \"refresh_token_userCuid_fkey\")\n  @@map(\"refresh_token\")\n}\n\nenum FriendStatus {\n  pending\n  accepted\n}\n\nenum ScheduleStatus {\n  대기중\n  진행중\n  완료\n  취소\n}\n",
+  "inlineSchemaHash": "6beac57acde0e74f1b4ccc42b5f3b614a400d3e6230a8d2d53e7f7524bf4bdae",
   "copyEngine": true
 }
 
@@ -301,8 +305,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "query_engine-windows.dll.node");
-path.join(process.cwd(), "src/generated/prisma/query_engine-windows.dll.node")
+path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/schema.prisma")
