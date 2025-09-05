@@ -43,6 +43,7 @@ jobs:
         with:
           node-version-file: "backend/.nvmrc"
           cache: "npm"
+          cache-dependency-path: "backend/package-lock.json"
 
       # 3. 의존성 설치(package.json에 있는 의존성 설치)
       - name: 의존성 설치
@@ -92,6 +93,7 @@ jobs:
         with:
           node-version-file: "backend/.nvmrc"
           cache: "npm"
+          cache-dependency-path: "backend/package-lock.json"
 
       - name: 의존성 설치
         run: npm ci
