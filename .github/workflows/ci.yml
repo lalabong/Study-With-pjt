@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    - cron: '0 2 * * *' # 매일 새벽 2시
+    - cron: "0 2 * * *" # 매일 새벽 2시
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -41,8 +41,8 @@ jobs:
       - name: Node.js 설정
         uses: actions/setup-node@v4
         with:
-          node-version-file: 'backend/.nvmrc'
-          cache: 'npm'
+          node-version-file: "backend/.nvmrc"
+          cache: "npm"
 
       # 3. 의존성 설치(package.json에 있는 의존성 설치)
       - name: 의존성 설치
@@ -90,8 +90,8 @@ jobs:
       - name: Node.js 설정
         uses: actions/setup-node@v4
         with:
-          node-version-file: 'backend/.nvmrc'
-          cache: 'npm'
+          node-version-file: "backend/.nvmrc"
+          cache: "npm"
 
       - name: 의존성 설치
         run: npm ci
