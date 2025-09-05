@@ -76,6 +76,10 @@ jobs:
       # 9. 테스트 실행
       - name: 테스트 실행
         run: npm test
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
 
   # 빌드 job
   build:
