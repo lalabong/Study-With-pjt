@@ -41,3 +41,22 @@ export interface PeriodInfo {
   startDate: string;
   endDate: string;
 }
+
+export type FriendStatus = 'pending_sent' | 'pending_received' | 'accepted';
+
+export interface FriendUser {
+  id: string;
+  userId: string;
+  nickname: string;
+  profileImg: string | null;
+}
+
+export interface SearchedUser extends FriendUser {
+  status: FriendStatus | null;
+}
+
+export interface ReceivedFriendRequest {
+  userCuid: string;
+  status: 'pending';
+  user: FriendUser;
+}
