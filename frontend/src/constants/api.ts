@@ -33,7 +33,9 @@ export const ROOM_ENDPOINTS = {
   GET_ROOM_INFO: (roomId: string) => `${API_PREFIX}/rooms/${roomId}`,
   GET_PARTICIPANTS: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/participants`,
   LEAVE_ROOM: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/leave`,
-  CHECK_LAST_PARTICIPANT: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/check-last-participant`,
+  CHECK_LAST_PARTICIPANT: (roomId: string) =>
+    `${API_PREFIX}/rooms/${roomId}/check-last-participant`,
+  CURRENT: `${API_PREFIX}/rooms/current`,
 };
 
 export const FRIEND_ENDPOINTS = {
