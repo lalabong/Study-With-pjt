@@ -8,11 +8,13 @@ import { Button, Modal } from '@components/common';
 import StatusMessage from '@components/common/StatusMessage';
 import ProfileSection from '@components/mypage/Profile/ProfileSection';
 
+import { useCreateRoomMutation } from '@hooks/api/useCreateRoomMutation';
 import { useUpdateNicknameMutation } from '@hooks/api/useUpdateNicknameMutation';
 import { useUpdateProfileImgMutation } from '@hooks/api/useUpdateProfileImageMutation';
 import { useUserInfoQuery } from '@hooks/api/useUserInfoQuery';
 
 import { useAuthStore, User } from '@stores/authStore';
+import { useRoomStore } from '@stores/roomStore';
 
 interface ProfileManagerProps {
   userId: string;
@@ -22,12 +24,13 @@ interface ProfileManagerProps {
 const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
   const updateNicknameMutation = useUpdateNicknameMutation({ userId });
   const updateProfileImgMutation = useUpdateProfileImgMutation({ userId });
+  const createRoomMutation = useCreateRoomMutation();
 
   const [isOpenCreateRoomModal, setIsOpenCreateRoomModal] = useState(false);
   const [roomName, setRoomName] = useState('');
 
   const loginUser = useAuthStore((state) => state.user);
-
+  const { setCurrentRoomName, setCurrentRoomCreatedAt } = useRoomStore();
   // 현재 사용자인 경우에는 쿼리를 비활성화
   const {
     data: profileUserData,
@@ -87,8 +90,21 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
   };
 
   const handleAddRoom = () => {
-    // 방으로 이동하는 로직
-    console.log(roomName + '방으로 이동합니다.');
+    if (!roomName.trim()) {
+      return;
+    }
+
+    createRoomMutation.mutate(
+      { name: roomName.trim() },
+      {
+        onSuccess: () => {
+          setIsOpenCreateRoomModal(false);
+          setRoomName('');
+          setCurrentRoomName(roomName.trim());
+          setCurrentRoomCreatedAt(new Date().toISOString());
+        },
+      },
+    );
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -143,8 +159,12 @@ const ProfileManager = ({ userId, isCurrentUser }: ProfileManagerProps) => {
               },
             }}
           />
-          <Button variant="primary" onClick={handleAddRoom}>
-            생성하기
+          <Button
+            variant="primary"
+            onClick={handleAddRoom}
+            disabled={!roomName.trim() || createRoomMutation.isPending}
+          >
+            {createRoomMutation.isPending ? '생성 중...' : '생성하기'}
           </Button>
         </div>
       </Modal>
