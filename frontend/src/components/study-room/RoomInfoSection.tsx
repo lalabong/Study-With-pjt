@@ -103,12 +103,9 @@ const RoomInfoSection = ({ roomTitle, creationTime, isActive }: RoomInfoSectionP
               취소
             </Button>
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={handleConfirmLeave}
               disabled={leaveRoomMutation.isPending}
-              className={
-                lastParticipantData?.isLastParticipant ? 'bg-red-500 hover:bg-red-600' : ''
-              }
             >
               {leaveRoomMutation.isPending ? '나가는 중...' : '나가기'}
             </Button>
