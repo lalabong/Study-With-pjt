@@ -31,3 +31,15 @@ export const SCHEDULE_ENDPOINTS = {
 export const ROOM_ENDPOINTS = {
   GET_PARTICIPANTS: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/participants`,
 };
+
+export const FRIEND_ENDPOINTS = {
+  SEARCH_USERS: `${API_PREFIX}/friends/search`,
+  GET_FRIENDS: (userCuid: string) => `${API_PREFIX}/friends/${userCuid}`,
+  GET_RECEIVED_FRIEND_REQUESTS: (userCuid: string) =>
+    `${API_PREFIX}/friends/${userCuid}/requests/received`,
+  SEND_FRIEND_REQUEST: (userCuid: string) => `${API_PREFIX}/friends/${userCuid}/request`,
+  CANCEL_FRIEND_REQUEST: (userCuid: string) => `${API_PREFIX}/friends/${userCuid}/request`,
+  ACCEPT_FRIEND_REQUEST: (userCuid: string) => `${API_PREFIX}/friends/${userCuid}/request/accept`,
+  REJECT_FRIEND_REQUEST: (userCuid: string) => `${API_PREFIX}/friends/${userCuid}/request/reject`,
+  DELETE_FRIEND: (userCuid: string) => `${API_PREFIX}/friends/${userCuid}`,
+};

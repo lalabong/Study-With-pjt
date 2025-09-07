@@ -30,7 +30,6 @@
       "@api/*": ["./src/api/*"],
       "@stores/*": ["./src/stores/*"],
       "@app/*": ["./src/app/*"]
-      
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

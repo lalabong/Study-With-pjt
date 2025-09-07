@@ -10,3 +10,9 @@ export const USER_QUERY_KEYS = {
 export const ROOM_QUERY_KEYS = {
   ROOM_PARTICIPANTS: 'room-participants',
 };
+
+export const FRIEND_QUERY_KEYS = {
+  SEARCH_USERS: 'search-users',
+  FRIENDS: 'friends',
+  RECEIVED_FRIEND_REQUESTS: 'received-friend-requests',
+};
