@@ -3,7 +3,9 @@
 import { Button } from '@components/common';
 import UserProfileSmall from '@components/common/UserProfileSmall';
 
-import { User } from '@stores/authStore';
+import { useDeleteFriendMutation } from '@hooks/api/useDeleteFriendMutation';
+
+import { useAuthStore, User } from '@stores/authStore';
 import { useRoomStore } from '@stores/roomStore';
 
 export type Friend = Omit<User, 'createdAt'>;
@@ -13,14 +15,24 @@ interface FriendItemProps {
 }
 
 const FriendItem = ({ friend }: FriendItemProps) => {
+  const { user } = useAuthStore();
   const { currentRoomId } = useRoomStore();
+
+  const deleteFriendMutation = useDeleteFriendMutation();
 
   const handleInviteClick = (): void => {
     console.log('친구 초대:', friend);
   };
 
   const handleRemoveClick = (): void => {
-    console.log('친구 삭제:', friend);
+    if (!user?.id) return;
+
+    if (window.confirm(`${friend.nickname}님을 친구 목록에서 삭제하시겠습니까?`)) {
+      deleteFriendMutation.mutate({
+        userCuid: user.id,
+        friendCuid: friend.id,
+      });
+    }
   };
 
   return (
@@ -44,6 +56,7 @@ const FriendItem = ({ friend }: FriendItemProps) => {
             onClick={handleRemoveClick}
             variant="secondary"
             size="sm"
+            disabled={deleteFriendMutation.isPending}
             aria-label={`${friend.nickname}을(를) 친구 목록에서 삭제`}
           >
             삭제
