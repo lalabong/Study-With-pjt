@@ -21,7 +21,7 @@ interface ParticipantItemProps {
 
 const ParticipantItem = ({ participant, onViewDetails }: ParticipantItemProps) => {
   const { data: topRunningScheduleData } = useTopRunningScheduleQuery({
-    userId: 'test3',
+    userId: participant.userId,
     date: getCurrentDateString(),
   });
 
