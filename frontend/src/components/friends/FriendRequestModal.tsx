@@ -6,30 +6,42 @@ import { HiSearch } from 'react-icons/hi';
 
 import { Modal, Button, UserProfileSmall, SearchInput } from '@components/common';
 
+import { useAcceptFriendRequestMutation } from '@hooks/api/useAcceptFriendRequestMutation';
+import { useCancelFriendRequestMutation } from '@hooks/api/useCancelFriendRequestMutation';
+import { useRejectFriendRequestMutation } from '@hooks/api/useRejectFriendRequestMutation';
+import { useSearchUsersQuery } from '@hooks/api/useSearchUsersQuery';
+import { useSendFriendRequestMutation } from '@hooks/api/useSendFriendRequestMutation';
+
+import { useAuthStore } from '@stores/authStore';
 import { useModalStore } from '@stores/modalStore';
 
-type FriendStatus = '친구' | '신청중' | null;
-
-interface SearchedUser {
-  id: string;
-  userId: string;
-  nickname: string;
-  profileImg?: string | null;
-  status: FriendStatus;
-}
+import { SearchedUser } from '@/types/api';
 
 const FriendRequestModal = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const [searchResults, setSearchResults] = useState<SearchedUser[]>([]); // 임시 상태
-  const [isSearching, setIsSearching] = useState(false); // 임시 상태
-
-  const [hasSearched, setHasSearched] = useState(false); // 검색을 한번이라도 했는지 여부
-
+  const { user } = useAuthStore();
   const { isFriendRequestModalOpen, setIsFriendRequestModalOpen, setIsFriendsModalOpen } =
     useModalStore();
 
-  const handleSearch = async (): Promise<void> => {
+  const {
+    data: searchData,
+    isLoading: isSearching,
+    error: searchError,
+  } = useSearchUsersQuery({
+    nickname: searchQuery,
+    enabled: searchQuery.trim().length >= 2 && hasSearched,
+  });
+
+  const sendFriendRequestMutation = useSendFriendRequestMutation();
+  const cancelFriendRequestMutation = useCancelFriendRequestMutation();
+  const acceptFriendRequestMutation = useAcceptFriendRequestMutation();
+  const rejectFriendRequestMutation = useRejectFriendRequestMutation();
+
+  const searchResults = searchData?.users || [];
+
+  const handleSearch = (): void => {
     const trimmedQuery = searchQuery.trim();
 
     if (!trimmedQuery) return;
@@ -39,99 +51,112 @@ const FriendRequestModal = () => {
       return;
     }
 
-    setIsSearching(true);
     setHasSearched(true);
-
-    try {
-      // 검색 api 호출
-      const mockResults: SearchedUser[] = [
-        {
-          id: '1',
-          userId: 'emily123',
-          nickname: 'Emily Wilson',
-          profileImg: 'https://randomuser.me/api/portraits/women/44.jpg',
-          status: null,
-        },
-        {
-          id: '2',
-          userId: 'sarah456',
-          nickname: 'Sarah Wilson',
-          profileImg: 'https://randomuser.me/api/portraits/women/68.jpg',
-          status: '신청중',
-        },
-        {
-          id: '3',
-          userId: 'mike789',
-          nickname: 'Mike Johnson',
-          profileImg: 'https://randomuser.me/api/portraits/men/32.jpg',
-          status: '친구',
-        },
-      ];
-
-      setSearchResults(mockResults);
-    } catch (error) {
-      console.error('친구 검색에 실패했습니다.', error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
   };
 
-  const handleSendFriendRequest = async (userId: string): Promise<void> => {
-    try {
-      // 친구 요청 API 호출
+  const handleSendFriendRequest = async (targetUserId: string): Promise<void> => {
+    if (!user?.id) return;
 
-      setSearchResults((prev) =>
-        prev.map((user) => (user.userId === userId ? { ...user, status: '신청중' } : user)),
-      );
-    } catch (error) {
-      console.error('친구 신청 전송에 실패했습니다:', error);
-    }
+    const targetUser = searchResults.find((u: SearchedUser) => u.id === targetUserId);
+    if (!targetUser) return;
+
+    sendFriendRequestMutation.mutate({
+      userCuid: user.id,
+      friendCuid: targetUserId,
+    });
   };
 
-  const handleCancelFriendRequest = async (userId: string): Promise<void> => {
-    try {
-      // 친구 요청 취소 api 호출
+  const handleCancelFriendRequest = async (targetUserId: string): Promise<void> => {
+    if (!user?.id) return;
 
-      setSearchResults((prev) =>
-        prev.map((user) => (user.userId === userId ? { ...user, status: null } : user)),
-      );
-    } catch (error) {
-      console.error('친구 신청 취소에 실패했습니다:', error);
-    }
+    const targetUser = searchResults.find((u: SearchedUser) => u.id === targetUserId);
+    if (!targetUser) return;
+
+    cancelFriendRequestMutation.mutate({
+      userCuid: user.id,
+      friendCuid: targetUserId,
+    });
+  };
+
+  const handleAcceptFriendRequest = async (targetUserId: string): Promise<void> => {
+    if (!user?.id) return;
+
+    const targetUser = searchResults.find((u: SearchedUser) => u.id === targetUserId);
+    if (!targetUser) return;
+
+    acceptFriendRequestMutation.mutate({
+      userCuid: user.id,
+      friendCuid: targetUserId,
+    });
+  };
+
+  const handleRejectFriendRequest = async (targetUserId: string): Promise<void> => {
+    if (!user?.id) return;
+
+    const targetUser = searchResults.find((u: SearchedUser) => u.id === targetUserId);
+    if (!targetUser) return;
+
+    rejectFriendRequestMutation.mutate({
+      userCuid: user.id,
+      friendCuid: targetUserId,
+    });
   };
 
   const handleCloseModal = (): void => {
     setSearchQuery('');
-    setSearchResults([]);
     setHasSearched(false);
     setIsFriendRequestModalOpen(false);
     setIsFriendsModalOpen(true);
   };
 
   // 상태에 따른 버튼 렌더링
-  const renderActionButton = (user: SearchedUser) => {
-    switch (user.status) {
-      case '친구':
+  const renderActionButton = (searchUser: SearchedUser) => {
+    switch (searchUser.status) {
+      case 'accepted':
         return null;
-      case '신청중':
+      case 'pending_sent':
         return (
           <Button
-            onClick={() => handleCancelFriendRequest(user.userId)}
+            onClick={() => handleCancelFriendRequest(searchUser.id)}
             variant="secondary"
             size="sm"
-            aria-label={`${user.nickname}에게 보낸 친구 신청 취소`}
+            disabled={cancelFriendRequestMutation.isPending}
+            aria-label={`${searchUser.nickname}에게 보낸 친구 신청 취소`}
           >
             요청 취소
           </Button>
         );
+      case 'pending_received':
+        return (
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleAcceptFriendRequest(searchUser.id)}
+              variant="primary"
+              size="sm"
+              disabled={acceptFriendRequestMutation.isPending}
+              aria-label={`${searchUser.nickname}의 친구 요청 수락`}
+            >
+              수락
+            </Button>
+            <Button
+              onClick={() => handleRejectFriendRequest(searchUser.id)}
+              variant="secondary"
+              size="sm"
+              disabled={rejectFriendRequestMutation.isPending}
+              aria-label={`${searchUser.nickname}의 친구 요청 거절`}
+            >
+              거절
+            </Button>
+          </div>
+        );
       case null:
         return (
           <Button
-            onClick={() => handleSendFriendRequest(user.userId)}
+            onClick={() => handleSendFriendRequest(searchUser.id)}
             variant="primary"
             size="sm"
-            aria-label={`${user.nickname}에게 친구 신청 보내기`}
+            disabled={sendFriendRequestMutation.isPending}
+            aria-label={`${searchUser.nickname}에게 친구 신청 보내기`}
           >
             친구 요청
           </Button>
@@ -162,7 +187,7 @@ const FriendRequestModal = () => {
             onClick={handleSearch}
             variant="primary"
             size="md"
-            disabled={!searchQuery.trim() || isSearching}
+            disabled={searchQuery.trim().length < 2 || isSearching}
             aria-label="유저 검색하기"
             className="px-6"
           >
@@ -178,6 +203,10 @@ const FriendRequestModal = () => {
             <div className="flex items-center justify-center h-full text-center text-gray-500">
               검색 중...
             </div>
+          ) : searchError ? (
+            <div className="flex items-center justify-center h-full text-center text-red-500">
+              검색 중 오류가 발생했습니다.
+            </div>
           ) : searchResults.length === 0 ? (
             <div className="flex items-center justify-center h-full text-center text-gray-500">
               {hasSearched ? '검색 결과가 없습니다.' : '검색할 유저의 이름을 입력해보세요.'}
@@ -185,20 +214,26 @@ const FriendRequestModal = () => {
           ) : (
             <div className="h-full overflow-y-auto pr-2">
               <ul className="space-y-3">
-                {searchResults.map((user) => (
+                {searchResults.map((searchUser: SearchedUser) => (
                   <li
-                    key={user.id}
+                    key={searchUser.id}
                     className="border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1">
                         <UserProfileSmall
-                          nickname={user.nickname}
-                          profileImg={user.profileImg}
-                          additionalInfo={user.status === '신청중' ? '친구 신청 중' : undefined}
+                          nickname={searchUser.nickname}
+                          profileImg={searchUser.profileImg}
+                          additionalInfo={
+                            searchUser.status === 'pending_sent'
+                              ? '친구 신청 중'
+                              : searchUser.status === 'accepted'
+                                ? '친구'
+                                : undefined
+                          }
                         />
                       </div>
-                      <div className="flex gap-2">{renderActionButton(user)}</div>
+                      <div className="flex gap-2">{renderActionButton(searchUser)}</div>
                     </div>
                   </li>
                 ))}
