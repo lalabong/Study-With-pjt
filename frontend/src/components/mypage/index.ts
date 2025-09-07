@@ -13,3 +13,4 @@ export { default as ChartWrapper } from './Chart/ChartWrapper';
 
 export { default as TotalStudyTime } from './TotalStudyTime';
 export { default as TimeSection } from './TimeSection';
+export { default as ClientMyPage } from './ClientMyPage';

@@ -24,6 +24,10 @@ export const SCHEDULE_SUCCESS = {
 
 export const ROOM_SUCCESS = {
   GET_PARTICIPANT_INFO: '참가자 정보 조회에 성공했습니다.',
+  CREATE_ROOM: '방 생성에 성공했습니다.',
+  LEAVE_ROOM: '방에서 나갔습니다.',
+  CHECK_LAST_PARTICIPANT: '마지막 참여자 확인이 완료되었습니다.',
+  GET_ROOM_INFO: '방 정보 조회에 성공했습니다.',
 };
 
 export const FRIEND_SUCCESS = {

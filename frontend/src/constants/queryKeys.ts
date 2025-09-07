@@ -8,7 +8,10 @@ export const USER_QUERY_KEYS = {
 };
 
 export const ROOM_QUERY_KEYS = {
+  ROOM_INFO: 'room-info',
   ROOM_PARTICIPANTS: 'room-participants',
+  CHECK_LAST_PARTICIPANT: 'check-last-participant',
+  CURRENT_ROOM: 'current-room',
 };
 
 export const FRIEND_QUERY_KEYS = {

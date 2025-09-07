@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { HiBell, HiUserGroup } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
@@ -16,6 +18,7 @@ interface HeaderActionButtonsProps {
 }
 
 const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
+  const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const setIsFriendsModalOpen = useModalStore((state) => state.setIsFriendsModalOpen);
   const isNotificationModalOpen = useModalStore((state) => state.isNotificationModalOpen);
@@ -27,6 +30,10 @@ const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
 
   const handleFriendClick = (): void => {
     setIsFriendsModalOpen(true);
+  };
+
+  const handleStartClick = (): void => {
+    router.push('/mypage');
   };
 
   // 홈 화면이 아닌 경우
@@ -70,7 +77,14 @@ const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
       </>
     );
   } else {
-    return <LogoutButton size="md" />;
+    return (
+      <>
+        <LogoutButton variant="text" size="md" />
+        <Button variant="primary" size="md" onClick={handleStartClick}>
+          시작하기
+        </Button>
+      </>
+    );
   }
 };
 

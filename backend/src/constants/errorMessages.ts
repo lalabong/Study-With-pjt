@@ -36,6 +36,8 @@ export const ERROR_CODES = {
 
   // 방 관련 오류 (5000~5999)
   ROOM_NOT_FOUND: 5001,
+  ROOM_NAME_REQUIRED: 5002,
+  ROOM_PARTICIPANT_NOT_FOUND: 5003,
 
   // 친구 관련 오류 (6000~6999)
   FRIEND_NOT_FOUND: 6001,
@@ -90,6 +92,8 @@ export const SCHEDULE_ERROR = {
 
 export const ROOM_ERROR = {
   ROOM_NOT_FOUND: '방을 찾을 수 없습니다.',
+  ROOM_NAME_REQUIRED: '방 이름을 입력해주세요.',
+  PARTICIPANT_NOT_FOUND: '해당 방에 참여하고 있지 않습니다.',
 };
 
 export const FRIEND_ERROR = {

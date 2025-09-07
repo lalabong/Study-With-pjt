@@ -25,6 +25,7 @@ const ParticipantsSection = () => {
 
   useEffect(() => {
     if (data?.participants) {
+      console.log('현재 방 참여자:', data.participants);
       setParticipants(data.participants);
     }
   }, [data, setParticipants]);

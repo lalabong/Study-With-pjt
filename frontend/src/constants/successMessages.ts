@@ -18,6 +18,8 @@ export const SCHEDULE_SUCCESS_MESSAGES = {
 
 export const ROOM_SUCCESS_MESSAGES = {
   FETCH_PARTICIPANTS_SUCCESS: '참가자 정보 조회에 성공했습니다.',
+  CREATE_ROOM: '방이 생성되었습니다.',
+  LEAVE_ROOM: '방에서 나갔습니다.',
 };
 
 export const FRIEND_SUCCESS_MESSAGES = {

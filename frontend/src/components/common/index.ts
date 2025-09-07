@@ -7,3 +7,4 @@ export { default as HeaderActionButtons } from './HeaderActionButtons';
 export { default as Modal } from './Modal';
 export { default as SearchInput } from './SearchInput';
 export { default as UserProfileSmall } from './UserProfileSmall';
+export { default as CurrentRoomToast } from './CurrentRoomToast';

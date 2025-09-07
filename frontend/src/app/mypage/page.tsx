@@ -2,8 +2,7 @@ import { cookies } from 'next/headers';
 
 import { dehydrate } from '@tanstack/react-query';
 
-import { Header, HeaderActionButtons } from '@components/common/index';
-import { LogoutButton, ProfileManager, StudyCalendar, TimeSection } from '@components/mypage/index';
+import ClientMyPage from '@components/mypage/ClientMyPage';
 import ProtectedRoute from '@components/router/ProtectedRoute';
 
 import { getScheduleDates } from '@api/schedule/getScheduleDates';
@@ -43,25 +42,7 @@ const MyPage = async () => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <ProtectedRoute>
-        <main className="min-h-screen bg-gray-50">
-          <Header>
-            <HeaderActionButtons />
-          </Header>
-
-          <div className="container mx-auto px-4 py-6">
-            <ProfileManager isCurrentUser={true} userId={userId} />
-
-            <TimeSection />
-
-            <div className="mt-8">
-              <div className="rounded-lg bg-white px-8 py-6 shadow-sm">
-                <StudyCalendar userId={userId} isCurrentUser={true} />
-              </div>
-            </div>
-
-            <LogoutButton className="mt-8 flex justify-end" size="md" />
-          </div>
-        </main>
+        <ClientMyPage userId={userId} />
       </ProtectedRoute>
     </HydrationBoundary>
   );
