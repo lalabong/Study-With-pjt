@@ -7,9 +7,10 @@ import { useLogoutMutation } from '@hooks/api/useLogoutMutation';
 interface LogoutButtonProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  variant?: 'primary' | 'secondary' | 'text';
 }
 
-const LogoutButton = ({ size = 'sm', className }: LogoutButtonProps) => {
+const LogoutButton = ({ size = 'sm', className, variant = 'secondary' }: LogoutButtonProps) => {
   const { mutate: logout } = useLogoutMutation();
 
   const handleLogout = () => {
@@ -18,7 +19,7 @@ const LogoutButton = ({ size = 'sm', className }: LogoutButtonProps) => {
 
   return (
     <div className={className}>
-      <Button variant="secondary" size={size} onClick={handleLogout}>
+      <Button variant={variant} size={size} onClick={handleLogout}>
         로그아웃
       </Button>
     </div>
