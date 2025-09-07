@@ -70,3 +70,19 @@ export const ROOM_ERROR_MESSAGES = {
   ROOM_NOT_FOUND: '방을 찾을 수 없습니다.',
   ACCESS_DENIED: '방에 접근할 권한이 없습니다.',
 };
+
+export const FRIEND_ERROR_MESSAGES = {
+  SEARCH_USERS_FAILED: '사용자 검색에 실패했습니다.',
+  GET_FRIENDS_FAILED: '친구 목록 조회에 실패했습니다.',
+  GET_RECEIVED_FRIEND_REQUESTS_FAILED: '받은 친구 요청 조회에 실패했습니다.',
+  SEND_FRIEND_REQUEST_FAILED: '친구 요청 전송에 실패했습니다.',
+  CANCEL_FRIEND_REQUEST_FAILED: '친구 요청 취소에 실패했습니다.',
+  ACCEPT_FRIEND_REQUEST_FAILED: '친구 요청 수락에 실패했습니다.',
+  REJECT_FRIEND_REQUEST_FAILED: '친구 요청 거절에 실패했습니다.',
+  DELETE_FRIEND_FAILED: '친구 삭제에 실패했습니다.',
+  SEARCH_QUERY_TOO_SHORT: '검색어는 2자 이상 입력해주세요.',
+  ALREADY_FRIENDS: '이미 친구입니다.',
+  REQUEST_ALREADY_SENT: '이미 친구 요청을 보냈습니다.',
+  FRIEND_NOT_FOUND: '친구를 찾을 수 없습니다.',
+  SELF_REQUEST_NOT_ALLOWED: '자기 자신에게는 친구 요청을 보낼 수 없습니다.',
+};

@@ -19,3 +19,14 @@ export const SCHEDULE_SUCCESS_MESSAGES = {
 export const ROOM_SUCCESS_MESSAGES = {
   FETCH_PARTICIPANTS_SUCCESS: '참가자 정보 조회에 성공했습니다.',
 };
+
+export const FRIEND_SUCCESS_MESSAGES = {
+  SEARCH_USERS_SUCCESS: '사용자 검색이 완료되었습니다.',
+  GET_FRIENDS_SUCCESS: '친구 목록 조회가 완료되었습니다.',
+  GET_RECEIVED_FRIEND_REQUESTS_SUCCESS: '받은 친구 요청 조회가 완료되었습니다.',
+  SEND_FRIEND_REQUEST_SUCCESS: '친구 요청을 전송했습니다.',
+  CANCEL_FRIEND_REQUEST_SUCCESS: '친구 요청을 취소했습니다.',
+  ACCEPT_FRIEND_REQUEST_SUCCESS: '친구 요청을 수락했습니다.',
+  REJECT_FRIEND_REQUEST_SUCCESS: '친구 요청을 거절했습니다.',
+  DELETE_FRIEND_SUCCESS: '친구를 삭제했습니다.',
+};
