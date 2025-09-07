@@ -8,8 +8,10 @@ import { Modal, Button } from '@components/common';
 import SearchInput from '@components/common/SearchInput';
 import FriendItem, { Friend } from '@components/friends/FriendItem';
 
+import { useFriendsQuery } from '@hooks/api/useFriendsQuery';
 import useDebounce from '@hooks/useDebounce';
 
+import { useAuthStore } from '@stores/authStore';
 import { useModalStore } from '@stores/modalStore';
 
 const FriendsModal = () => {
@@ -17,48 +19,20 @@ const FriendsModal = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
+  const { user } = useAuthStore();
   const { isFriendsModalOpen, setIsFriendsModalOpen, setIsFriendRequestModalOpen } =
     useModalStore();
 
-  // 더미 데이터 - 추후 API 연동 시 제거
-  const [friends] = useState<Friend[]>([
-    {
-      id: '1',
-      userId: 'sarah123',
-      nickname: 'Sarah Wilson',
-      profileImg: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-    {
-      id: '2',
-      userId: 'michael456',
-      nickname: 'Michael Chen',
-      profileImg: 'https://randomuser.me/api/portraits/men/32.jpg',
-    },
-    {
-      id: '3',
-      userId: 'emma789',
-      nickname: 'Emma Johnson',
-      profileImg: 'https://randomuser.me/api/portraits/women/68.jpg',
-    },
-    {
-      id: '4',
-      userId: 'alex321',
-      nickname: 'Alex Kim',
-      profileImg: 'https://randomuser.me/api/portraits/men/55.jpg',
-    },
-    {
-      id: '5',
-      userId: 'alex321',
-      nickname: 'Alex Kim',
-      profileImg: 'https://randomuser.me/api/portraits/men/55.jpg',
-    },
-    {
-      id: '6',
-      userId: 'alex321',
-      nickname: 'Alex Kim',
-      profileImg: 'https://randomuser.me/api/portraits/men/55.jpg',
-    },
-  ]);
+  const {
+    data: friendsData,
+    isLoading: isFriendsLoading,
+    error: friendsError,
+  } = useFriendsQuery({
+    userCuid: user?.id || '',
+    enabled: !!user?.id && isFriendsModalOpen,
+  });
+
+  const friends: Friend[] = friendsData?.friends || [];
 
   const filteredFriends = useMemo((): Friend[] => {
     if (!debouncedSearchQuery.trim()) {
@@ -99,7 +73,15 @@ const FriendsModal = () => {
         />
 
         <div className="flex-1 mt-6 overflow-hidden">
-          {filteredFriends.length === 0 ? (
+          {isFriendsLoading ? (
+            <div className="flex items-center justify-center h-full text-center text-gray-500">
+              친구 목록 로딩 중...
+            </div>
+          ) : friendsError ? (
+            <div className="flex items-center justify-center h-full text-center text-red-500">
+              친구 목록을 불러오는 중 오류가 발생했습니다.
+            </div>
+          ) : filteredFriends.length === 0 ? (
             <div className="flex items-center justify-center h-full text-center text-gray-500">
               {debouncedSearchQuery ? '검색 결과가 없습니다.' : '새로운 친구를 추가해보세요!'}
             </div>
