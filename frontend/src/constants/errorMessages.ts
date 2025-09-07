@@ -69,6 +69,11 @@ export const ROOM_ERROR_MESSAGES = {
   FETCH_PARTICIPANTS_FAILED: '참가자 목록 조회에 실패했습니다.',
   ROOM_NOT_FOUND: '방을 찾을 수 없습니다.',
   ACCESS_DENIED: '방에 접근할 권한이 없습니다.',
+  CREATE_ROOM_FAILED: '방 생성에 실패했습니다.',
+  ROOM_NAME_REQUIRED: '방 이름을 입력해주세요.',
+  LEAVE_ROOM_FAILED: '방 나가기에 실패했습니다.',
+  PARTICIPANT_NOT_FOUND: '해당 방에 참여하고 있지 않습니다.',
+  FETCH_ROOM_INFO_FAILED: '방 정보 조회에 실패했습니다.',
 };
 
 export const FRIEND_ERROR_MESSAGES = {

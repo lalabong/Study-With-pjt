@@ -29,7 +29,11 @@ export const SCHEDULE_ENDPOINTS = {
 };
 
 export const ROOM_ENDPOINTS = {
+  CREATE_ROOM: `${API_PREFIX}/rooms`,
+  GET_ROOM_INFO: (roomId: string) => `${API_PREFIX}/rooms/${roomId}`,
   GET_PARTICIPANTS: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/participants`,
+  LEAVE_ROOM: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/leave`,
+  CHECK_LAST_PARTICIPANT: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/check-last-participant`,
 };
 
 export const FRIEND_ENDPOINTS = {
