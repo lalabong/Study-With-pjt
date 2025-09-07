@@ -1,5 +1,12 @@
 import express from 'express';
-import { getParticipants, createRoom, leaveRoom, checkLastParticipant, getRoomInfo } from '../controllers/roomController.js';
+import {
+  getParticipants,
+  createRoom,
+  leaveRoom,
+  checkLastParticipant,
+  getRoomInfo,
+  getCurrentRoom,
+} from '../controllers/roomController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -186,6 +193,56 @@ const router = express.Router();
  *                   example: 3006
  */
 router.post('/', authMiddleware, createRoom);
+
+/**
+ * @swagger
+ * /api/rooms/current:
+ *   get:
+ *     summary: 현재 참여 중인 방 조회
+ *     description: 현재 사용자가 참여 중인 방 정보를 조회합니다.
+ *     tags: [Rooms]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 현재 방 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 방 정보 조회에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     currentRoom:
+ *                       type: object
+ *                       nullable: true
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           description: 방 고유 ID
+ *                           example: "cm123abc456def"
+ *                         name:
+ *                           type: string
+ *                           description: 방 이름
+ *                           example: "JavaScript 스터디 방"
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *                           description: 방 생성 시간
+ *                           example: "2024-01-01T00:00:00.000Z"
+ *                         ownerCuid:
+ *                           type: string
+ *                           description: 방 소유자 ID
+ *                           example: "cm456def789ghi"
+ */
+router.get('/current', authMiddleware, getCurrentRoom);
 
 /**
  * @swagger
