@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  # MySQL 데이터베이스 (개발용)
+  mysql:
+    image: mysql:8.0
+    container_name: swith-mysql-dev
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    networks:
+      - study-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # 백엔드 서버 (개발용 - 소스코드 마운트)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: swith-backend-dev
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/uploads:/app/uploads
+    networks:
+      - study-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: npm run dev
+
+volumes:
+  mysql_dev_data:
+    driver: local
+
+networks:
+  study-network:
+    driver: bridge

@@ -1,0 +1,119 @@
+name: CI Pipeline
+
+# 트리거 조건: main, develop 브랜치에 push 또는 PR이 생성될 때
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 2 * * *" # 매일 새벽 2시
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+jobs:
+  # 코드 품질 검사 및 테스트 job
+  test:
+    name: 테스트 및 코드 품질 검사
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    # MySQL 서비스 컨테이너 설정
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        ports:
+          - 3307:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      # 1. 코드 체크아웃(GitHub 저장소 코드를 runner에 다운로드, 모든 워크플로우의 첫 단계)
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      # 2. Node.js 설정(runner에 Node.js 설치, .nvmrc에서 버전 자동 읽기)
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "backend/.nvmrc"
+          cache: "npm"
+          cache-dependency-path: "backend/package-lock.json"
+
+      # 3. 의존성 설치(package.json에 있는 의존성 설치)
+      - name: 의존성 설치
+        run: npm ci # npm install과 달리 프로덕션용이고, 빠름
+
+      # 4. Prisma 클라이언트 생성
+      - name: Prisma 클라이언트 생성
+        run: npx prisma generate
+
+      # 5. 데이터베이스 마이그레이션 실행
+      - name: 데이터베이스 마이그레이션
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      # 6. 코드 품질 검사 (ESLint)
+      - name: ESLint 검사
+        run: npm run lint
+
+      # 7. 코드 포맷팅 검사 (Prettier)
+      - name: Prettier 검사
+        run: npm run format -- --check
+
+      # 8. TypeScript 컴파일 검사
+      - name: TypeScript 빌드
+        run: npm run build
+
+      # 9. 테스트 실행
+      - name: 테스트 실행
+        run: npm test
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+
+  # 빌드 job
+  build:
+    name: 빌드
+    runs-on: ubuntu-latest
+    needs: test # test job이 성공해야 실행
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "backend/.nvmrc"
+          cache: "npm"
+          cache-dependency-path: "backend/package-lock.json"
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: Prisma 클라이언트 생성
+        run: npx prisma generate
+
+      - name: 프로젝트 빌드
+        run: npm run build
+
+      # 빌드 결과물을 artifact로 저장
+      - name: 빌드 결과물 저장
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: dist/
+          retention-days: 7

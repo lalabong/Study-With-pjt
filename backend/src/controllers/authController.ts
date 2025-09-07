@@ -101,7 +101,7 @@ const login: ControllerFn = async (
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
+      maxAge: 180 * 24 * 60 * 60 * 1000, // 180일
     });
 
     res.cookie('userId', user.userId, {
@@ -250,7 +250,7 @@ const signup: ControllerFn = async (
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 14 * 24 * 60 * 60 * 1000, // 14일
+      maxAge: 180 * 24 * 60 * 60 * 1000, // 180일
     });
 
     createSuccessResponse(res, 201, undefined, AUTH_SUCCESS.SIGNUP_COMPLETE);
