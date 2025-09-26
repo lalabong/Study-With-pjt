@@ -1,51 +1,46 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+
+import { useStudyTimeSync } from '@hooks/useStudyTimeSync';
+import { useWebSocketTimer } from '@hooks/useWebSocketTimer';
 
 import { formatToTwoDigits } from '@utils/date';
 
 interface StudyTimerProps {
   isRunning: boolean;
+  onTimerStateChange?: (state: { isRunning: boolean; totalMinutes: number }) => void;
 }
 
-const StudyTimer = ({ isRunning }: StudyTimerProps) => {
-  const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [hours, setHours] = useState(0);
+const StudyTimer = ({ isRunning, onTimerStateChange }: StudyTimerProps) => {
+  const timer = useWebSocketTimer();
+  const sync = useStudyTimeSync({
+    getTotalMinutes: timer.getTotalMinutes,
+    reset: timer.reset,
+    isRunning: timer.isRunning,
+  });
 
+  // 외부에서 받은 isRunning prop에 따라 타이머 제어 (웹소켓 기반)
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-
-    if (isRunning) {
-      interval = setInterval(() => {
-        setSeconds((prevSeconds) => {
-          const newSeconds = prevSeconds + 1;
-
-          if (newSeconds === 60) {
-            setMinutes((prevMinutes) => {
-              const newMinutes = prevMinutes + 1;
-
-              if (newMinutes === 60) {
-                setHours((prevHours) => prevHours + 1);
-                return 0;
-              }
-
-              return newMinutes;
-            });
-            return 0;
-          }
-
-          return newSeconds;
-        });
-      }, 1000);
+    if (isRunning && !timer.isRunning) {
+      console.log('🟢 웹소켓 타이머 시작');
+      timer.start();
+    } else if (!isRunning && timer.isRunning) {
+      console.log('🔴 웹소켓 타이머 정지');
+      timer.stop();
+      sync.handleTimerStop();
     }
+  }, [isRunning, timer.isRunning]);
 
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isRunning]);
+  // 타이머 상태 변화를 부모 컴포넌트에 알림
+  useEffect(() => {
+    if (onTimerStateChange) {
+      onTimerStateChange({
+        isRunning: timer.isRunning,
+        totalMinutes: timer.getTotalMinutes(),
+      });
+    }
+  }, [timer.isRunning, timer.seconds, onTimerStateChange, timer.getTotalMinutes]);
 
   return (
     <div className="flex flex-col items-center">
@@ -54,8 +49,31 @@ const StudyTimer = ({ isRunning }: StudyTimerProps) => {
         aria-live="polite"
         aria-label="스터디 타이머"
       >
-        {formatToTwoDigits(hours)}:{formatToTwoDigits(minutes)}:{formatToTwoDigits(seconds)}
+        {formatToTwoDigits(timer.hours)}:{formatToTwoDigits(timer.minutes)}:
+        {formatToTwoDigits(timer.seconds)}
       </h2>
+
+      <div className="mt-4 text-sm text-center">
+        <div className="flex items-center justify-center gap-2">
+          <div
+            className={`w-2 h-2 rounded-full ${timer.isConnected ? 'bg-green-500' : 'bg-red-500'}`}
+          ></div>
+          <span className={timer.isConnected ? 'text-green-600' : 'text-red-600'}>
+            {timer.isConnected ? '실시간 동기화' : '오프라인 모드'}
+          </span>
+        </div>
+
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-2 text-gray-500">
+            <p>누적 시간: {timer.getTotalMinutes().toFixed(1)}분</p>
+            {timer.startedBy && <p>시작한 사람: {timer.startedBy}</p>}
+            <p>
+              마지막 동기화:{' '}
+              {timer.lastSync ? new Date(timer.lastSync).toLocaleTimeString() : '없음'}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
