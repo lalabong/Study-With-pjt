@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Room = $Result.DefaultSelection<Prisma.$RoomPayload>
 /**
+ * Model RoomParticipation
+ * 
+ */
+export type RoomParticipation = $Result.DefaultSelection<Prisma.$RoomParticipationPayload>
+/**
  * Model Schedule
  * 
  */
@@ -219,6 +224,16 @@ export class PrismaClient<
     * ```
     */
   get room(): Prisma.RoomDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.roomParticipation`: Exposes CRUD operations for the **RoomParticipation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RoomParticipations
+    * const roomParticipations = await prisma.roomParticipation.findMany()
+    * ```
+    */
+  get roomParticipation(): Prisma.RoomParticipationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.schedule`: Exposes CRUD operations for the **Schedule** model.
@@ -701,6 +716,7 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     Room: 'Room',
+    RoomParticipation: 'RoomParticipation',
     Schedule: 'Schedule',
     TimeLog: 'TimeLog',
     Friend: 'Friend',
@@ -723,7 +739,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "room" | "schedule" | "timeLog" | "friend" | "refreshToken"
+      modelProps: "user" | "room" | "roomParticipation" | "schedule" | "timeLog" | "friend" | "refreshToken"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -856,6 +872,72 @@ export namespace Prisma {
           count: {
             args: Prisma.RoomCountArgs<ExtArgs>
             result: $Utils.Optional<RoomCountAggregateOutputType> | number
+          }
+        }
+      }
+      RoomParticipation: {
+        payload: Prisma.$RoomParticipationPayload<ExtArgs>
+        fields: Prisma.RoomParticipationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RoomParticipationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RoomParticipationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>
+          }
+          findFirst: {
+            args: Prisma.RoomParticipationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RoomParticipationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>
+          }
+          findMany: {
+            args: Prisma.RoomParticipationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>[]
+          }
+          create: {
+            args: Prisma.RoomParticipationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>
+          }
+          createMany: {
+            args: Prisma.RoomParticipationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.RoomParticipationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>
+          }
+          update: {
+            args: Prisma.RoomParticipationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>
+          }
+          deleteMany: {
+            args: Prisma.RoomParticipationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RoomParticipationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.RoomParticipationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RoomParticipationPayload>
+          }
+          aggregate: {
+            args: Prisma.RoomParticipationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRoomParticipation>
+          }
+          groupBy: {
+            args: Prisma.RoomParticipationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RoomParticipationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RoomParticipationCountArgs<ExtArgs>
+            result: $Utils.Optional<RoomParticipationCountAggregateOutputType> | number
           }
         }
       }
@@ -1209,6 +1291,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     room?: RoomOmit
+    roomParticipation?: RoomParticipationOmit
     schedule?: ScheduleOmit
     timeLog?: TimeLogOmit
     friend?: FriendOmit
@@ -1312,6 +1395,8 @@ export namespace Prisma {
     refreshTokens: number
     schedules: number
     timeLogs: number
+    roomParticipations: number
+    ownedRooms: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1320,6 +1405,8 @@ export namespace Prisma {
     refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
     schedules?: boolean | UserCountOutputTypeCountSchedulesArgs
     timeLogs?: boolean | UserCountOutputTypeCountTimeLogsArgs
+    roomParticipations?: boolean | UserCountOutputTypeCountRoomParticipationsArgs
+    ownedRooms?: boolean | UserCountOutputTypeCountOwnedRoomsArgs
   }
 
   // Custom InputTypes
@@ -1368,18 +1455,32 @@ export namespace Prisma {
     where?: TimeLogWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRoomParticipationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomParticipationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOwnedRoomsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomWhereInput
+  }
+
 
   /**
    * Count Type RoomCountOutputType
    */
 
   export type RoomCountOutputType = {
-    users: number
+    participants: number
     timeLogs: number
   }
 
   export type RoomCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | RoomCountOutputTypeCountUsersArgs
+    participants?: boolean | RoomCountOutputTypeCountParticipantsArgs
     timeLogs?: boolean | RoomCountOutputTypeCountTimeLogsArgs
   }
 
@@ -1397,8 +1498,8 @@ export namespace Prisma {
   /**
    * RoomCountOutputType without action
    */
-  export type RoomCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type RoomCountOutputTypeCountParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomParticipationWhereInput
   }
 
   /**
@@ -1441,7 +1542,6 @@ export namespace Prisma {
     profileImg: string | null
     createdAt: Date | null
     totalStudyTime: number | null
-    roomCuid: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1452,7 +1552,6 @@ export namespace Prisma {
     profileImg: string | null
     createdAt: Date | null
     totalStudyTime: number | null
-    roomCuid: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1463,7 +1562,6 @@ export namespace Prisma {
     profileImg: number
     createdAt: number
     totalStudyTime: number
-    roomCuid: number
     _all: number
   }
 
@@ -1484,7 +1582,6 @@ export namespace Prisma {
     profileImg?: true
     createdAt?: true
     totalStudyTime?: true
-    roomCuid?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1495,7 +1592,6 @@ export namespace Prisma {
     profileImg?: true
     createdAt?: true
     totalStudyTime?: true
-    roomCuid?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1506,7 +1602,6 @@ export namespace Prisma {
     profileImg?: true
     createdAt?: true
     totalStudyTime?: true
-    roomCuid?: true
     _all?: true
   }
 
@@ -1604,7 +1699,6 @@ export namespace Prisma {
     profileImg: string | null
     createdAt: Date | null
     totalStudyTime: number
-    roomCuid: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -1634,13 +1728,13 @@ export namespace Prisma {
     profileImg?: boolean
     createdAt?: boolean
     totalStudyTime?: boolean
-    roomCuid?: boolean
     friendsFrom?: boolean | User$friendsFromArgs<ExtArgs>
     friendsTo?: boolean | User$friendsToArgs<ExtArgs>
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs>
-    room?: boolean | User$roomArgs<ExtArgs>
     schedules?: boolean | User$schedulesArgs<ExtArgs>
     timeLogs?: boolean | User$timeLogsArgs<ExtArgs>
+    roomParticipations?: boolean | User$roomParticipationsArgs<ExtArgs>
+    ownedRooms?: boolean | User$ownedRoomsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1654,17 +1748,17 @@ export namespace Prisma {
     profileImg?: boolean
     createdAt?: boolean
     totalStudyTime?: boolean
-    roomCuid?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "password" | "nickname" | "profileImg" | "createdAt" | "totalStudyTime" | "roomCuid", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "password" | "nickname" | "profileImg" | "createdAt" | "totalStudyTime", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     friendsFrom?: boolean | User$friendsFromArgs<ExtArgs>
     friendsTo?: boolean | User$friendsToArgs<ExtArgs>
     refreshTokens?: boolean | User$refreshTokensArgs<ExtArgs>
-    room?: boolean | User$roomArgs<ExtArgs>
     schedules?: boolean | User$schedulesArgs<ExtArgs>
     timeLogs?: boolean | User$timeLogsArgs<ExtArgs>
+    roomParticipations?: boolean | User$roomParticipationsArgs<ExtArgs>
+    ownedRooms?: boolean | User$ownedRoomsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -1674,9 +1768,10 @@ export namespace Prisma {
       friendsFrom: Prisma.$FriendPayload<ExtArgs>[]
       friendsTo: Prisma.$FriendPayload<ExtArgs>[]
       refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
-      room: Prisma.$RoomPayload<ExtArgs> | null
       schedules: Prisma.$SchedulePayload<ExtArgs>[]
       timeLogs: Prisma.$TimeLogPayload<ExtArgs>[]
+      roomParticipations: Prisma.$RoomParticipationPayload<ExtArgs>[]
+      ownedRooms: Prisma.$RoomPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1686,7 +1781,6 @@ export namespace Prisma {
       profileImg: string | null
       createdAt: Date | null
       totalStudyTime: number
-      roomCuid: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2030,9 +2124,10 @@ export namespace Prisma {
     friendsFrom<T extends User$friendsFromArgs<ExtArgs> = {}>(args?: Subset<T, User$friendsFromArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FriendPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     friendsTo<T extends User$friendsToArgs<ExtArgs> = {}>(args?: Subset<T, User$friendsToArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FriendPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     refreshTokens<T extends User$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    room<T extends User$roomArgs<ExtArgs> = {}>(args?: Subset<T, User$roomArgs<ExtArgs>>): Prisma__RoomClient<$Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     schedules<T extends User$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, User$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     timeLogs<T extends User$timeLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$timeLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TimeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    roomParticipations<T extends User$roomParticipationsArgs<ExtArgs> = {}>(args?: Subset<T, User$roomParticipationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ownedRooms<T extends User$ownedRoomsArgs<ExtArgs> = {}>(args?: Subset<T, User$ownedRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2069,7 +2164,6 @@ export namespace Prisma {
     readonly profileImg: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly totalStudyTime: FieldRef<"User", 'Int'>
-    readonly roomCuid: FieldRef<"User", 'String'>
   }
     
 
@@ -2485,25 +2579,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.room
-   */
-  export type User$roomArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Room
-     */
-    select?: RoomSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Room
-     */
-    omit?: RoomOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RoomInclude<ExtArgs> | null
-    where?: RoomWhereInput
-  }
-
-  /**
    * User.schedules
    */
   export type User$schedulesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2549,6 +2624,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TimeLogScalarFieldEnum | TimeLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.roomParticipations
+   */
+  export type User$roomParticipationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    where?: RoomParticipationWhereInput
+    orderBy?: RoomParticipationOrderByWithRelationInput | RoomParticipationOrderByWithRelationInput[]
+    cursor?: RoomParticipationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomParticipationScalarFieldEnum | RoomParticipationScalarFieldEnum[]
+  }
+
+  /**
+   * User.ownedRooms
+   */
+  export type User$ownedRoomsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Room
+     */
+    select?: RoomSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Room
+     */
+    omit?: RoomOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomInclude<ExtArgs> | null
+    where?: RoomWhereInput
+    orderBy?: RoomOrderByWithRelationInput | RoomOrderByWithRelationInput[]
+    cursor?: RoomWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RoomScalarFieldEnum | RoomScalarFieldEnum[]
   }
 
   /**
@@ -2726,7 +2849,8 @@ export namespace Prisma {
     name?: boolean
     createdAt?: boolean
     ownerCuid?: boolean
-    users?: boolean | Room$usersArgs<ExtArgs>
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    participants?: boolean | Room$participantsArgs<ExtArgs>
     timeLogs?: boolean | Room$timeLogsArgs<ExtArgs>
     _count?: boolean | RoomCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["room"]>
@@ -2742,7 +2866,8 @@ export namespace Prisma {
 
   export type RoomOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "ownerCuid", ExtArgs["result"]["room"]>
   export type RoomInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | Room$usersArgs<ExtArgs>
+    owner?: boolean | UserDefaultArgs<ExtArgs>
+    participants?: boolean | Room$participantsArgs<ExtArgs>
     timeLogs?: boolean | Room$timeLogsArgs<ExtArgs>
     _count?: boolean | RoomCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2750,7 +2875,8 @@ export namespace Prisma {
   export type $RoomPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Room"
     objects: {
-      users: Prisma.$UserPayload<ExtArgs>[]
+      owner: Prisma.$UserPayload<ExtArgs>
+      participants: Prisma.$RoomParticipationPayload<ExtArgs>[]
       timeLogs: Prisma.$TimeLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3098,7 +3224,8 @@ export namespace Prisma {
    */
   export interface Prisma__RoomClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    users<T extends Room$usersArgs<ExtArgs> = {}>(args?: Subset<T, Room$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    participants<T extends Room$participantsArgs<ExtArgs> = {}>(args?: Subset<T, Room$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     timeLogs<T extends Room$timeLogsArgs<ExtArgs> = {}>(args?: Subset<T, Room$timeLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TimeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3476,27 +3603,27 @@ export namespace Prisma {
   }
 
   /**
-   * Room.users
+   * Room.participants
    */
-  export type Room$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Room$participantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the User
+     * Select specific fields to fetch from the RoomParticipation
      */
-    select?: UserSelect<ExtArgs> | null
+    select?: RoomParticipationSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the User
+     * Omit specific fields from the RoomParticipation
      */
-    omit?: UserOmit<ExtArgs> | null
+    omit?: RoomParticipationOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
+    include?: RoomParticipationInclude<ExtArgs> | null
+    where?: RoomParticipationWhereInput
+    orderBy?: RoomParticipationOrderByWithRelationInput | RoomParticipationOrderByWithRelationInput[]
+    cursor?: RoomParticipationWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+    distinct?: RoomParticipationScalarFieldEnum | RoomParticipationScalarFieldEnum[]
   }
 
   /**
@@ -3539,6 +3666,917 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RoomInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RoomParticipation
+   */
+
+  export type AggregateRoomParticipation = {
+    _count: RoomParticipationCountAggregateOutputType | null
+    _min: RoomParticipationMinAggregateOutputType | null
+    _max: RoomParticipationMaxAggregateOutputType | null
+  }
+
+  export type RoomParticipationMinAggregateOutputType = {
+    userCuid: string | null
+    roomCuid: string | null
+    joinedAt: Date | null
+  }
+
+  export type RoomParticipationMaxAggregateOutputType = {
+    userCuid: string | null
+    roomCuid: string | null
+    joinedAt: Date | null
+  }
+
+  export type RoomParticipationCountAggregateOutputType = {
+    userCuid: number
+    roomCuid: number
+    joinedAt: number
+    _all: number
+  }
+
+
+  export type RoomParticipationMinAggregateInputType = {
+    userCuid?: true
+    roomCuid?: true
+    joinedAt?: true
+  }
+
+  export type RoomParticipationMaxAggregateInputType = {
+    userCuid?: true
+    roomCuid?: true
+    joinedAt?: true
+  }
+
+  export type RoomParticipationCountAggregateInputType = {
+    userCuid?: true
+    roomCuid?: true
+    joinedAt?: true
+    _all?: true
+  }
+
+  export type RoomParticipationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomParticipation to aggregate.
+     */
+    where?: RoomParticipationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomParticipations to fetch.
+     */
+    orderBy?: RoomParticipationOrderByWithRelationInput | RoomParticipationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RoomParticipationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomParticipations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomParticipations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RoomParticipations
+    **/
+    _count?: true | RoomParticipationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RoomParticipationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RoomParticipationMaxAggregateInputType
+  }
+
+  export type GetRoomParticipationAggregateType<T extends RoomParticipationAggregateArgs> = {
+        [P in keyof T & keyof AggregateRoomParticipation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRoomParticipation[P]>
+      : GetScalarType<T[P], AggregateRoomParticipation[P]>
+  }
+
+
+
+
+  export type RoomParticipationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RoomParticipationWhereInput
+    orderBy?: RoomParticipationOrderByWithAggregationInput | RoomParticipationOrderByWithAggregationInput[]
+    by: RoomParticipationScalarFieldEnum[] | RoomParticipationScalarFieldEnum
+    having?: RoomParticipationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RoomParticipationCountAggregateInputType | true
+    _min?: RoomParticipationMinAggregateInputType
+    _max?: RoomParticipationMaxAggregateInputType
+  }
+
+  export type RoomParticipationGroupByOutputType = {
+    userCuid: string
+    roomCuid: string
+    joinedAt: Date
+    _count: RoomParticipationCountAggregateOutputType | null
+    _min: RoomParticipationMinAggregateOutputType | null
+    _max: RoomParticipationMaxAggregateOutputType | null
+  }
+
+  type GetRoomParticipationGroupByPayload<T extends RoomParticipationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RoomParticipationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RoomParticipationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RoomParticipationGroupByOutputType[P]>
+            : GetScalarType<T[P], RoomParticipationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RoomParticipationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userCuid?: boolean
+    roomCuid?: boolean
+    joinedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    room?: boolean | RoomDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["roomParticipation"]>
+
+
+
+  export type RoomParticipationSelectScalar = {
+    userCuid?: boolean
+    roomCuid?: boolean
+    joinedAt?: boolean
+  }
+
+  export type RoomParticipationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userCuid" | "roomCuid" | "joinedAt", ExtArgs["result"]["roomParticipation"]>
+  export type RoomParticipationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    room?: boolean | RoomDefaultArgs<ExtArgs>
+  }
+
+  export type $RoomParticipationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RoomParticipation"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      room: Prisma.$RoomPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userCuid: string
+      roomCuid: string
+      joinedAt: Date
+    }, ExtArgs["result"]["roomParticipation"]>
+    composites: {}
+  }
+
+  type RoomParticipationGetPayload<S extends boolean | null | undefined | RoomParticipationDefaultArgs> = $Result.GetResult<Prisma.$RoomParticipationPayload, S>
+
+  type RoomParticipationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RoomParticipationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RoomParticipationCountAggregateInputType | true
+    }
+
+  export interface RoomParticipationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RoomParticipation'], meta: { name: 'RoomParticipation' } }
+    /**
+     * Find zero or one RoomParticipation that matches the filter.
+     * @param {RoomParticipationFindUniqueArgs} args - Arguments to find a RoomParticipation
+     * @example
+     * // Get one RoomParticipation
+     * const roomParticipation = await prisma.roomParticipation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RoomParticipationFindUniqueArgs>(args: SelectSubset<T, RoomParticipationFindUniqueArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RoomParticipation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RoomParticipationFindUniqueOrThrowArgs} args - Arguments to find a RoomParticipation
+     * @example
+     * // Get one RoomParticipation
+     * const roomParticipation = await prisma.roomParticipation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RoomParticipationFindUniqueOrThrowArgs>(args: SelectSubset<T, RoomParticipationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomParticipation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationFindFirstArgs} args - Arguments to find a RoomParticipation
+     * @example
+     * // Get one RoomParticipation
+     * const roomParticipation = await prisma.roomParticipation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RoomParticipationFindFirstArgs>(args?: SelectSubset<T, RoomParticipationFindFirstArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RoomParticipation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationFindFirstOrThrowArgs} args - Arguments to find a RoomParticipation
+     * @example
+     * // Get one RoomParticipation
+     * const roomParticipation = await prisma.roomParticipation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RoomParticipationFindFirstOrThrowArgs>(args?: SelectSubset<T, RoomParticipationFindFirstOrThrowArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RoomParticipations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RoomParticipations
+     * const roomParticipations = await prisma.roomParticipation.findMany()
+     * 
+     * // Get first 10 RoomParticipations
+     * const roomParticipations = await prisma.roomParticipation.findMany({ take: 10 })
+     * 
+     * // Only select the `userCuid`
+     * const roomParticipationWithUserCuidOnly = await prisma.roomParticipation.findMany({ select: { userCuid: true } })
+     * 
+     */
+    findMany<T extends RoomParticipationFindManyArgs>(args?: SelectSubset<T, RoomParticipationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RoomParticipation.
+     * @param {RoomParticipationCreateArgs} args - Arguments to create a RoomParticipation.
+     * @example
+     * // Create one RoomParticipation
+     * const RoomParticipation = await prisma.roomParticipation.create({
+     *   data: {
+     *     // ... data to create a RoomParticipation
+     *   }
+     * })
+     * 
+     */
+    create<T extends RoomParticipationCreateArgs>(args: SelectSubset<T, RoomParticipationCreateArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RoomParticipations.
+     * @param {RoomParticipationCreateManyArgs} args - Arguments to create many RoomParticipations.
+     * @example
+     * // Create many RoomParticipations
+     * const roomParticipation = await prisma.roomParticipation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RoomParticipationCreateManyArgs>(args?: SelectSubset<T, RoomParticipationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a RoomParticipation.
+     * @param {RoomParticipationDeleteArgs} args - Arguments to delete one RoomParticipation.
+     * @example
+     * // Delete one RoomParticipation
+     * const RoomParticipation = await prisma.roomParticipation.delete({
+     *   where: {
+     *     // ... filter to delete one RoomParticipation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RoomParticipationDeleteArgs>(args: SelectSubset<T, RoomParticipationDeleteArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RoomParticipation.
+     * @param {RoomParticipationUpdateArgs} args - Arguments to update one RoomParticipation.
+     * @example
+     * // Update one RoomParticipation
+     * const roomParticipation = await prisma.roomParticipation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RoomParticipationUpdateArgs>(args: SelectSubset<T, RoomParticipationUpdateArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RoomParticipations.
+     * @param {RoomParticipationDeleteManyArgs} args - Arguments to filter RoomParticipations to delete.
+     * @example
+     * // Delete a few RoomParticipations
+     * const { count } = await prisma.roomParticipation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RoomParticipationDeleteManyArgs>(args?: SelectSubset<T, RoomParticipationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RoomParticipations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RoomParticipations
+     * const roomParticipation = await prisma.roomParticipation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RoomParticipationUpdateManyArgs>(args: SelectSubset<T, RoomParticipationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one RoomParticipation.
+     * @param {RoomParticipationUpsertArgs} args - Arguments to update or create a RoomParticipation.
+     * @example
+     * // Update or create a RoomParticipation
+     * const roomParticipation = await prisma.roomParticipation.upsert({
+     *   create: {
+     *     // ... data to create a RoomParticipation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RoomParticipation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RoomParticipationUpsertArgs>(args: SelectSubset<T, RoomParticipationUpsertArgs<ExtArgs>>): Prisma__RoomParticipationClient<$Result.GetResult<Prisma.$RoomParticipationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RoomParticipations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationCountArgs} args - Arguments to filter RoomParticipations to count.
+     * @example
+     * // Count the number of RoomParticipations
+     * const count = await prisma.roomParticipation.count({
+     *   where: {
+     *     // ... the filter for the RoomParticipations we want to count
+     *   }
+     * })
+    **/
+    count<T extends RoomParticipationCountArgs>(
+      args?: Subset<T, RoomParticipationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RoomParticipationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RoomParticipation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RoomParticipationAggregateArgs>(args: Subset<T, RoomParticipationAggregateArgs>): Prisma.PrismaPromise<GetRoomParticipationAggregateType<T>>
+
+    /**
+     * Group by RoomParticipation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RoomParticipationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RoomParticipationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RoomParticipationGroupByArgs['orderBy'] }
+        : { orderBy?: RoomParticipationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RoomParticipationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRoomParticipationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RoomParticipation model
+   */
+  readonly fields: RoomParticipationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RoomParticipation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RoomParticipationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    room<T extends RoomDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoomDefaultArgs<ExtArgs>>): Prisma__RoomClient<$Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RoomParticipation model
+   */
+  interface RoomParticipationFieldRefs {
+    readonly userCuid: FieldRef<"RoomParticipation", 'String'>
+    readonly roomCuid: FieldRef<"RoomParticipation", 'String'>
+    readonly joinedAt: FieldRef<"RoomParticipation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RoomParticipation findUnique
+   */
+  export type RoomParticipationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomParticipation to fetch.
+     */
+    where: RoomParticipationWhereUniqueInput
+  }
+
+  /**
+   * RoomParticipation findUniqueOrThrow
+   */
+  export type RoomParticipationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomParticipation to fetch.
+     */
+    where: RoomParticipationWhereUniqueInput
+  }
+
+  /**
+   * RoomParticipation findFirst
+   */
+  export type RoomParticipationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomParticipation to fetch.
+     */
+    where?: RoomParticipationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomParticipations to fetch.
+     */
+    orderBy?: RoomParticipationOrderByWithRelationInput | RoomParticipationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomParticipations.
+     */
+    cursor?: RoomParticipationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomParticipations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomParticipations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomParticipations.
+     */
+    distinct?: RoomParticipationScalarFieldEnum | RoomParticipationScalarFieldEnum[]
+  }
+
+  /**
+   * RoomParticipation findFirstOrThrow
+   */
+  export type RoomParticipationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomParticipation to fetch.
+     */
+    where?: RoomParticipationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomParticipations to fetch.
+     */
+    orderBy?: RoomParticipationOrderByWithRelationInput | RoomParticipationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RoomParticipations.
+     */
+    cursor?: RoomParticipationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomParticipations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomParticipations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RoomParticipations.
+     */
+    distinct?: RoomParticipationScalarFieldEnum | RoomParticipationScalarFieldEnum[]
+  }
+
+  /**
+   * RoomParticipation findMany
+   */
+  export type RoomParticipationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * Filter, which RoomParticipations to fetch.
+     */
+    where?: RoomParticipationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RoomParticipations to fetch.
+     */
+    orderBy?: RoomParticipationOrderByWithRelationInput | RoomParticipationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RoomParticipations.
+     */
+    cursor?: RoomParticipationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RoomParticipations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RoomParticipations.
+     */
+    skip?: number
+    distinct?: RoomParticipationScalarFieldEnum | RoomParticipationScalarFieldEnum[]
+  }
+
+  /**
+   * RoomParticipation create
+   */
+  export type RoomParticipationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RoomParticipation.
+     */
+    data: XOR<RoomParticipationCreateInput, RoomParticipationUncheckedCreateInput>
+  }
+
+  /**
+   * RoomParticipation createMany
+   */
+  export type RoomParticipationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RoomParticipations.
+     */
+    data: RoomParticipationCreateManyInput | RoomParticipationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RoomParticipation update
+   */
+  export type RoomParticipationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RoomParticipation.
+     */
+    data: XOR<RoomParticipationUpdateInput, RoomParticipationUncheckedUpdateInput>
+    /**
+     * Choose, which RoomParticipation to update.
+     */
+    where: RoomParticipationWhereUniqueInput
+  }
+
+  /**
+   * RoomParticipation updateMany
+   */
+  export type RoomParticipationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RoomParticipations.
+     */
+    data: XOR<RoomParticipationUpdateManyMutationInput, RoomParticipationUncheckedUpdateManyInput>
+    /**
+     * Filter which RoomParticipations to update
+     */
+    where?: RoomParticipationWhereInput
+    /**
+     * Limit how many RoomParticipations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomParticipation upsert
+   */
+  export type RoomParticipationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RoomParticipation to update in case it exists.
+     */
+    where: RoomParticipationWhereUniqueInput
+    /**
+     * In case the RoomParticipation found by the `where` argument doesn't exist, create a new RoomParticipation with this data.
+     */
+    create: XOR<RoomParticipationCreateInput, RoomParticipationUncheckedCreateInput>
+    /**
+     * In case the RoomParticipation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RoomParticipationUpdateInput, RoomParticipationUncheckedUpdateInput>
+  }
+
+  /**
+   * RoomParticipation delete
+   */
+  export type RoomParticipationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
+    /**
+     * Filter which RoomParticipation to delete.
+     */
+    where: RoomParticipationWhereUniqueInput
+  }
+
+  /**
+   * RoomParticipation deleteMany
+   */
+  export type RoomParticipationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RoomParticipations to delete
+     */
+    where?: RoomParticipationWhereInput
+    /**
+     * Limit how many RoomParticipations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RoomParticipation without action
+   */
+  export type RoomParticipationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RoomParticipation
+     */
+    select?: RoomParticipationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RoomParticipation
+     */
+    omit?: RoomParticipationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoomParticipationInclude<ExtArgs> | null
   }
 
 
@@ -7388,8 +8426,7 @@ export namespace Prisma {
     nickname: 'nickname',
     profileImg: 'profileImg',
     createdAt: 'createdAt',
-    totalStudyTime: 'totalStudyTime',
-    roomCuid: 'roomCuid'
+    totalStudyTime: 'totalStudyTime'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -7403,6 +8440,15 @@ export namespace Prisma {
   };
 
   export type RoomScalarFieldEnum = (typeof RoomScalarFieldEnum)[keyof typeof RoomScalarFieldEnum]
+
+
+  export const RoomParticipationScalarFieldEnum: {
+    userCuid: 'userCuid',
+    roomCuid: 'roomCuid',
+    joinedAt: 'joinedAt'
+  };
+
+  export type RoomParticipationScalarFieldEnum = (typeof RoomParticipationScalarFieldEnum)[keyof typeof RoomParticipationScalarFieldEnum]
 
 
   export const ScheduleScalarFieldEnum: {
@@ -7473,8 +8519,7 @@ export namespace Prisma {
     userId: 'userId',
     password: 'password',
     nickname: 'nickname',
-    profileImg: 'profileImg',
-    roomCuid: 'roomCuid'
+    profileImg: 'profileImg'
   };
 
   export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
@@ -7487,6 +8532,14 @@ export namespace Prisma {
   };
 
   export type RoomOrderByRelevanceFieldEnum = (typeof RoomOrderByRelevanceFieldEnum)[keyof typeof RoomOrderByRelevanceFieldEnum]
+
+
+  export const RoomParticipationOrderByRelevanceFieldEnum: {
+    userCuid: 'userCuid',
+    roomCuid: 'roomCuid'
+  };
+
+  export type RoomParticipationOrderByRelevanceFieldEnum = (typeof RoomParticipationOrderByRelevanceFieldEnum)[keyof typeof RoomParticipationOrderByRelevanceFieldEnum]
 
 
   export const ScheduleOrderByRelevanceFieldEnum: {
@@ -7586,13 +8639,13 @@ export namespace Prisma {
     profileImg?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
     totalStudyTime?: IntFilter<"User"> | number
-    roomCuid?: StringNullableFilter<"User"> | string | null
     friendsFrom?: FriendListRelationFilter
     friendsTo?: FriendListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
-    room?: XOR<RoomNullableScalarRelationFilter, RoomWhereInput> | null
     schedules?: ScheduleListRelationFilter
     timeLogs?: TimeLogListRelationFilter
+    roomParticipations?: RoomParticipationListRelationFilter
+    ownedRooms?: RoomListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7603,13 +8656,13 @@ export namespace Prisma {
     profileImg?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     totalStudyTime?: SortOrder
-    roomCuid?: SortOrderInput | SortOrder
     friendsFrom?: FriendOrderByRelationAggregateInput
     friendsTo?: FriendOrderByRelationAggregateInput
     refreshTokens?: RefreshTokenOrderByRelationAggregateInput
-    room?: RoomOrderByWithRelationInput
     schedules?: ScheduleOrderByRelationAggregateInput
     timeLogs?: TimeLogOrderByRelationAggregateInput
+    roomParticipations?: RoomParticipationOrderByRelationAggregateInput
+    ownedRooms?: RoomOrderByRelationAggregateInput
     _relevance?: UserOrderByRelevanceInput
   }
 
@@ -7624,13 +8677,13 @@ export namespace Prisma {
     profileImg?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
     totalStudyTime?: IntFilter<"User"> | number
-    roomCuid?: StringNullableFilter<"User"> | string | null
     friendsFrom?: FriendListRelationFilter
     friendsTo?: FriendListRelationFilter
     refreshTokens?: RefreshTokenListRelationFilter
-    room?: XOR<RoomNullableScalarRelationFilter, RoomWhereInput> | null
     schedules?: ScheduleListRelationFilter
     timeLogs?: TimeLogListRelationFilter
+    roomParticipations?: RoomParticipationListRelationFilter
+    ownedRooms?: RoomListRelationFilter
   }, "id" | "userId" | "nickname">
 
   export type UserOrderByWithAggregationInput = {
@@ -7641,7 +8694,6 @@ export namespace Prisma {
     profileImg?: SortOrderInput | SortOrder
     createdAt?: SortOrderInput | SortOrder
     totalStudyTime?: SortOrder
-    roomCuid?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -7660,7 +8712,6 @@ export namespace Prisma {
     profileImg?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     totalStudyTime?: IntWithAggregatesFilter<"User"> | number
-    roomCuid?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type RoomWhereInput = {
@@ -7671,7 +8722,8 @@ export namespace Prisma {
     name?: StringFilter<"Room"> | string
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
     ownerCuid?: StringFilter<"Room"> | string
-    users?: UserListRelationFilter
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    participants?: RoomParticipationListRelationFilter
     timeLogs?: TimeLogListRelationFilter
   }
 
@@ -7680,22 +8732,24 @@ export namespace Prisma {
     name?: SortOrder
     createdAt?: SortOrderInput | SortOrder
     ownerCuid?: SortOrder
-    users?: UserOrderByRelationAggregateInput
+    owner?: UserOrderByWithRelationInput
+    participants?: RoomParticipationOrderByRelationAggregateInput
     timeLogs?: TimeLogOrderByRelationAggregateInput
     _relevance?: RoomOrderByRelevanceInput
   }
 
   export type RoomWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    ownerCuid?: string
     AND?: RoomWhereInput | RoomWhereInput[]
     OR?: RoomWhereInput[]
     NOT?: RoomWhereInput | RoomWhereInput[]
     name?: StringFilter<"Room"> | string
     createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
-    users?: UserListRelationFilter
+    ownerCuid?: StringFilter<"Room"> | string
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
+    participants?: RoomParticipationListRelationFilter
     timeLogs?: TimeLogListRelationFilter
-  }, "id" | "ownerCuid">
+  }, "id">
 
   export type RoomOrderByWithAggregationInput = {
     id?: SortOrder
@@ -7715,6 +8769,56 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Room"> | string
     createdAt?: DateTimeNullableWithAggregatesFilter<"Room"> | Date | string | null
     ownerCuid?: StringWithAggregatesFilter<"Room"> | string
+  }
+
+  export type RoomParticipationWhereInput = {
+    AND?: RoomParticipationWhereInput | RoomParticipationWhereInput[]
+    OR?: RoomParticipationWhereInput[]
+    NOT?: RoomParticipationWhereInput | RoomParticipationWhereInput[]
+    userCuid?: StringFilter<"RoomParticipation"> | string
+    roomCuid?: StringFilter<"RoomParticipation"> | string
+    joinedAt?: DateTimeFilter<"RoomParticipation"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    room?: XOR<RoomScalarRelationFilter, RoomWhereInput>
+  }
+
+  export type RoomParticipationOrderByWithRelationInput = {
+    userCuid?: SortOrder
+    roomCuid?: SortOrder
+    joinedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    room?: RoomOrderByWithRelationInput
+    _relevance?: RoomParticipationOrderByRelevanceInput
+  }
+
+  export type RoomParticipationWhereUniqueInput = Prisma.AtLeast<{
+    userCuid_roomCuid?: RoomParticipationUserCuidRoomCuidCompoundUniqueInput
+    AND?: RoomParticipationWhereInput | RoomParticipationWhereInput[]
+    OR?: RoomParticipationWhereInput[]
+    NOT?: RoomParticipationWhereInput | RoomParticipationWhereInput[]
+    userCuid?: StringFilter<"RoomParticipation"> | string
+    roomCuid?: StringFilter<"RoomParticipation"> | string
+    joinedAt?: DateTimeFilter<"RoomParticipation"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    room?: XOR<RoomScalarRelationFilter, RoomWhereInput>
+  }, "userCuid_roomCuid">
+
+  export type RoomParticipationOrderByWithAggregationInput = {
+    userCuid?: SortOrder
+    roomCuid?: SortOrder
+    joinedAt?: SortOrder
+    _count?: RoomParticipationCountOrderByAggregateInput
+    _max?: RoomParticipationMaxOrderByAggregateInput
+    _min?: RoomParticipationMinOrderByAggregateInput
+  }
+
+  export type RoomParticipationScalarWhereWithAggregatesInput = {
+    AND?: RoomParticipationScalarWhereWithAggregatesInput | RoomParticipationScalarWhereWithAggregatesInput[]
+    OR?: RoomParticipationScalarWhereWithAggregatesInput[]
+    NOT?: RoomParticipationScalarWhereWithAggregatesInput | RoomParticipationScalarWhereWithAggregatesInput[]
+    userCuid?: StringWithAggregatesFilter<"RoomParticipation"> | string
+    roomCuid?: StringWithAggregatesFilter<"RoomParticipation"> | string
+    joinedAt?: DateTimeWithAggregatesFilter<"RoomParticipation"> | Date | string
   }
 
   export type ScheduleWhereInput = {
@@ -7978,9 +9082,10 @@ export namespace Prisma {
     friendsFrom?: FriendCreateNestedManyWithoutFriendInput
     friendsTo?: FriendCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    room?: RoomCreateNestedOneWithoutUsersInput
     schedules?: ScheduleCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7991,12 +9096,13 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
     friendsFrom?: FriendUncheckedCreateNestedManyWithoutFriendInput
     friendsTo?: FriendUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUpdateInput = {
@@ -8010,9 +9116,10 @@ export namespace Prisma {
     friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    room?: RoomUpdateOneWithoutUsersNestedInput
     schedules?: ScheduleUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8023,12 +9130,13 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
     friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -8039,7 +9147,6 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -8060,15 +9167,14 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RoomCreateInput = {
     id?: string
     name: string
     createdAt?: Date | string | null
-    ownerCuid: string
-    users?: UserCreateNestedManyWithoutRoomInput
+    owner: UserCreateNestedOneWithoutOwnedRoomsInput
+    participants?: RoomParticipationCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
   }
 
@@ -8077,7 +9183,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string | null
     ownerCuid: string
-    users?: UserUncheckedCreateNestedManyWithoutRoomInput
+    participants?: RoomParticipationUncheckedCreateNestedManyWithoutRoomInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
   }
 
@@ -8085,8 +9191,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ownerCuid?: StringFieldUpdateOperationsInput | string
-    users?: UserUpdateManyWithoutRoomNestedInput
+    owner?: UserUpdateOneRequiredWithoutOwnedRoomsNestedInput
+    participants?: RoomParticipationUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
   }
 
@@ -8095,7 +9201,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerCuid?: StringFieldUpdateOperationsInput | string
-    users?: UserUncheckedUpdateManyWithoutRoomNestedInput
+    participants?: RoomParticipationUncheckedUpdateManyWithoutRoomNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
   }
 
@@ -8110,7 +9216,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ownerCuid?: StringFieldUpdateOperationsInput | string
   }
 
   export type RoomUncheckedUpdateManyInput = {
@@ -8118,6 +9223,46 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerCuid?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type RoomParticipationCreateInput = {
+    joinedAt?: Date | string
+    user: UserCreateNestedOneWithoutRoomParticipationsInput
+    room: RoomCreateNestedOneWithoutParticipantsInput
+  }
+
+  export type RoomParticipationUncheckedCreateInput = {
+    userCuid: string
+    roomCuid: string
+    joinedAt?: Date | string
+  }
+
+  export type RoomParticipationUpdateInput = {
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutRoomParticipationsNestedInput
+    room?: RoomUpdateOneRequiredWithoutParticipantsNestedInput
+  }
+
+  export type RoomParticipationUncheckedUpdateInput = {
+    userCuid?: StringFieldUpdateOperationsInput | string
+    roomCuid?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomParticipationCreateManyInput = {
+    userCuid: string
+    roomCuid: string
+    joinedAt?: Date | string
+  }
+
+  export type RoomParticipationUpdateManyMutationInput = {
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomParticipationUncheckedUpdateManyInput = {
+    userCuid?: StringFieldUpdateOperationsInput | string
+    roomCuid?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ScheduleCreateInput = {
@@ -8423,11 +9568,6 @@ export namespace Prisma {
     none?: RefreshTokenWhereInput
   }
 
-  export type RoomNullableScalarRelationFilter = {
-    is?: RoomWhereInput | null
-    isNot?: RoomWhereInput | null
-  }
-
   export type ScheduleListRelationFilter = {
     every?: ScheduleWhereInput
     some?: ScheduleWhereInput
@@ -8438,6 +9578,18 @@ export namespace Prisma {
     every?: TimeLogWhereInput
     some?: TimeLogWhereInput
     none?: TimeLogWhereInput
+  }
+
+  export type RoomParticipationListRelationFilter = {
+    every?: RoomParticipationWhereInput
+    some?: RoomParticipationWhereInput
+    none?: RoomParticipationWhereInput
+  }
+
+  export type RoomListRelationFilter = {
+    every?: RoomWhereInput
+    some?: RoomWhereInput
+    none?: RoomWhereInput
   }
 
   export type SortOrderInput = {
@@ -8461,6 +9613,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type RoomParticipationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RoomOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserOrderByRelevanceInput = {
     fields: UserOrderByRelevanceFieldEnum | UserOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -8475,7 +9635,6 @@ export namespace Prisma {
     profileImg?: SortOrder
     createdAt?: SortOrder
     totalStudyTime?: SortOrder
-    roomCuid?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -8490,7 +9649,6 @@ export namespace Prisma {
     profileImg?: SortOrder
     createdAt?: SortOrder
     totalStudyTime?: SortOrder
-    roomCuid?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -8501,7 +9659,6 @@ export namespace Prisma {
     profileImg?: SortOrder
     createdAt?: SortOrder
     totalStudyTime?: SortOrder
-    roomCuid?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -8574,14 +9731,9 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type UserListRelationFilter = {
-    every?: UserWhereInput
-    some?: UserWhereInput
-    none?: UserWhereInput
-  }
-
-  export type UserOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
   }
 
   export type RoomOrderByRelevanceInput = {
@@ -8611,16 +9763,70 @@ export namespace Prisma {
     ownerCuid?: SortOrder
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type RoomScalarRelationFilter = {
+    is?: RoomWhereInput
+    isNot?: RoomWhereInput
+  }
+
+  export type RoomParticipationOrderByRelevanceInput = {
+    fields: RoomParticipationOrderByRelevanceFieldEnum | RoomParticipationOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type RoomParticipationUserCuidRoomCuidCompoundUniqueInput = {
+    userCuid: string
+    roomCuid: string
+  }
+
+  export type RoomParticipationCountOrderByAggregateInput = {
+    userCuid?: SortOrder
+    roomCuid?: SortOrder
+    joinedAt?: SortOrder
+  }
+
+  export type RoomParticipationMaxOrderByAggregateInput = {
+    userCuid?: SortOrder
+    roomCuid?: SortOrder
+    joinedAt?: SortOrder
+  }
+
+  export type RoomParticipationMinOrderByAggregateInput = {
+    userCuid?: SortOrder
+    roomCuid?: SortOrder
+    joinedAt?: SortOrder
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type EnumScheduleStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ScheduleStatus | EnumScheduleStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ScheduleStatus[]
     notIn?: $Enums.ScheduleStatus[]
     not?: NestedEnumScheduleStatusFilter<$PrismaModel> | $Enums.ScheduleStatus
-  }
-
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
   }
 
   export type ScheduleOrderByRelevanceInput = {
@@ -8683,22 +9889,6 @@ export namespace Prisma {
     _max?: NestedEnumScheduleStatusFilter<$PrismaModel>
   }
 
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type RoomScalarRelationFilter = {
-    is?: RoomWhereInput
-    isNot?: RoomWhereInput
-  }
-
   export type TimeLogOrderByRelevanceInput = {
     fields: TimeLogOrderByRelevanceFieldEnum | TimeLogOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -8738,20 +9928,6 @@ export namespace Prisma {
 
   export type TimeLogSumOrderByAggregateInput = {
     totalTime?: SortOrder
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type EnumFriendStatusFilter<$PrismaModel = never> = {
@@ -8851,12 +10027,6 @@ export namespace Prisma {
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
-  export type RoomCreateNestedOneWithoutUsersInput = {
-    create?: XOR<RoomCreateWithoutUsersInput, RoomUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: RoomCreateOrConnectWithoutUsersInput
-    connect?: RoomWhereUniqueInput
-  }
-
   export type ScheduleCreateNestedManyWithoutUserInput = {
     create?: XOR<ScheduleCreateWithoutUserInput, ScheduleUncheckedCreateWithoutUserInput> | ScheduleCreateWithoutUserInput[] | ScheduleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ScheduleCreateOrConnectWithoutUserInput | ScheduleCreateOrConnectWithoutUserInput[]
@@ -8869,6 +10039,20 @@ export namespace Prisma {
     connectOrCreate?: TimeLogCreateOrConnectWithoutUserInput | TimeLogCreateOrConnectWithoutUserInput[]
     createMany?: TimeLogCreateManyUserInputEnvelope
     connect?: TimeLogWhereUniqueInput | TimeLogWhereUniqueInput[]
+  }
+
+  export type RoomParticipationCreateNestedManyWithoutUserInput = {
+    create?: XOR<RoomParticipationCreateWithoutUserInput, RoomParticipationUncheckedCreateWithoutUserInput> | RoomParticipationCreateWithoutUserInput[] | RoomParticipationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutUserInput | RoomParticipationCreateOrConnectWithoutUserInput[]
+    createMany?: RoomParticipationCreateManyUserInputEnvelope
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+  }
+
+  export type RoomCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<RoomCreateWithoutOwnerInput, RoomUncheckedCreateWithoutOwnerInput> | RoomCreateWithoutOwnerInput[] | RoomUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: RoomCreateOrConnectWithoutOwnerInput | RoomCreateOrConnectWithoutOwnerInput[]
+    createMany?: RoomCreateManyOwnerInputEnvelope
+    connect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
   }
 
   export type FriendUncheckedCreateNestedManyWithoutFriendInput = {
@@ -8904,6 +10088,20 @@ export namespace Prisma {
     connectOrCreate?: TimeLogCreateOrConnectWithoutUserInput | TimeLogCreateOrConnectWithoutUserInput[]
     createMany?: TimeLogCreateManyUserInputEnvelope
     connect?: TimeLogWhereUniqueInput | TimeLogWhereUniqueInput[]
+  }
+
+  export type RoomParticipationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RoomParticipationCreateWithoutUserInput, RoomParticipationUncheckedCreateWithoutUserInput> | RoomParticipationCreateWithoutUserInput[] | RoomParticipationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutUserInput | RoomParticipationCreateOrConnectWithoutUserInput[]
+    createMany?: RoomParticipationCreateManyUserInputEnvelope
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+  }
+
+  export type RoomUncheckedCreateNestedManyWithoutOwnerInput = {
+    create?: XOR<RoomCreateWithoutOwnerInput, RoomUncheckedCreateWithoutOwnerInput> | RoomCreateWithoutOwnerInput[] | RoomUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: RoomCreateOrConnectWithoutOwnerInput | RoomCreateOrConnectWithoutOwnerInput[]
+    createMany?: RoomCreateManyOwnerInputEnvelope
+    connect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8968,16 +10166,6 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
-  export type RoomUpdateOneWithoutUsersNestedInput = {
-    create?: XOR<RoomCreateWithoutUsersInput, RoomUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: RoomCreateOrConnectWithoutUsersInput
-    upsert?: RoomUpsertWithoutUsersInput
-    disconnect?: RoomWhereInput | boolean
-    delete?: RoomWhereInput | boolean
-    connect?: RoomWhereUniqueInput
-    update?: XOR<XOR<RoomUpdateToOneWithWhereWithoutUsersInput, RoomUpdateWithoutUsersInput>, RoomUncheckedUpdateWithoutUsersInput>
-  }
-
   export type ScheduleUpdateManyWithoutUserNestedInput = {
     create?: XOR<ScheduleCreateWithoutUserInput, ScheduleUncheckedCreateWithoutUserInput> | ScheduleCreateWithoutUserInput[] | ScheduleUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ScheduleCreateOrConnectWithoutUserInput | ScheduleCreateOrConnectWithoutUserInput[]
@@ -9004,6 +10192,34 @@ export namespace Prisma {
     update?: TimeLogUpdateWithWhereUniqueWithoutUserInput | TimeLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: TimeLogUpdateManyWithWhereWithoutUserInput | TimeLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: TimeLogScalarWhereInput | TimeLogScalarWhereInput[]
+  }
+
+  export type RoomParticipationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RoomParticipationCreateWithoutUserInput, RoomParticipationUncheckedCreateWithoutUserInput> | RoomParticipationCreateWithoutUserInput[] | RoomParticipationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutUserInput | RoomParticipationCreateOrConnectWithoutUserInput[]
+    upsert?: RoomParticipationUpsertWithWhereUniqueWithoutUserInput | RoomParticipationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RoomParticipationCreateManyUserInputEnvelope
+    set?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    disconnect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    delete?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    update?: RoomParticipationUpdateWithWhereUniqueWithoutUserInput | RoomParticipationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RoomParticipationUpdateManyWithWhereWithoutUserInput | RoomParticipationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RoomParticipationScalarWhereInput | RoomParticipationScalarWhereInput[]
+  }
+
+  export type RoomUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<RoomCreateWithoutOwnerInput, RoomUncheckedCreateWithoutOwnerInput> | RoomCreateWithoutOwnerInput[] | RoomUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: RoomCreateOrConnectWithoutOwnerInput | RoomCreateOrConnectWithoutOwnerInput[]
+    upsert?: RoomUpsertWithWhereUniqueWithoutOwnerInput | RoomUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: RoomCreateManyOwnerInputEnvelope
+    set?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    disconnect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    delete?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    connect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    update?: RoomUpdateWithWhereUniqueWithoutOwnerInput | RoomUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: RoomUpdateManyWithWhereWithoutOwnerInput | RoomUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: RoomScalarWhereInput | RoomScalarWhereInput[]
   }
 
   export type FriendUncheckedUpdateManyWithoutFriendNestedInput = {
@@ -9076,11 +10292,45 @@ export namespace Prisma {
     deleteMany?: TimeLogScalarWhereInput | TimeLogScalarWhereInput[]
   }
 
-  export type UserCreateNestedManyWithoutRoomInput = {
-    create?: XOR<UserCreateWithoutRoomInput, UserUncheckedCreateWithoutRoomInput> | UserCreateWithoutRoomInput[] | UserUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutRoomInput | UserCreateOrConnectWithoutRoomInput[]
-    createMany?: UserCreateManyRoomInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  export type RoomParticipationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RoomParticipationCreateWithoutUserInput, RoomParticipationUncheckedCreateWithoutUserInput> | RoomParticipationCreateWithoutUserInput[] | RoomParticipationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutUserInput | RoomParticipationCreateOrConnectWithoutUserInput[]
+    upsert?: RoomParticipationUpsertWithWhereUniqueWithoutUserInput | RoomParticipationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RoomParticipationCreateManyUserInputEnvelope
+    set?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    disconnect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    delete?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    update?: RoomParticipationUpdateWithWhereUniqueWithoutUserInput | RoomParticipationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RoomParticipationUpdateManyWithWhereWithoutUserInput | RoomParticipationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RoomParticipationScalarWhereInput | RoomParticipationScalarWhereInput[]
+  }
+
+  export type RoomUncheckedUpdateManyWithoutOwnerNestedInput = {
+    create?: XOR<RoomCreateWithoutOwnerInput, RoomUncheckedCreateWithoutOwnerInput> | RoomCreateWithoutOwnerInput[] | RoomUncheckedCreateWithoutOwnerInput[]
+    connectOrCreate?: RoomCreateOrConnectWithoutOwnerInput | RoomCreateOrConnectWithoutOwnerInput[]
+    upsert?: RoomUpsertWithWhereUniqueWithoutOwnerInput | RoomUpsertWithWhereUniqueWithoutOwnerInput[]
+    createMany?: RoomCreateManyOwnerInputEnvelope
+    set?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    disconnect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    delete?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    connect?: RoomWhereUniqueInput | RoomWhereUniqueInput[]
+    update?: RoomUpdateWithWhereUniqueWithoutOwnerInput | RoomUpdateWithWhereUniqueWithoutOwnerInput[]
+    updateMany?: RoomUpdateManyWithWhereWithoutOwnerInput | RoomUpdateManyWithWhereWithoutOwnerInput[]
+    deleteMany?: RoomScalarWhereInput | RoomScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutOwnedRoomsInput = {
+    create?: XOR<UserCreateWithoutOwnedRoomsInput, UserUncheckedCreateWithoutOwnedRoomsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOwnedRoomsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type RoomParticipationCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomParticipationCreateWithoutRoomInput, RoomParticipationUncheckedCreateWithoutRoomInput> | RoomParticipationCreateWithoutRoomInput[] | RoomParticipationUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutRoomInput | RoomParticipationCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomParticipationCreateManyRoomInputEnvelope
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
   }
 
   export type TimeLogCreateNestedManyWithoutRoomInput = {
@@ -9090,11 +10340,11 @@ export namespace Prisma {
     connect?: TimeLogWhereUniqueInput | TimeLogWhereUniqueInput[]
   }
 
-  export type UserUncheckedCreateNestedManyWithoutRoomInput = {
-    create?: XOR<UserCreateWithoutRoomInput, UserUncheckedCreateWithoutRoomInput> | UserCreateWithoutRoomInput[] | UserUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutRoomInput | UserCreateOrConnectWithoutRoomInput[]
-    createMany?: UserCreateManyRoomInputEnvelope
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  export type RoomParticipationUncheckedCreateNestedManyWithoutRoomInput = {
+    create?: XOR<RoomParticipationCreateWithoutRoomInput, RoomParticipationUncheckedCreateWithoutRoomInput> | RoomParticipationCreateWithoutRoomInput[] | RoomParticipationUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutRoomInput | RoomParticipationCreateOrConnectWithoutRoomInput[]
+    createMany?: RoomParticipationCreateManyRoomInputEnvelope
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
   }
 
   export type TimeLogUncheckedCreateNestedManyWithoutRoomInput = {
@@ -9104,18 +10354,26 @@ export namespace Prisma {
     connect?: TimeLogWhereUniqueInput | TimeLogWhereUniqueInput[]
   }
 
-  export type UserUpdateManyWithoutRoomNestedInput = {
-    create?: XOR<UserCreateWithoutRoomInput, UserUncheckedCreateWithoutRoomInput> | UserCreateWithoutRoomInput[] | UserUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutRoomInput | UserCreateOrConnectWithoutRoomInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutRoomInput | UserUpsertWithWhereUniqueWithoutRoomInput[]
-    createMany?: UserCreateManyRoomInputEnvelope
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutRoomInput | UserUpdateWithWhereUniqueWithoutRoomInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutRoomInput | UserUpdateManyWithWhereWithoutRoomInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  export type UserUpdateOneRequiredWithoutOwnedRoomsNestedInput = {
+    create?: XOR<UserCreateWithoutOwnedRoomsInput, UserUncheckedCreateWithoutOwnedRoomsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOwnedRoomsInput
+    upsert?: UserUpsertWithoutOwnedRoomsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOwnedRoomsInput, UserUpdateWithoutOwnedRoomsInput>, UserUncheckedUpdateWithoutOwnedRoomsInput>
+  }
+
+  export type RoomParticipationUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomParticipationCreateWithoutRoomInput, RoomParticipationUncheckedCreateWithoutRoomInput> | RoomParticipationCreateWithoutRoomInput[] | RoomParticipationUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutRoomInput | RoomParticipationCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomParticipationUpsertWithWhereUniqueWithoutRoomInput | RoomParticipationUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomParticipationCreateManyRoomInputEnvelope
+    set?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    disconnect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    delete?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    update?: RoomParticipationUpdateWithWhereUniqueWithoutRoomInput | RoomParticipationUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomParticipationUpdateManyWithWhereWithoutRoomInput | RoomParticipationUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomParticipationScalarWhereInput | RoomParticipationScalarWhereInput[]
   }
 
   export type TimeLogUpdateManyWithoutRoomNestedInput = {
@@ -9132,18 +10390,18 @@ export namespace Prisma {
     deleteMany?: TimeLogScalarWhereInput | TimeLogScalarWhereInput[]
   }
 
-  export type UserUncheckedUpdateManyWithoutRoomNestedInput = {
-    create?: XOR<UserCreateWithoutRoomInput, UserUncheckedCreateWithoutRoomInput> | UserCreateWithoutRoomInput[] | UserUncheckedCreateWithoutRoomInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutRoomInput | UserCreateOrConnectWithoutRoomInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutRoomInput | UserUpsertWithWhereUniqueWithoutRoomInput[]
-    createMany?: UserCreateManyRoomInputEnvelope
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutRoomInput | UserUpdateWithWhereUniqueWithoutRoomInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutRoomInput | UserUpdateManyWithWhereWithoutRoomInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  export type RoomParticipationUncheckedUpdateManyWithoutRoomNestedInput = {
+    create?: XOR<RoomParticipationCreateWithoutRoomInput, RoomParticipationUncheckedCreateWithoutRoomInput> | RoomParticipationCreateWithoutRoomInput[] | RoomParticipationUncheckedCreateWithoutRoomInput[]
+    connectOrCreate?: RoomParticipationCreateOrConnectWithoutRoomInput | RoomParticipationCreateOrConnectWithoutRoomInput[]
+    upsert?: RoomParticipationUpsertWithWhereUniqueWithoutRoomInput | RoomParticipationUpsertWithWhereUniqueWithoutRoomInput[]
+    createMany?: RoomParticipationCreateManyRoomInputEnvelope
+    set?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    disconnect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    delete?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    connect?: RoomParticipationWhereUniqueInput | RoomParticipationWhereUniqueInput[]
+    update?: RoomParticipationUpdateWithWhereUniqueWithoutRoomInput | RoomParticipationUpdateWithWhereUniqueWithoutRoomInput[]
+    updateMany?: RoomParticipationUpdateManyWithWhereWithoutRoomInput | RoomParticipationUpdateManyWithWhereWithoutRoomInput[]
+    deleteMany?: RoomParticipationScalarWhereInput | RoomParticipationScalarWhereInput[]
   }
 
   export type TimeLogUncheckedUpdateManyWithoutRoomNestedInput = {
@@ -9158,6 +10416,38 @@ export namespace Prisma {
     update?: TimeLogUpdateWithWhereUniqueWithoutRoomInput | TimeLogUpdateWithWhereUniqueWithoutRoomInput[]
     updateMany?: TimeLogUpdateManyWithWhereWithoutRoomInput | TimeLogUpdateManyWithWhereWithoutRoomInput[]
     deleteMany?: TimeLogScalarWhereInput | TimeLogScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutRoomParticipationsInput = {
+    create?: XOR<UserCreateWithoutRoomParticipationsInput, UserUncheckedCreateWithoutRoomParticipationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRoomParticipationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type RoomCreateNestedOneWithoutParticipantsInput = {
+    create?: XOR<RoomCreateWithoutParticipantsInput, RoomUncheckedCreateWithoutParticipantsInput>
+    connectOrCreate?: RoomCreateOrConnectWithoutParticipantsInput
+    connect?: RoomWhereUniqueInput
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type UserUpdateOneRequiredWithoutRoomParticipationsNestedInput = {
+    create?: XOR<UserCreateWithoutRoomParticipationsInput, UserUncheckedCreateWithoutRoomParticipationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRoomParticipationsInput
+    upsert?: UserUpsertWithoutRoomParticipationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRoomParticipationsInput, UserUpdateWithoutRoomParticipationsInput>, UserUncheckedUpdateWithoutRoomParticipationsInput>
+  }
+
+  export type RoomUpdateOneRequiredWithoutParticipantsNestedInput = {
+    create?: XOR<RoomCreateWithoutParticipantsInput, RoomUncheckedCreateWithoutParticipantsInput>
+    connectOrCreate?: RoomCreateOrConnectWithoutParticipantsInput
+    upsert?: RoomUpsertWithoutParticipantsInput
+    connect?: RoomWhereUniqueInput
+    update?: XOR<XOR<RoomUpdateToOneWithWhereWithoutParticipantsInput, RoomUpdateWithoutParticipantsInput>, RoomUncheckedUpdateWithoutParticipantsInput>
   }
 
   export type UserCreateNestedOneWithoutSchedulesInput = {
@@ -9188,10 +10478,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutTimeLogsInput, UserUncheckedCreateWithoutTimeLogsInput>
     connectOrCreate?: UserCreateOrConnectWithoutTimeLogsInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type RoomUpdateOneRequiredWithoutTimeLogsNestedInput = {
@@ -9396,23 +10682,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedEnumScheduleStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ScheduleStatus | EnumScheduleStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ScheduleStatus[]
-    notIn?: $Enums.ScheduleStatus[]
-    not?: NestedEnumScheduleStatusFilter<$PrismaModel> | $Enums.ScheduleStatus
-  }
-
-  export type NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ScheduleStatus | EnumScheduleStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ScheduleStatus[]
-    notIn?: $Enums.ScheduleStatus[]
-    not?: NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel> | $Enums.ScheduleStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumScheduleStatusFilter<$PrismaModel>
-    _max?: NestedEnumScheduleStatusFilter<$PrismaModel>
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -9436,6 +10705,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumScheduleStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ScheduleStatus | EnumScheduleStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ScheduleStatus[]
+    notIn?: $Enums.ScheduleStatus[]
+    not?: NestedEnumScheduleStatusFilter<$PrismaModel> | $Enums.ScheduleStatus
+  }
+
+  export type NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ScheduleStatus | EnumScheduleStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ScheduleStatus[]
+    notIn?: $Enums.ScheduleStatus[]
+    not?: NestedEnumScheduleStatusWithAggregatesFilter<$PrismaModel> | $Enums.ScheduleStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumScheduleStatusFilter<$PrismaModel>
+    _max?: NestedEnumScheduleStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumFriendStatusFilter<$PrismaModel = never> = {
@@ -9519,27 +10805,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type RoomCreateWithoutUsersInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string | null
-    ownerCuid: string
-    timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
-  }
-
-  export type RoomUncheckedCreateWithoutUsersInput = {
-    id?: string
-    name: string
-    createdAt?: Date | string | null
-    ownerCuid: string
-    timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
-  }
-
-  export type RoomCreateOrConnectWithoutUsersInput = {
-    where: RoomWhereUniqueInput
-    create: XOR<RoomCreateWithoutUsersInput, RoomUncheckedCreateWithoutUsersInput>
-  }
-
   export type ScheduleCreateWithoutUserInput = {
     id?: string
     title: string
@@ -9595,6 +10860,52 @@ export namespace Prisma {
 
   export type TimeLogCreateManyUserInputEnvelope = {
     data: TimeLogCreateManyUserInput | TimeLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoomParticipationCreateWithoutUserInput = {
+    joinedAt?: Date | string
+    room: RoomCreateNestedOneWithoutParticipantsInput
+  }
+
+  export type RoomParticipationUncheckedCreateWithoutUserInput = {
+    roomCuid: string
+    joinedAt?: Date | string
+  }
+
+  export type RoomParticipationCreateOrConnectWithoutUserInput = {
+    where: RoomParticipationWhereUniqueInput
+    create: XOR<RoomParticipationCreateWithoutUserInput, RoomParticipationUncheckedCreateWithoutUserInput>
+  }
+
+  export type RoomParticipationCreateManyUserInputEnvelope = {
+    data: RoomParticipationCreateManyUserInput | RoomParticipationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RoomCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string | null
+    participants?: RoomParticipationCreateNestedManyWithoutRoomInput
+    timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
+  }
+
+  export type RoomUncheckedCreateWithoutOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string | null
+    participants?: RoomParticipationUncheckedCreateNestedManyWithoutRoomInput
+    timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
+  }
+
+  export type RoomCreateOrConnectWithoutOwnerInput = {
+    where: RoomWhereUniqueInput
+    create: XOR<RoomCreateWithoutOwnerInput, RoomUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type RoomCreateManyOwnerInputEnvelope = {
+    data: RoomCreateManyOwnerInput | RoomCreateManyOwnerInput[]
     skipDuplicates?: boolean
   }
 
@@ -9666,33 +10977,6 @@ export namespace Prisma {
     userCuid?: StringFilter<"RefreshToken"> | string
   }
 
-  export type RoomUpsertWithoutUsersInput = {
-    update: XOR<RoomUpdateWithoutUsersInput, RoomUncheckedUpdateWithoutUsersInput>
-    create: XOR<RoomCreateWithoutUsersInput, RoomUncheckedCreateWithoutUsersInput>
-    where?: RoomWhereInput
-  }
-
-  export type RoomUpdateToOneWithWhereWithoutUsersInput = {
-    where?: RoomWhereInput
-    data: XOR<RoomUpdateWithoutUsersInput, RoomUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type RoomUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ownerCuid?: StringFieldUpdateOperationsInput | string
-    timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
-  }
-
-  export type RoomUncheckedUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ownerCuid?: StringFieldUpdateOperationsInput | string
-    timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
-  }
-
   export type ScheduleUpsertWithWhereUniqueWithoutUserInput = {
     where: ScheduleWhereUniqueInput
     update: XOR<ScheduleUpdateWithoutUserInput, ScheduleUncheckedUpdateWithoutUserInput>
@@ -9752,7 +11036,58 @@ export namespace Prisma {
     userCuid?: StringFilter<"TimeLog"> | string
   }
 
-  export type UserCreateWithoutRoomInput = {
+  export type RoomParticipationUpsertWithWhereUniqueWithoutUserInput = {
+    where: RoomParticipationWhereUniqueInput
+    update: XOR<RoomParticipationUpdateWithoutUserInput, RoomParticipationUncheckedUpdateWithoutUserInput>
+    create: XOR<RoomParticipationCreateWithoutUserInput, RoomParticipationUncheckedCreateWithoutUserInput>
+  }
+
+  export type RoomParticipationUpdateWithWhereUniqueWithoutUserInput = {
+    where: RoomParticipationWhereUniqueInput
+    data: XOR<RoomParticipationUpdateWithoutUserInput, RoomParticipationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RoomParticipationUpdateManyWithWhereWithoutUserInput = {
+    where: RoomParticipationScalarWhereInput
+    data: XOR<RoomParticipationUpdateManyMutationInput, RoomParticipationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RoomParticipationScalarWhereInput = {
+    AND?: RoomParticipationScalarWhereInput | RoomParticipationScalarWhereInput[]
+    OR?: RoomParticipationScalarWhereInput[]
+    NOT?: RoomParticipationScalarWhereInput | RoomParticipationScalarWhereInput[]
+    userCuid?: StringFilter<"RoomParticipation"> | string
+    roomCuid?: StringFilter<"RoomParticipation"> | string
+    joinedAt?: DateTimeFilter<"RoomParticipation"> | Date | string
+  }
+
+  export type RoomUpsertWithWhereUniqueWithoutOwnerInput = {
+    where: RoomWhereUniqueInput
+    update: XOR<RoomUpdateWithoutOwnerInput, RoomUncheckedUpdateWithoutOwnerInput>
+    create: XOR<RoomCreateWithoutOwnerInput, RoomUncheckedCreateWithoutOwnerInput>
+  }
+
+  export type RoomUpdateWithWhereUniqueWithoutOwnerInput = {
+    where: RoomWhereUniqueInput
+    data: XOR<RoomUpdateWithoutOwnerInput, RoomUncheckedUpdateWithoutOwnerInput>
+  }
+
+  export type RoomUpdateManyWithWhereWithoutOwnerInput = {
+    where: RoomScalarWhereInput
+    data: XOR<RoomUpdateManyMutationInput, RoomUncheckedUpdateManyWithoutOwnerInput>
+  }
+
+  export type RoomScalarWhereInput = {
+    AND?: RoomScalarWhereInput | RoomScalarWhereInput[]
+    OR?: RoomScalarWhereInput[]
+    NOT?: RoomScalarWhereInput | RoomScalarWhereInput[]
+    id?: StringFilter<"Room"> | string
+    name?: StringFilter<"Room"> | string
+    createdAt?: DateTimeNullableFilter<"Room"> | Date | string | null
+    ownerCuid?: StringFilter<"Room"> | string
+  }
+
+  export type UserCreateWithoutOwnedRoomsInput = {
     id?: string
     userId: string
     password: string
@@ -9765,9 +11100,10 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
     schedules?: ScheduleCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutRoomInput = {
+  export type UserUncheckedCreateWithoutOwnedRoomsInput = {
     id?: string
     userId: string
     password: string
@@ -9780,15 +11116,31 @@ export namespace Prisma {
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutRoomInput = {
+  export type UserCreateOrConnectWithoutOwnedRoomsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutRoomInput, UserUncheckedCreateWithoutRoomInput>
+    create: XOR<UserCreateWithoutOwnedRoomsInput, UserUncheckedCreateWithoutOwnedRoomsInput>
   }
 
-  export type UserCreateManyRoomInputEnvelope = {
-    data: UserCreateManyRoomInput | UserCreateManyRoomInput[]
+  export type RoomParticipationCreateWithoutRoomInput = {
+    joinedAt?: Date | string
+    user: UserCreateNestedOneWithoutRoomParticipationsInput
+  }
+
+  export type RoomParticipationUncheckedCreateWithoutRoomInput = {
+    userCuid: string
+    joinedAt?: Date | string
+  }
+
+  export type RoomParticipationCreateOrConnectWithoutRoomInput = {
+    where: RoomParticipationWhereUniqueInput
+    create: XOR<RoomParticipationCreateWithoutRoomInput, RoomParticipationUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomParticipationCreateManyRoomInputEnvelope = {
+    data: RoomParticipationCreateManyRoomInput | RoomParticipationCreateManyRoomInput[]
     skipDuplicates?: boolean
   }
 
@@ -9818,34 +11170,63 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithWhereUniqueWithoutRoomInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutRoomInput, UserUncheckedUpdateWithoutRoomInput>
-    create: XOR<UserCreateWithoutRoomInput, UserUncheckedCreateWithoutRoomInput>
+  export type UserUpsertWithoutOwnedRoomsInput = {
+    update: XOR<UserUpdateWithoutOwnedRoomsInput, UserUncheckedUpdateWithoutOwnedRoomsInput>
+    create: XOR<UserCreateWithoutOwnedRoomsInput, UserUncheckedCreateWithoutOwnedRoomsInput>
+    where?: UserWhereInput
   }
 
-  export type UserUpdateWithWhereUniqueWithoutRoomInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutRoomInput, UserUncheckedUpdateWithoutRoomInput>
+  export type UserUpdateToOneWithWhereWithoutOwnedRoomsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOwnedRoomsInput, UserUncheckedUpdateWithoutOwnedRoomsInput>
   }
 
-  export type UserUpdateManyWithWhereWithoutRoomInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutRoomInput>
+  export type UserUpdateWithoutOwnedRoomsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    nickname?: StringFieldUpdateOperationsInput | string
+    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalStudyTime?: IntFieldUpdateOperationsInput | number
+    friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
+    friendsTo?: FriendUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    schedules?: ScheduleUpdateManyWithoutUserNestedInput
+    timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
   }
 
-  export type UserScalarWhereInput = {
-    AND?: UserScalarWhereInput | UserScalarWhereInput[]
-    OR?: UserScalarWhereInput[]
-    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
-    id?: StringFilter<"User"> | string
-    userId?: StringFilter<"User"> | string
-    password?: StringFilter<"User"> | string
-    nickname?: StringFilter<"User"> | string
-    profileImg?: StringNullableFilter<"User"> | string | null
-    createdAt?: DateTimeNullableFilter<"User"> | Date | string | null
-    totalStudyTime?: IntFilter<"User"> | number
-    roomCuid?: StringNullableFilter<"User"> | string | null
+  export type UserUncheckedUpdateWithoutOwnedRoomsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    nickname?: StringFieldUpdateOperationsInput | string
+    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalStudyTime?: IntFieldUpdateOperationsInput | number
+    friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
+    friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type RoomParticipationUpsertWithWhereUniqueWithoutRoomInput = {
+    where: RoomParticipationWhereUniqueInput
+    update: XOR<RoomParticipationUpdateWithoutRoomInput, RoomParticipationUncheckedUpdateWithoutRoomInput>
+    create: XOR<RoomParticipationCreateWithoutRoomInput, RoomParticipationUncheckedCreateWithoutRoomInput>
+  }
+
+  export type RoomParticipationUpdateWithWhereUniqueWithoutRoomInput = {
+    where: RoomParticipationWhereUniqueInput
+    data: XOR<RoomParticipationUpdateWithoutRoomInput, RoomParticipationUncheckedUpdateWithoutRoomInput>
+  }
+
+  export type RoomParticipationUpdateManyWithWhereWithoutRoomInput = {
+    where: RoomParticipationScalarWhereInput
+    data: XOR<RoomParticipationUpdateManyMutationInput, RoomParticipationUncheckedUpdateManyWithoutRoomInput>
   }
 
   export type TimeLogUpsertWithWhereUniqueWithoutRoomInput = {
@@ -9864,6 +11245,134 @@ export namespace Prisma {
     data: XOR<TimeLogUpdateManyMutationInput, TimeLogUncheckedUpdateManyWithoutRoomInput>
   }
 
+  export type UserCreateWithoutRoomParticipationsInput = {
+    id?: string
+    userId: string
+    password: string
+    nickname: string
+    profileImg?: string | null
+    createdAt?: Date | string | null
+    totalStudyTime?: number
+    friendsFrom?: FriendCreateNestedManyWithoutFriendInput
+    friendsTo?: FriendCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
+    schedules?: ScheduleCreateNestedManyWithoutUserInput
+    timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserUncheckedCreateWithoutRoomParticipationsInput = {
+    id?: string
+    userId: string
+    password: string
+    nickname: string
+    profileImg?: string | null
+    createdAt?: Date | string | null
+    totalStudyTime?: number
+    friendsFrom?: FriendUncheckedCreateNestedManyWithoutFriendInput
+    friendsTo?: FriendUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
+  }
+
+  export type UserCreateOrConnectWithoutRoomParticipationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRoomParticipationsInput, UserUncheckedCreateWithoutRoomParticipationsInput>
+  }
+
+  export type RoomCreateWithoutParticipantsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string | null
+    owner: UserCreateNestedOneWithoutOwnedRoomsInput
+    timeLogs?: TimeLogCreateNestedManyWithoutRoomInput
+  }
+
+  export type RoomUncheckedCreateWithoutParticipantsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string | null
+    ownerCuid: string
+    timeLogs?: TimeLogUncheckedCreateNestedManyWithoutRoomInput
+  }
+
+  export type RoomCreateOrConnectWithoutParticipantsInput = {
+    where: RoomWhereUniqueInput
+    create: XOR<RoomCreateWithoutParticipantsInput, RoomUncheckedCreateWithoutParticipantsInput>
+  }
+
+  export type UserUpsertWithoutRoomParticipationsInput = {
+    update: XOR<UserUpdateWithoutRoomParticipationsInput, UserUncheckedUpdateWithoutRoomParticipationsInput>
+    create: XOR<UserCreateWithoutRoomParticipationsInput, UserUncheckedCreateWithoutRoomParticipationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRoomParticipationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRoomParticipationsInput, UserUncheckedUpdateWithoutRoomParticipationsInput>
+  }
+
+  export type UserUpdateWithoutRoomParticipationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    nickname?: StringFieldUpdateOperationsInput | string
+    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalStudyTime?: IntFieldUpdateOperationsInput | number
+    friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
+    friendsTo?: FriendUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
+    schedules?: ScheduleUpdateManyWithoutUserNestedInput
+    timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRoomParticipationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    nickname?: StringFieldUpdateOperationsInput | string
+    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalStudyTime?: IntFieldUpdateOperationsInput | number
+    friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
+    friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
+  }
+
+  export type RoomUpsertWithoutParticipantsInput = {
+    update: XOR<RoomUpdateWithoutParticipantsInput, RoomUncheckedUpdateWithoutParticipantsInput>
+    create: XOR<RoomCreateWithoutParticipantsInput, RoomUncheckedCreateWithoutParticipantsInput>
+    where?: RoomWhereInput
+  }
+
+  export type RoomUpdateToOneWithWhereWithoutParticipantsInput = {
+    where?: RoomWhereInput
+    data: XOR<RoomUpdateWithoutParticipantsInput, RoomUncheckedUpdateWithoutParticipantsInput>
+  }
+
+  export type RoomUpdateWithoutParticipantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    owner?: UserUpdateOneRequiredWithoutOwnedRoomsNestedInput
+    timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
+  }
+
+  export type RoomUncheckedUpdateWithoutParticipantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ownerCuid?: StringFieldUpdateOperationsInput | string
+    timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
+  }
+
   export type UserCreateWithoutSchedulesInput = {
     id?: string
     userId: string
@@ -9875,8 +11384,9 @@ export namespace Prisma {
     friendsFrom?: FriendCreateNestedManyWithoutFriendInput
     friendsTo?: FriendCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    room?: RoomCreateNestedOneWithoutUsersInput
     timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutSchedulesInput = {
@@ -9887,11 +11397,12 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
     friendsFrom?: FriendUncheckedCreateNestedManyWithoutFriendInput
     friendsTo?: FriendUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutSchedulesInput = {
@@ -9921,8 +11432,9 @@ export namespace Prisma {
     friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    room?: RoomUpdateOneWithoutUsersNestedInput
     timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSchedulesInput = {
@@ -9933,19 +11445,20 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
     friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type RoomCreateWithoutTimeLogsInput = {
     id?: string
     name: string
     createdAt?: Date | string | null
-    ownerCuid: string
-    users?: UserCreateNestedManyWithoutRoomInput
+    owner: UserCreateNestedOneWithoutOwnedRoomsInput
+    participants?: RoomParticipationCreateNestedManyWithoutRoomInput
   }
 
   export type RoomUncheckedCreateWithoutTimeLogsInput = {
@@ -9953,7 +11466,7 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string | null
     ownerCuid: string
-    users?: UserUncheckedCreateNestedManyWithoutRoomInput
+    participants?: RoomParticipationUncheckedCreateNestedManyWithoutRoomInput
   }
 
   export type RoomCreateOrConnectWithoutTimeLogsInput = {
@@ -9972,8 +11485,9 @@ export namespace Prisma {
     friendsFrom?: FriendCreateNestedManyWithoutFriendInput
     friendsTo?: FriendCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    room?: RoomCreateNestedOneWithoutUsersInput
     schedules?: ScheduleCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutTimeLogsInput = {
@@ -9984,11 +11498,12 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
     friendsFrom?: FriendUncheckedCreateNestedManyWithoutFriendInput
     friendsTo?: FriendUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutTimeLogsInput = {
@@ -10011,8 +11526,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    ownerCuid?: StringFieldUpdateOperationsInput | string
-    users?: UserUpdateManyWithoutRoomNestedInput
+    owner?: UserUpdateOneRequiredWithoutOwnedRoomsNestedInput
+    participants?: RoomParticipationUpdateManyWithoutRoomNestedInput
   }
 
   export type RoomUncheckedUpdateWithoutTimeLogsInput = {
@@ -10020,7 +11535,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ownerCuid?: StringFieldUpdateOperationsInput | string
-    users?: UserUncheckedUpdateManyWithoutRoomNestedInput
+    participants?: RoomParticipationUncheckedUpdateManyWithoutRoomNestedInput
   }
 
   export type UserUpsertWithoutTimeLogsInput = {
@@ -10045,8 +11560,9 @@ export namespace Prisma {
     friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    room?: RoomUpdateOneWithoutUsersNestedInput
     schedules?: ScheduleUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTimeLogsInput = {
@@ -10057,11 +11573,12 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
     friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserCreateWithoutFriendsFromInput = {
@@ -10074,9 +11591,10 @@ export namespace Prisma {
     totalStudyTime?: number
     friendsTo?: FriendCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    room?: RoomCreateNestedOneWithoutUsersInput
     schedules?: ScheduleCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutFriendsFromInput = {
@@ -10087,11 +11605,12 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
     friendsTo?: FriendUncheckedCreateNestedManyWithoutUserInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutFriendsFromInput = {
@@ -10109,9 +11628,10 @@ export namespace Prisma {
     totalStudyTime?: number
     friendsFrom?: FriendCreateNestedManyWithoutFriendInput
     refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
-    room?: RoomCreateNestedOneWithoutUsersInput
     schedules?: ScheduleCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutFriendsToInput = {
@@ -10122,11 +11642,12 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
     friendsFrom?: FriendUncheckedCreateNestedManyWithoutFriendInput
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutFriendsToInput = {
@@ -10155,9 +11676,10 @@ export namespace Prisma {
     totalStudyTime?: IntFieldUpdateOperationsInput | number
     friendsTo?: FriendUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    room?: RoomUpdateOneWithoutUsersNestedInput
     schedules?: ScheduleUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFriendsFromInput = {
@@ -10168,11 +11690,12 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
     friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUpsertWithoutFriendsToInput = {
@@ -10196,9 +11719,10 @@ export namespace Prisma {
     totalStudyTime?: IntFieldUpdateOperationsInput | number
     friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
     refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    room?: RoomUpdateOneWithoutUsersNestedInput
     schedules?: ScheduleUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFriendsToInput = {
@@ -10209,11 +11733,12 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
     friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserCreateWithoutRefreshTokensInput = {
@@ -10226,9 +11751,10 @@ export namespace Prisma {
     totalStudyTime?: number
     friendsFrom?: FriendCreateNestedManyWithoutFriendInput
     friendsTo?: FriendCreateNestedManyWithoutUserInput
-    room?: RoomCreateNestedOneWithoutUsersInput
     schedules?: ScheduleCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomCreateNestedManyWithoutOwnerInput
   }
 
   export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -10239,11 +11765,12 @@ export namespace Prisma {
     profileImg?: string | null
     createdAt?: Date | string | null
     totalStudyTime?: number
-    roomCuid?: string | null
     friendsFrom?: FriendUncheckedCreateNestedManyWithoutFriendInput
     friendsTo?: FriendUncheckedCreateNestedManyWithoutUserInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutUserInput
     timeLogs?: TimeLogUncheckedCreateNestedManyWithoutUserInput
+    roomParticipations?: RoomParticipationUncheckedCreateNestedManyWithoutUserInput
+    ownedRooms?: RoomUncheckedCreateNestedManyWithoutOwnerInput
   }
 
   export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -10272,9 +11799,10 @@ export namespace Prisma {
     totalStudyTime?: IntFieldUpdateOperationsInput | number
     friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUpdateManyWithoutUserNestedInput
-    room?: RoomUpdateOneWithoutUsersNestedInput
     schedules?: ScheduleUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUpdateManyWithoutOwnerNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -10285,11 +11813,12 @@ export namespace Prisma {
     profileImg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     totalStudyTime?: IntFieldUpdateOperationsInput | number
-    roomCuid?: NullableStringFieldUpdateOperationsInput | string | null
     friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
     friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
     timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+    roomParticipations?: RoomParticipationUncheckedUpdateManyWithoutUserNestedInput
+    ownedRooms?: RoomUncheckedUpdateManyWithoutOwnerNestedInput
   }
 
   export type FriendCreateManyFriendInput = {
@@ -10326,6 +11855,17 @@ export namespace Prisma {
     date: Date | string
     createdAt?: Date | string | null
     roomCuid: string
+  }
+
+  export type RoomParticipationCreateManyUserInput = {
+    roomCuid: string
+    joinedAt?: Date | string
+  }
+
+  export type RoomCreateManyOwnerInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string | null
   }
 
   export type FriendUpdateWithoutFriendInput = {
@@ -10436,14 +11976,46 @@ export namespace Prisma {
     roomCuid?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserCreateManyRoomInput = {
-    id?: string
-    userId: string
-    password: string
-    nickname: string
-    profileImg?: string | null
-    createdAt?: Date | string | null
-    totalStudyTime?: number
+  export type RoomParticipationUpdateWithoutUserInput = {
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    room?: RoomUpdateOneRequiredWithoutParticipantsNestedInput
+  }
+
+  export type RoomParticipationUncheckedUpdateWithoutUserInput = {
+    roomCuid?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomParticipationUncheckedUpdateManyWithoutUserInput = {
+    roomCuid?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RoomUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    participants?: RoomParticipationUpdateManyWithoutRoomNestedInput
+    timeLogs?: TimeLogUpdateManyWithoutRoomNestedInput
+  }
+
+  export type RoomUncheckedUpdateWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    participants?: RoomParticipationUncheckedUpdateManyWithoutRoomNestedInput
+    timeLogs?: TimeLogUncheckedUpdateManyWithoutRoomNestedInput
+  }
+
+  export type RoomUncheckedUpdateManyWithoutOwnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RoomParticipationCreateManyRoomInput = {
+    userCuid: string
+    joinedAt?: Date | string
   }
 
   export type TimeLogCreateManyRoomInput = {
@@ -10454,44 +12026,19 @@ export namespace Prisma {
     userCuid: string
   }
 
-  export type UserUpdateWithoutRoomInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    nickname?: StringFieldUpdateOperationsInput | string
-    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    totalStudyTime?: IntFieldUpdateOperationsInput | number
-    friendsFrom?: FriendUpdateManyWithoutFriendNestedInput
-    friendsTo?: FriendUpdateManyWithoutUserNestedInput
-    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
-    schedules?: ScheduleUpdateManyWithoutUserNestedInput
-    timeLogs?: TimeLogUpdateManyWithoutUserNestedInput
+  export type RoomParticipationUpdateWithoutRoomInput = {
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutRoomParticipationsNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutRoomInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    nickname?: StringFieldUpdateOperationsInput | string
-    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    totalStudyTime?: IntFieldUpdateOperationsInput | number
-    friendsFrom?: FriendUncheckedUpdateManyWithoutFriendNestedInput
-    friendsTo?: FriendUncheckedUpdateManyWithoutUserNestedInput
-    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-    schedules?: ScheduleUncheckedUpdateManyWithoutUserNestedInput
-    timeLogs?: TimeLogUncheckedUpdateManyWithoutUserNestedInput
+  export type RoomParticipationUncheckedUpdateWithoutRoomInput = {
+    userCuid?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUncheckedUpdateManyWithoutRoomInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    nickname?: StringFieldUpdateOperationsInput | string
-    profileImg?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    totalStudyTime?: IntFieldUpdateOperationsInput | number
+  export type RoomParticipationUncheckedUpdateManyWithoutRoomInput = {
+    userCuid?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TimeLogUpdateWithoutRoomInput = {

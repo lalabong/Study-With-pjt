@@ -11,34 +11,47 @@ datasource db {
 }
 
 model User {
-  id             String         @id @default(cuid()) @db.VarChar(36)
-  userId         String         @unique @db.VarChar(20)
-  password       String         @db.VarChar(255)
-  nickname       String         @unique @db.VarChar(10)
-  profileImg     String?        @db.VarChar(255)
-  createdAt      DateTime?      @default(now()) @db.Timestamp(0)
-  totalStudyTime Int            @default(0)
-  roomCuid       String?
-  friendsFrom    Friend[]       @relation("FriendToUser") // 친구 요청을 받은 유저들
-  friendsTo      Friend[]       @relation("UserToFriend") // 내가 친구 요청을 한 유저들
-  refreshTokens  RefreshToken[]
-  room           Room?          @relation(fields: [roomCuid], references: [id], onDelete: SetNull)
-  schedules      Schedule[]
-  timeLogs       TimeLog[]
+  id                 String              @id @default(cuid()) @db.VarChar(36)
+  userId             String              @unique @db.VarChar(20)
+  password           String              @db.VarChar(255)
+  nickname           String              @unique @db.VarChar(10)
+  profileImg         String?             @db.VarChar(255)
+  createdAt          DateTime?           @default(now()) @db.Timestamp(0)
+  totalStudyTime     Int                 @default(0)
+  friendsFrom        Friend[]            @relation("FriendToUser") // 친구 요청을 받은 유저들
+  friendsTo          Friend[]            @relation("UserToFriend") // 내가 친구 요청을 한 유저들
+  refreshTokens      RefreshToken[]
+  schedules          Schedule[]
+  timeLogs           TimeLog[]
+  roomParticipations RoomParticipation[] // 참여한 방들
+  ownedRooms         Room[]              @relation("RoomOwner") // 소유한 방들
 
   @@map("user")
 }
 
 model Room {
-  id        String    @id @default(cuid()) @db.VarChar(36)
-  name      String    @db.VarChar(50)
-  createdAt DateTime? @default(now()) @db.Timestamp(0)
-  ownerCuid String    @unique
-  users     User[]
-  timeLogs  TimeLog[]
+  id           String              @id @default(cuid()) @db.VarChar(36)
+  name         String              @db.VarChar(50)
+  createdAt    DateTime?           @default(now()) @db.Timestamp(0)
+  ownerCuid    String
+  owner        User                @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
+  participants RoomParticipation[] // 참여자들
+  timeLogs     TimeLog[]
 
   @@index([ownerCuid], map: "room_ownerCuid_fkey")
   @@map("room")
+}
+
+model RoomParticipation {
+  userCuid String
+  roomCuid String
+  joinedAt DateTime @default(now()) @db.Timestamp(0)
+  user     User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)
+  room     Room     @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+
+  @@id([userCuid, roomCuid])
+  @@index([roomCuid], map: "room_participation_roomCuid_fkey")
+  @@map("room_participation")
 }
 
 model Schedule {

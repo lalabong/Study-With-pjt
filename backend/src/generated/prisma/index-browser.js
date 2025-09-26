@@ -127,8 +127,7 @@ exports.Prisma.UserScalarFieldEnum = {
   nickname: 'nickname',
   profileImg: 'profileImg',
   createdAt: 'createdAt',
-  totalStudyTime: 'totalStudyTime',
-  roomCuid: 'roomCuid'
+  totalStudyTime: 'totalStudyTime'
 };
 
 exports.Prisma.RoomScalarFieldEnum = {
@@ -136,6 +135,12 @@ exports.Prisma.RoomScalarFieldEnum = {
   name: 'name',
   createdAt: 'createdAt',
   ownerCuid: 'ownerCuid'
+};
+
+exports.Prisma.RoomParticipationScalarFieldEnum = {
+  userCuid: 'userCuid',
+  roomCuid: 'roomCuid',
+  joinedAt: 'joinedAt'
 };
 
 exports.Prisma.ScheduleScalarFieldEnum = {
@@ -188,14 +193,18 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   userId: 'userId',
   password: 'password',
   nickname: 'nickname',
-  profileImg: 'profileImg',
-  roomCuid: 'roomCuid'
+  profileImg: 'profileImg'
 };
 
 exports.Prisma.RoomOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
   ownerCuid: 'ownerCuid'
+};
+
+exports.Prisma.RoomParticipationOrderByRelevanceFieldEnum = {
+  userCuid: 'userCuid',
+  roomCuid: 'roomCuid'
 };
 
 exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
@@ -236,6 +245,7 @@ exports.FriendStatus = exports.$Enums.FriendStatus = {
 exports.Prisma.ModelName = {
   User: 'User',
   Room: 'Room',
+  RoomParticipation: 'RoomParticipation',
   Schedule: 'Schedule',
   TimeLog: 'TimeLog',
   Friend: 'Friend',
