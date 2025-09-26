@@ -6,6 +6,7 @@ import {
   getUserTotalStudyTime,
   patchUserNickname,
   patchUserProfileImg,
+  postTimeLog,
 } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import { uploadProfileImg } from '../middlewares/fileMiddleware.js';
@@ -571,5 +572,121 @@ router.patch('/:userId/profileImg', uploadProfileImg, patchUserProfileImg);
  *                   example: 2001
  */
 router.patch('/:userId/nickname', authMiddleware, patchUserNickname);
+
+/**
+ * @swagger
+ * /api/users/{userId}/timelogs:
+ *   post:
+ *     summary: 공부 시간 저장
+ *     description: 사용자의 공부 시간을 저장하고 총 학습 시간을 업데이트합니다.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 사용자 ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - totalTime
+ *               - roomId
+ *             properties:
+ *               totalTime:
+ *                 type: integer
+ *                 description: 공부한 시간 (분 단위)
+ *                 minimum: 1
+ *                 example: 30
+ *               roomId:
+ *                 type: string
+ *                 description: 공부한 방의 ID
+ *                 example: "clm1234567890"
+ *     responses:
+ *       201:
+ *         description: 공부 시간 저장 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 공부 시간이 성공적으로 저장되었습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     savedTime:
+ *                       type: integer
+ *                       description: 저장된 시간 (분)
+ *                       example: 30
+ *                     totalStudyTime:
+ *                       type: integer
+ *                       description: 업데이트된 총 학습 시간 (분)
+ *                       example: 1230
+ *                     date:
+ *                       type: string
+ *                       format: date
+ *                       description: 저장된 날짜
+ *                       example: "2023-12-25"
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 공부 시간은 0보다 커야 합니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4001
+ *       403:
+ *         description: 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 해당 방에 참여하고 있지 않습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 4004
+ *       404:
+ *         description: 사용자 또는 방을 찾을 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 사용자를 찾을 수 없습니다.
+ *                 errorCode:
+ *                   type: integer
+ *                   example: 3001
+ */
+router.post('/:userId/timelogs', authMiddleware, postTimeLog);
 
 export default router;
