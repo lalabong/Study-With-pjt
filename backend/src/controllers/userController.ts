@@ -349,10 +349,124 @@ const patchUserNickname: ControllerFn = async (
   }
 };
 
+const postTimeLog: ControllerFn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { totalTime, roomId } = req.body;
+
+    // 입력 값 검증
+    if (!totalTime || totalTime <= 0) {
+      createErrorResponse(res, 400, '공부 시간은 0보다 커야 합니다.', 4001);
+      return;
+    }
+
+    if (!roomId) {
+      createErrorResponse(res, 400, '방 정보가 필요합니다.', 4002);
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { userId },
+    });
+
+    if (!user) {
+      createErrorResponse(res, 404, USER_ERROR.USER_NOT_FOUND, ERROR_CODES.USER_NOT_FOUND);
+      return;
+    }
+
+    // 방이 존재하는지 확인
+    const room = await prisma.room.findUnique({
+      where: { id: roomId },
+    });
+
+    if (!room) {
+      createErrorResponse(res, 404, '방을 찾을 수 없습니다.', 4003);
+      return;
+    }
+
+    // 사용자가 해당 방에 참여중인지 확인
+    const participation = await prisma.roomParticipation.findUnique({
+      where: {
+        userCuid_roomCuid: {
+          userCuid: user.id,
+          roomCuid: roomId,
+        },
+      },
+    });
+
+    if (!participation) {
+      createErrorResponse(res, 403, '해당 방에 참여하고 있지 않습니다.', 4004);
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 트랜잭션으로 TimeLog 저장 및 totalStudyTime 업데이트
+    const result = await prisma.$transaction(async (tx) => {
+      // 오늘 날짜의 기존 TimeLog 조회
+      const existingTimeLog = await tx.timeLog.findFirst({
+        where: {
+          userCuid: user.id,
+          roomCuid: roomId,
+          date: today,
+        },
+      });
+
+      let timeLog;
+      if (existingTimeLog) {
+        // 기존 기록에 시간 추가
+        timeLog = await tx.timeLog.update({
+          where: { id: existingTimeLog.id },
+          data: {
+            totalTime: existingTimeLog.totalTime + totalTime,
+          },
+        });
+      } else {
+        // 새 기록 생성
+        timeLog = await tx.timeLog.create({
+          data: {
+            totalTime,
+            date: today,
+            userCuid: user.id,
+            roomCuid: roomId,
+          },
+        });
+      }
+
+      // 사용자 totalStudyTime 업데이트
+      const updatedUser = await tx.user.update({
+        where: { userId },
+        data: {
+          totalStudyTime: user.totalStudyTime + totalTime,
+        },
+      });
+
+      return { timeLog, updatedUser };
+    });
+
+    createSuccessResponse(res, 201, undefined, '공부 시간이 성공적으로 저장되었습니다.', {
+      data: {
+        savedTime: totalTime,
+        totalStudyTime: result.updatedUser.totalStudyTime,
+        date: format(today, 'yyyy-MM-dd'),
+      },
+    });
+  } catch (error) {
+    console.error('공부 시간 저장 에러:', error);
+    next(error);
+  }
+};
+
 export {
   getUserInfo,
   getUserTimeLogs,
   getUserTotalStudyTime,
   patchUserProfileImg,
   patchUserNickname,
+  postTimeLog,
 };
