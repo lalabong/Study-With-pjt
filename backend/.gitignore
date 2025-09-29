@@ -42,3 +42,4 @@ docker.env
 
 # Uploads (user generated content)
 uploads/
+.claude*
