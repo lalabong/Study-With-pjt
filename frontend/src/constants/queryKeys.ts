@@ -12,6 +12,7 @@ export const ROOM_QUERY_KEYS = {
   ROOM_PARTICIPANTS: 'room-participants',
   CHECK_LAST_PARTICIPANT: 'check-last-participant',
   CURRENT_ROOM: 'current-room',
+  RECEIVED_ROOM_INVITES: 'receivedRoomInvites',
 };
 
 export const FRIEND_QUERY_KEYS = {

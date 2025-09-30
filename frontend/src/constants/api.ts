@@ -14,6 +14,7 @@ export const MYPAGE_ENDPOINTS = {
   GET_USER_TOTAL_STUDY_TIME: (userId: string) => `${API_PREFIX}/users/${userId}/totalStudyTime`,
   UPDATE_USER_NICKNAME: (userId: string) => `${API_PREFIX}/users/${userId}/nickname`,
   UPDATE_USER_PROFILE_IMG: (userId: string) => `${API_PREFIX}/users/${userId}/profileImg`,
+  POST_TIME_LOG: (userId: string) => `${API_PREFIX}/users/${userId}/timelogs`,
 };
 
 export const SCHEDULE_ENDPOINTS = {
@@ -36,6 +37,10 @@ export const ROOM_ENDPOINTS = {
   CHECK_LAST_PARTICIPANT: (roomId: string) =>
     `${API_PREFIX}/rooms/${roomId}/check-last-participant`,
   CURRENT: `${API_PREFIX}/rooms/current`,
+  SEND_INVITE: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/invite`,
+  GET_RECEIVED_INVITES: `${API_PREFIX}/rooms/invites/received`,
+  ACCEPT_INVITE: (inviteId: string) => `${API_PREFIX}/rooms/invites/${inviteId}/accept`,
+  DECLINE_INVITE: (inviteId: string) => `${API_PREFIX}/rooms/invites/${inviteId}/decline`,
 };
 
 export const FRIEND_ENDPOINTS = {

@@ -127,8 +127,7 @@ exports.Prisma.UserScalarFieldEnum = {
   nickname: 'nickname',
   profileImg: 'profileImg',
   createdAt: 'createdAt',
-  totalStudyTime: 'totalStudyTime',
-  roomCuid: 'roomCuid'
+  totalStudyTime: 'totalStudyTime'
 };
 
 exports.Prisma.RoomScalarFieldEnum = {
@@ -136,6 +135,12 @@ exports.Prisma.RoomScalarFieldEnum = {
   name: 'name',
   createdAt: 'createdAt',
   ownerCuid: 'ownerCuid'
+};
+
+exports.Prisma.RoomParticipationScalarFieldEnum = {
+  userCuid: 'userCuid',
+  roomCuid: 'roomCuid',
+  joinedAt: 'joinedAt'
 };
 
 exports.Prisma.ScheduleScalarFieldEnum = {
@@ -173,6 +178,16 @@ exports.Prisma.RefreshTokenScalarFieldEnum = {
   userCuid: 'userCuid'
 };
 
+exports.Prisma.RoomInviteScalarFieldEnum = {
+  id: 'id',
+  roomCuid: 'roomCuid',
+  inviterCuid: 'inviterCuid',
+  inviteeCuid: 'inviteeCuid',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -188,14 +203,18 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   userId: 'userId',
   password: 'password',
   nickname: 'nickname',
-  profileImg: 'profileImg',
-  roomCuid: 'roomCuid'
+  profileImg: 'profileImg'
 };
 
 exports.Prisma.RoomOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
   ownerCuid: 'ownerCuid'
+};
+
+exports.Prisma.RoomParticipationOrderByRelevanceFieldEnum = {
+  userCuid: 'userCuid',
+  roomCuid: 'roomCuid'
 };
 
 exports.Prisma.ScheduleOrderByRelevanceFieldEnum = {
@@ -221,6 +240,13 @@ exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
   token: 'token',
   userCuid: 'userCuid'
 };
+
+exports.Prisma.RoomInviteOrderByRelevanceFieldEnum = {
+  id: 'id',
+  roomCuid: 'roomCuid',
+  inviterCuid: 'inviterCuid',
+  inviteeCuid: 'inviteeCuid'
+};
 exports.ScheduleStatus = exports.$Enums.ScheduleStatus = {
   대기중: '대기중',
   진행중: '진행중',
@@ -233,13 +259,21 @@ exports.FriendStatus = exports.$Enums.FriendStatus = {
   accepted: 'accepted'
 };
 
+exports.RoomInviteStatus = exports.$Enums.RoomInviteStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Room: 'Room',
+  RoomParticipation: 'RoomParticipation',
   Schedule: 'Schedule',
   TimeLog: 'TimeLog',
   Friend: 'Friend',
-  RefreshToken: 'RefreshToken'
+  RefreshToken: 'RefreshToken',
+  RoomInvite: 'RoomInvite'
 };
 
 /**

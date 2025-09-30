@@ -8,8 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma
 
-# 의존성 설치 (production only)
-RUN npm ci --only=production && npm cache clean --force
+# 의존성 설치 (development dependencies 포함 - 빌드에 필요)
+RUN npm ci && npm cache clean --force
 
 # 소스 코드 복사
 COPY . .
@@ -31,11 +31,15 @@ RUN adduser -S nextjs -u 1001
 
 WORKDIR /app
 
-# 빌드된 파일과 의존성 복사(소스코드, devDependencies, 빌드 도구들, .git, md 등등 제외)
-COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+# 패키지 파일과 prisma 스키마 복사
 COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+
+# production 의존성만 설치
+RUN npm ci --only=production && npm cache clean --force
+
+# 빌드된 파일과 필요한 파일들 복사
+COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
 # 업로드 디렉토리 생성
 RUN mkdir -p /app/uploads/profiles && chown -R nextjs:nodejs /app/uploads

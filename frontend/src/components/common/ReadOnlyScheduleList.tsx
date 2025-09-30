@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 import { HiCalendar } from 'react-icons/hi';
 
@@ -23,11 +23,21 @@ const ReadOnlyScheduleList = memo(({ userId, isUserPage }: ReadOnlyScheduleListP
   const formattedDate =
     selectedDate instanceof Date ? formatDateToYYYYMMDD(selectedDate) : getCurrentDateString();
 
-  const { data: schedules, isLoading } = useSchedulesByDateQuery({
+  const {
+    data: schedules,
+    isLoading,
+    refetch,
+  } = useSchedulesByDateQuery({
     userId: userId || '',
     date: formattedDate,
     enabled: !!userId && !!formattedDate,
   });
+
+  // 컴포넌트가 마운트될 때마다 최신 데이터를 가져옴
+  useEffect(() => {
+    console.log('📝 ReadOnlyScheduleList - 마운트됨, 최신 데이터 가져오기');
+    refetch({ cancelRefetch: true });
+  }, [userId, refetch]);
 
   if (!schedules) {
     return null;

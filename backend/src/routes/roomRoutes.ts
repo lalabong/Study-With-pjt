@@ -6,6 +6,10 @@ import {
   checkLastParticipant,
   getRoomInfo,
   getCurrentRoom,
+  sendRoomInvite,
+  acceptRoomInvite,
+  declineRoomInvite,
+  getReceivedRoomInvites,
 } from '../controllers/roomController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
@@ -388,5 +392,184 @@ router.post('/:roomId/leave', authMiddleware, leaveRoom);
  *                       example: 1
  */
 router.get('/:roomId/check-last-participant', authMiddleware, checkLastParticipant);
+
+/**
+ * @swagger
+ * /api/rooms/{roomId}/invite:
+ *   post:
+ *     summary: 방에 친구 초대
+ *     description: 현재 참여 중인 방에 친구를 초대합니다.
+ *     tags: [Rooms]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roomId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 방 ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - inviteeCuid
+ *             properties:
+ *               inviteeCuid:
+ *                 type: string
+ *                 description: 초대할 사용자 ID
+ *                 example: "cm123abc456def"
+ *     responses:
+ *       200:
+ *         description: 방 초대 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 방 초대를 보냈습니다.
+ */
+router.post('/:roomId/invite', authMiddleware, sendRoomInvite);
+
+/**
+ * @swagger
+ * /api/rooms/invites/received:
+ *   get:
+ *     summary: 받은 방 초대 목록 조회
+ *     description: 현재 사용자가 받은 대기 중인 방 초대 목록을 조회합니다.
+ *     tags: [Rooms]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 받은 방 초대 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 받은 방 초대 목록 조회에 성공했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     receivedInvites:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             description: 초대 ID
+ *                           room:
+ *                             type: object
+ *                             properties:
+ *                               id:
+ *                                 type: string
+ *                               name:
+ *                                 type: string
+ *                               createdAt:
+ *                                 type: string
+ *                           inviter:
+ *                             type: object
+ *                             properties:
+ *                               id:
+ *                                 type: string
+ *                               nickname:
+ *                                 type: string
+ *                               profileImg:
+ *                                 type: string
+ */
+router.get('/invites/received', authMiddleware, getReceivedRoomInvites);
+
+/**
+ * @swagger
+ * /api/rooms/invites/{inviteId}/accept:
+ *   post:
+ *     summary: 방 초대 수락
+ *     description: 받은 방 초대를 수락하고 해당 방에 참여합니다.
+ *     tags: [Rooms]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: inviteId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 초대 ID
+ *     responses:
+ *       200:
+ *         description: 방 초대 수락 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 방 초대를 수락했습니다.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     room:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *                         createdAt:
+ *                           type: string
+ */
+router.post('/invites/:inviteId/accept', authMiddleware, acceptRoomInvite);
+
+/**
+ * @swagger
+ * /api/rooms/invites/{inviteId}/decline:
+ *   post:
+ *     summary: 방 초대 거절
+ *     description: 받은 방 초대를 거절합니다.
+ *     tags: [Rooms]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: inviteId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 초대 ID
+ *     responses:
+ *       200:
+ *         description: 방 초대 거절 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 방 초대를 거절했습니다.
+ */
+router.post('/invites/:inviteId/decline', authMiddleware, declineRoomInvite);
 
 export default router;

@@ -64,13 +64,15 @@ const RoomInfoSection = ({ roomTitle, creationTime, isActive }: RoomInfoSectionP
           </div>
         </div>
       </div>
-      <button
-        className="rounded-full p-2 hover:bg-gray-100 cursor-pointer"
-        aria-label="방 나가기"
-        onClick={handleExitRoom}
-      >
-        <HiOutlineLogout className="h-8 w-8 text-gray-600" />
-      </button>
+      <div className="flex gap-2">
+        <button
+          className="rounded-full p-2 hover:bg-gray-100 cursor-pointer"
+          aria-label="방 나가기"
+          onClick={handleExitRoom}
+        >
+          <HiOutlineLogout className="h-8 w-8 text-gray-600" />
+        </button>
+      </div>
 
       <Modal
         isOpen={isLeaveModalOpen}

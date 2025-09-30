@@ -29,3 +29,4 @@ logs/
 
 # 문서 (개발 중)
 CLAUDE.md
+.claude*
