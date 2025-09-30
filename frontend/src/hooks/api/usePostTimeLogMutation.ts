@@ -2,40 +2,13 @@
 
 import { useMutation } from '@tanstack/react-query';
 
-import { axiosInstance } from '@api/axiosInstance';
+import { postTimeLog } from '@api/room/postTimeLog';
 
-import { MYPAGE_ENDPOINTS } from '@constants/api';
 import { USER_QUERY_KEYS } from '@constants/queryKeys';
 
 import { useAuthStore } from '@stores/authStore';
 
 import { getServerQueryClient } from '@lib/react-query/getServerQueryClient';
-
-interface PostTimeLogRequest {
-  totalTime: number; // 분 단위
-  roomId: string;
-}
-
-interface PostTimeLogResponse {
-  status: string;
-  message: string;
-  data: {
-    savedTime: number;
-    totalStudyTime: number;
-    date: string;
-  };
-}
-
-const postTimeLog = async (data: PostTimeLogRequest): Promise<PostTimeLogResponse> => {
-  const userId = useAuthStore.getState().user?.userId;
-
-  if (!userId) {
-    throw new Error('로그인이 필요합니다.');
-  }
-
-  const response = await axiosInstance.post(MYPAGE_ENDPOINTS.POST_TIME_LOG(userId), data);
-  return response.data;
-};
 
 export const usePostTimeLogMutation = () => {
   const queryClient = getServerQueryClient();
