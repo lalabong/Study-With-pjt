@@ -28,6 +28,10 @@ export const ROOM_SUCCESS = {
   LEAVE_ROOM: '방에서 나갔습니다.',
   CHECK_LAST_PARTICIPANT: '마지막 참여자 확인이 완료되었습니다.',
   GET_ROOM_INFO: '방 정보 조회에 성공했습니다.',
+  SEND_INVITE: '방 초대를 보냈습니다.',
+  ACCEPT_INVITE: '방 초대를 수락했습니다.',
+  DECLINE_INVITE: '방 초대를 거절했습니다.',
+  GET_RECEIVED_INVITES: '받은 방 초대 목록 조회에 성공했습니다.',
 };
 
 export const FRIEND_SUCCESS = {

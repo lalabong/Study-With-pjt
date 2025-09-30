@@ -38,6 +38,11 @@ export const ERROR_CODES = {
   ROOM_NOT_FOUND: 5001,
   ROOM_NAME_REQUIRED: 5002,
   ROOM_PARTICIPANT_NOT_FOUND: 5003,
+  ROOM_INVITE_NOT_FOUND: 5004,
+  ROOM_INVITE_ALREADY_EXISTS: 5005,
+  ROOM_INVITE_ALREADY_PARTICIPANT: 5006,
+  ROOM_INVITE_SELF_INVITE: 5007,
+  ROOM_INVITE_UNAUTHORIZED: 5008,
 
   // 친구 관련 오류 (6000~6999)
   FRIEND_NOT_FOUND: 6001,
@@ -94,6 +99,11 @@ export const ROOM_ERROR = {
   ROOM_NOT_FOUND: '방을 찾을 수 없습니다.',
   ROOM_NAME_REQUIRED: '방 이름을 입력해주세요.',
   PARTICIPANT_NOT_FOUND: '해당 방에 참여하고 있지 않습니다.',
+  INVITE_NOT_FOUND: '방 초대를 찾을 수 없습니다.',
+  INVITE_ALREADY_EXISTS: '이미 해당 방에 초대했습니다.',
+  INVITE_ALREADY_PARTICIPANT: '이미 해당 방에 참여 중인 사용자입니다.',
+  INVITE_SELF_INVITE: '자기 자신을 초대할 수 없습니다.',
+  INVITE_UNAUTHORIZED: '방 초대 권한이 없습니다.',
 };
 
 export const FRIEND_ERROR = {
