@@ -19,10 +19,9 @@ interface HeaderActionButtonsProps {
 
 const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
   const router = useRouter();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const setIsFriendsModalOpen = useModalStore((state) => state.setIsFriendsModalOpen);
-  const isNotificationModalOpen = useModalStore((state) => state.isNotificationModalOpen);
-  const setIsNotificationModalOpen = useModalStore((state) => state.setIsNotificationModalOpen);
+  const { isAuthenticated } = useAuthStore();
+  const { setIsFriendsModalOpen, isNotificationModalOpen, setIsNotificationModalOpen } =
+    useModalStore();
 
   const handleNotificationClick = (): void => {
     setIsNotificationModalOpen(true);

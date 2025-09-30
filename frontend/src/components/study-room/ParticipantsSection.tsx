@@ -18,7 +18,7 @@ const ParticipantsSection = () => {
 
   const { currentRoomId, participants, setParticipants } = useRoomStore();
 
-  const { data, isLoading, error } = useRoomParticipantsQuery({
+  const { data, isLoading, error, refetch } = useRoomParticipantsQuery({
     roomId: currentRoomId || '',
     enabled: !!currentRoomId,
   });
@@ -30,7 +30,41 @@ const ParticipantsSection = () => {
     }
   }, [data, setParticipants]);
 
+  // 참가자 변경 이벤트 리스너
+  useEffect(() => {
+    const handleParticipantsChanged = (event: CustomEvent) => {
+      console.log('🔄 참가자 변경 이벤트 감지:', event.detail);
+      // 참가자 목록 다시 조회
+      refetch();
+    };
+
+    // 진행중 일정 변경 이벤트 리스너 (전체 참가자 목록 새로고침)
+    const handleRunningScheduleChanged = (event: CustomEvent) => {
+      console.log('🏃 ParticipantsSection - 진행중 일정 변경 이벤트 감지:', event.detail);
+      // 모든 참가자의 진행중 일정을 새로고침하기 위해 전체 목록 refetch
+      refetch({ cancelRefetch: true });
+    };
+
+    window.addEventListener('participants-changed', handleParticipantsChanged as EventListener);
+    window.addEventListener(
+      'running-schedule-changed',
+      handleRunningScheduleChanged as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        'participants-changed',
+        handleParticipantsChanged as EventListener,
+      );
+      window.removeEventListener(
+        'running-schedule-changed',
+        handleRunningScheduleChanged as EventListener,
+      );
+    };
+  }, [refetch]);
+
   const handleViewDetails = (participant: Participant): void => {
+    console.log('👁️ 참가자 일정 보기:', participant.nickname);
     setSelectedParticipant(participant);
     setIsModalOpen(true);
   };
@@ -88,7 +122,11 @@ const ParticipantsSection = () => {
           title={`${selectedParticipant.nickname}의 일정`}
           width="w-[35%] min-w-[400px]"
         >
-          <ReadOnlyScheduleList userId={selectedParticipant.userId} isUserPage={false} />
+          <ReadOnlyScheduleList
+            key={`${selectedParticipant.userId}-${Date.now()}`}
+            userId={selectedParticipant.userId}
+            isUserPage={false}
+          />
         </Modal>
       )}
     </>

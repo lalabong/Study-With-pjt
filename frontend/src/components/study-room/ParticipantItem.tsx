@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { Button } from '@components/common';
 import UserProfile from '@components/common/UserProfile';
 
@@ -20,10 +22,38 @@ interface ParticipantItemProps {
 }
 
 const ParticipantItem = ({ participant, onViewDetails }: ParticipantItemProps) => {
-  const { data: topRunningScheduleData } = useTopRunningScheduleQuery({
+  const { data: topRunningScheduleData, refetch } = useTopRunningScheduleQuery({
     userId: participant.userId,
     date: getCurrentDateString(),
   });
+
+  // 진행중 일정 변경 이벤트 리스너
+  useEffect(() => {
+    const handleRunningScheduleChanged = (event: CustomEvent) => {
+      const { userId: changedUserId } = event.detail;
+
+      // 이 ParticipantItem이 표시하는 참가자의 일정이 변경된 경우 refetch
+      // userId가 다른 형식일 수 있으므로 문자열로 비교
+      const participantUserId = String(participant.userId); // 이 컴포넌트가 표시하는 참가자 ID
+      const eventUserId = String(changedUserId); // 일정이 변경된 사용자 ID
+
+      if (eventUserId === participantUserId) {
+        refetch({ cancelRefetch: true });
+      }
+    };
+
+    window.addEventListener(
+      'running-schedule-changed',
+      handleRunningScheduleChanged as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        'running-schedule-changed',
+        handleRunningScheduleChanged as EventListener,
+      );
+    };
+  }, [participant.userId, refetch]);
 
   const getAdditionalInfo = (): string => {
     if (!topRunningScheduleData?.topRunningSchedule) {

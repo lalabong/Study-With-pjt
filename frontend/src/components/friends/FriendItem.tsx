@@ -4,6 +4,7 @@ import { Button } from '@components/common';
 import UserProfileSmall from '@components/common/UserProfileSmall';
 
 import { useDeleteFriendMutation } from '@hooks/api/useDeleteFriendMutation';
+import { useSendRoomInviteMutation } from '@hooks/api/useSendRoomInviteMutation';
 
 import { useAuthStore, User } from '@stores/authStore';
 import { useRoomStore } from '@stores/roomStore';
@@ -19,9 +20,15 @@ const FriendItem = ({ friend }: FriendItemProps) => {
   const { currentRoomId } = useRoomStore();
 
   const deleteFriendMutation = useDeleteFriendMutation();
+  const sendInviteMutation = useSendRoomInviteMutation(currentRoomId || '');
 
   const handleInviteClick = (): void => {
-    console.log('친구 초대:', friend);
+    if (!currentRoomId) {
+      console.error('현재 방 ID가 없습니다.');
+      return;
+    }
+
+    sendInviteMutation.mutate({ inviteeCuid: friend.id });
   };
 
   const handleRemoveClick = (): void => {
@@ -47,9 +54,10 @@ const FriendItem = ({ friend }: FriendItemProps) => {
               onClick={handleInviteClick}
               variant="primary"
               size="sm"
+              disabled={sendInviteMutation.isPending}
               aria-label={`${friend.nickname}을(를) 방에 초대`}
             >
-              초대
+              {sendInviteMutation.isPending ? '초대 중...' : '초대'}
             </Button>
           )}
           <Button
