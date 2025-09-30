@@ -74,6 +74,14 @@ export const ROOM_ERROR_MESSAGES = {
   LEAVE_ROOM_FAILED: '방 나가기에 실패했습니다.',
   PARTICIPANT_NOT_FOUND: '해당 방에 참여하고 있지 않습니다.',
   FETCH_ROOM_INFO_FAILED: '방 정보 조회에 실패했습니다.',
+  SEND_INVITE_FAILED: '방 초대 전송에 실패했습니다.',
+  INVITE_ALREADY_EXISTS: '이미 해당 방에 초대했습니다.',
+  INVITE_ALREADY_PARTICIPANT: '이미 해당 방에 참여 중인 사용자입니다.',
+  INVITE_SELF_NOT_ALLOWED: '자기 자신을 초대할 수 없습니다.',
+  INVITE_UNAUTHORIZED: '방 초대 권한이 없습니다.',
+  INVITE_NOT_FOUND: '방 초대를 찾을 수 없습니다.',
+  ACCEPT_INVITE_FAILED: '방 초대 수락에 실패했습니다.',
+  DECLINE_INVITE_FAILED: '방 초대 거절에 실패했습니다.',
 };
 
 export const FRIEND_ERROR_MESSAGES = {

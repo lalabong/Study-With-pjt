@@ -37,6 +37,10 @@ export const ROOM_ENDPOINTS = {
   CHECK_LAST_PARTICIPANT: (roomId: string) =>
     `${API_PREFIX}/rooms/${roomId}/check-last-participant`,
   CURRENT: `${API_PREFIX}/rooms/current`,
+  SEND_INVITE: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/invite`,
+  GET_RECEIVED_INVITES: `${API_PREFIX}/rooms/invites/received`,
+  ACCEPT_INVITE: (inviteId: string) => `${API_PREFIX}/rooms/invites/${inviteId}/accept`,
+  DECLINE_INVITE: (inviteId: string) => `${API_PREFIX}/rooms/invites/${inviteId}/decline`,
 };
 
 export const FRIEND_ENDPOINTS = {

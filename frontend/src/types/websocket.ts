@@ -57,10 +57,66 @@ export interface TimerNotificationMessage extends WebSocketMessage {
   };
 }
 
+// 방 초대 알림 메시지
+export interface RoomInviteMessage extends WebSocketMessage {
+  type: 'ROOM_INVITE';
+  data: {
+    inviteId: string;
+    roomId: string;
+    roomName: string;
+    inviterName: string;
+    inviterUserId: string;
+    message: string;
+  };
+}
+
+// 참가자 변경 알림 메시지
+export interface RoomParticipantMessage extends WebSocketMessage {
+  type: 'PARTICIPANT_JOINED' | 'PARTICIPANT_LEFT';
+  data: {
+    roomId: string;
+    userId: string;
+    nickname: string;
+    profileImg?: string;
+    message: string;
+  };
+}
+
+// 일정 변경 알림 메시지
+export interface ScheduleUpdateMessage extends WebSocketMessage {
+  type: 'SCHEDULE_UPDATED' | 'SCHEDULE_CREATED' | 'SCHEDULE_DELETED';
+  data: {
+    roomId: string;
+    userId: string;
+    nickname: string;
+    scheduleId: string;
+    scheduleTitle: string;
+    action: 'created' | 'updated' | 'deleted' | 'status_changed';
+    message: string;
+  };
+}
+
+// 진행중 일정 상태 변경 알림 메시지
+export interface RunningScheduleUpdateMessage extends WebSocketMessage {
+  type: 'RUNNING_SCHEDULE_UPDATED';
+  data: {
+    roomId: string;
+    userId: string;
+    nickname: string;
+    scheduleTitle: string | null;
+    action: 'started' | 'stopped';
+    message: string;
+  };
+}
+
 // 전체 웹소켓 메시지 유니온 타입
 export type RoomWebSocketMessage =
   | TimerActionMessage
   | TimerStateMessage
   | TimerSyncMessage
   | ChatMessage
-  | TimerNotificationMessage;
+  | TimerNotificationMessage
+  | RoomInviteMessage
+  | RoomParticipantMessage
+  | ScheduleUpdateMessage
+  | RunningScheduleUpdateMessage;
