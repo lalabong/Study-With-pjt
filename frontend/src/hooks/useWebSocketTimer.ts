@@ -2,10 +2,19 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { toast } from 'react-toastify';
+
 import { useAuthStore } from '@stores/authStore';
 import { useRoomStore } from '@stores/roomStore';
 
-import { RoomTimerState, TimerActionMessage, RoomWebSocketMessage } from '@/types/websocket';
+import {
+  RoomTimerState,
+  TimerActionMessage,
+  RoomWebSocketMessage,
+  RoomInviteMessage,
+  RoomParticipantMessage,
+  RunningScheduleUpdateMessage,
+} from '@/types/websocket';
 
 export interface WebSocketTimerState {
   seconds: number;
@@ -44,7 +53,7 @@ export interface StudyTimerActions {
 }
 
 const WEBSOCKET_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
-const FALLBACK_SYNC_INTERVAL = 30000; // 30초마다 동기화 요청
+const FALLBACK_SYNC_INTERVAL = 5000; // 5초마다 동기화 요청 (더 빠른 동기화)
 
 export const useWebSocketTimer = (): WebSocketTimerReturn => {
   // 표시용 상태 (서버 상태 반영)
@@ -60,8 +69,13 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
   const [, setBackupSeconds] = useState(0);
   const [backupIsRunning, setBackupIsRunning] = useState(false);
 
+  // 클라이언트 사이드 실시간 카운터
+  const [clientStartTime, setClientStartTime] = useState<number | null>(null);
+  const [, setLastServerState] = useState<RoomTimerState | null>(null);
+
   const wsRef = useRef<WebSocket | null>(null);
   const backupIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const clientIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastServerTimeRef = useRef<number>(0);
@@ -82,22 +96,76 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
     (timerState: RoomTimerState) => {
       const { hours: h, minutes: m, seconds: s } = parseTime(timerState.totalSeconds);
 
+      console.log(`🔄 updateFromServerState 호출:`, {
+        before: { hours, minutes, seconds, isRunning },
+        server: { h, m, s, isRunning: timerState.isRunning, totalSeconds: timerState.totalSeconds },
+      });
+
+      // 서버 상태가 더 정확하므로 항상 서버 상태로 동기화
       setHours(h);
       setMinutes(m);
       setSeconds(s);
       setIsRunning(timerState.isRunning);
       setStartedBy(timerState.startedBy);
       setLastSync(Date.now());
+      setLastServerState(timerState);
 
       // 백업 타이머도 동기화
       setBackupSeconds(timerState.totalSeconds);
       setBackupIsRunning(timerState.isRunning);
       lastServerTimeRef.current = timerState.totalSeconds;
 
-      console.log(`⏰ 서버 타이머 동기화: ${h}:${m}:${s}, 실행중: ${timerState.isRunning}`);
+      // 타임스탬프 기반 정확한 클라이언트 카운터 설정
+      if (timerState.isRunning) {
+        // 서버 타임스탬프를 고려한 더 정확한 시작 시간 계산
+        const now = Date.now();
+        const serverTime = timerState.lastUpdated;
+        const networkDelay = Math.max(0, now - serverTime); // 네트워크 지연 추정
+
+        const adjustedStartTime = now - timerState.totalSeconds * 1000 - networkDelay;
+        setClientStartTime(adjustedStartTime);
+
+        console.log(`⏱️ 타임스탬프 기반 클라이언트 카운터:`, {
+          serverTime: new Date(serverTime).toLocaleTimeString(),
+          networkDelay: `${networkDelay}ms`,
+          adjustedStartTime: new Date(adjustedStartTime).toLocaleTimeString(),
+        });
+      } else {
+        setClientStartTime(null);
+        console.log(`⏹️ 클라이언트 카운터 정지`);
+      }
+
+      console.log(`✅ UI 상태 업데이트 완료: ${h}:${m}:${s}, 실행중: ${timerState.isRunning}`);
     },
-    [parseTime],
+    [parseTime, hours, minutes, seconds, isRunning],
   );
+
+  // 클라이언트 사이드 실시간 카운터 (서버 동기화 보완)
+  useEffect(() => {
+    if (isRunning && clientStartTime && isConnected) {
+      clientIntervalRef.current = setInterval(() => {
+        const currentTime = Date.now();
+        const elapsedMs = currentTime - clientStartTime;
+        const totalSeconds = Math.floor(elapsedMs / 1000);
+
+        const { hours: h, minutes: m, seconds: s } = parseTime(totalSeconds);
+        setHours(h);
+        setMinutes(m);
+        setSeconds(s);
+      }, 100); // 100ms로 더 부드러운 업데이트
+    } else {
+      if (clientIntervalRef.current) {
+        clearInterval(clientIntervalRef.current);
+        clientIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (clientIntervalRef.current) {
+        clearInterval(clientIntervalRef.current);
+      }
+    };
+  }, [isRunning, clientStartTime, isConnected, parseTime]);
 
   // 백업 타이머 (웹소켓 연결 끊김 시 작동)
   useEffect(() => {
@@ -131,12 +199,25 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
     (event: MessageEvent) => {
       try {
         const message: RoomWebSocketMessage = JSON.parse(event.data);
+        console.log('📨 웹소켓 메시지 수신:', message.type, message.data);
 
         switch (message.type) {
           case 'TIMER_STATE':
           case 'TIMER_SYNC':
             if (message.data.roomId === currentRoomId) {
+              console.log('⏰ 타이머 상태 업데이트 수신:', {
+                totalSeconds: message.data.totalSeconds,
+                isRunning: message.data.isRunning,
+                roomId: message.data.roomId,
+              });
               updateFromServerState(message.data);
+            } else {
+              console.log(
+                '🔕 다른 룸의 타이머 메시지 무시:',
+                message.data.roomId,
+                '현재 룸:',
+                currentRoomId,
+              );
             }
             break;
 
@@ -147,6 +228,77 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
               );
             }
             break;
+
+          case 'ROOM_INVITE':
+            // 방 초대 알림 처리
+            const inviteMessage = message as RoomInviteMessage;
+            toast.info(inviteMessage.data.message, {
+              position: 'top-right',
+              autoClose: 10000,
+              closeOnClick: true,
+              pauseOnHover: true,
+            });
+            console.log(`📨 방 초대 알림: ${inviteMessage.data.message}`);
+            break;
+
+          case 'PARTICIPANT_JOINED':
+          case 'PARTICIPANT_LEFT':
+            // 참가자 변경 알림 처리
+            const participantMessage = message as RoomParticipantMessage;
+            if (participantMessage.data.roomId === currentRoomId) {
+              console.log(`👥 참가자 변경: ${participantMessage.type}`, participantMessage.data);
+
+              // 참가자 목록 새로고침을 위한 이벤트 발생
+              window.dispatchEvent(
+                new CustomEvent('participants-changed', {
+                  detail: {
+                    type: participantMessage.type,
+                    userId: participantMessage.data.userId,
+                    nickname: participantMessage.data.nickname,
+                  },
+                }),
+              );
+
+              // 토스트 알림
+              if (participantMessage.type === 'PARTICIPANT_JOINED') {
+                toast.success(`${participantMessage.data.nickname}님이 입장했습니다.`, {
+                  position: 'bottom-right',
+                  autoClose: 3000,
+                });
+              } else {
+                toast.info(`${participantMessage.data.nickname}님이 퇴장했습니다.`, {
+                  position: 'bottom-right',
+                  autoClose: 3000,
+                });
+              }
+            }
+            break;
+
+          case 'RUNNING_SCHEDULE_UPDATED':
+            // 진행중 일정 변경 알림 처리 (토스트 제거, 데이터 업데이트만)
+            const runningScheduleMessage = message as RunningScheduleUpdateMessage;
+            if (runningScheduleMessage.data.roomId === currentRoomId) {
+              console.log(`🏃 진행중 일정 변경 메시지 수신:`, runningScheduleMessage.data);
+
+              // 진행중 일정 업데이트 이벤트 발생 (데이터 업데이트만)
+              window.dispatchEvent(
+                new CustomEvent('running-schedule-changed', {
+                  detail: {
+                    userId: runningScheduleMessage.data.userId,
+                    nickname: runningScheduleMessage.data.nickname,
+                    scheduleTitle: runningScheduleMessage.data.scheduleTitle,
+                    action: runningScheduleMessage.data.action,
+                  },
+                }),
+              );
+            } else {
+              console.log(
+                `🔕 다른 룸의 진행중 일정 메시지 무시: ${runningScheduleMessage.data.roomId} != ${currentRoomId}`,
+              );
+            }
+            break;
+
+          // 일정 변경 웹소켓 알림 제거됨 - 자세히 버튼 클릭 시 최신 데이터 조회로 변경
         }
       } catch (error) {
         console.error('웹소켓 메시지 파싱 에러:', error);
@@ -270,29 +422,48 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
         };
 
         wsRef.current.send(JSON.stringify(message));
-        console.log(`📤 타이머 액션 전송: ${action}`);
+        console.log(`📤 타이머 액션 전송 성공: ${action}`, message);
       } catch (error) {
         console.error('타이머 액션 전송 에러:', error);
       }
     },
-    [currentRoomId, user, connect],
+    [currentRoomId, user, connect, isConnected],
   );
 
   // 타이머 제어 함수들
   const start = useCallback(() => {
+    console.log('🟢 타이머 시작 요청, 연결 상태:', isConnected);
+
     if (isConnected) {
+      // 즉시 로컬 상태 업데이트 (Optimistic Update)
+      const currentTime = Date.now();
+      const currentTotalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+      setIsRunning(true);
+      setClientStartTime(currentTime - currentTotalSeconds * 1000);
+      console.log('⚡ 즉시 로컬 타이머 시작 (Optimistic)');
+
       sendTimerAction('START');
     } else {
+      console.log('🔄 백업 모드에서 타이머 시작');
       // 백업 모드에서는 클라이언트에서만 시작
       setBackupIsRunning(true);
       setIsRunning(true);
     }
-  }, [isConnected, sendTimerAction]);
+  }, [isConnected, sendTimerAction, hours, minutes, seconds]);
 
   const stop = useCallback(() => {
+    console.log('🔴 타이머 정지 요청, 연결 상태:', isConnected);
+
     if (isConnected) {
+      // 즉시 로컬 상태 업데이트 (Optimistic Update)
+      setIsRunning(false);
+      setClientStartTime(null);
+      console.log('⚡ 즉시 로컬 타이머 정지 (Optimistic)');
+
       sendTimerAction('STOP');
     } else {
+      console.log('🔄 백업 모드에서 타이머 정지');
       // 백업 모드에서는 클라이언트에서만 정지
       setBackupIsRunning(false);
       setIsRunning(false);
@@ -320,16 +491,21 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
 
   // 방 변경 시 웹소켓 재연결
   useEffect(() => {
-    if (currentRoomId) {
+    if (currentRoomId && user) {
       connect();
     } else {
       disconnect();
     }
 
     return () => {
+      // 클라이언트 타이머도 정리
+      if (clientIntervalRef.current) {
+        clearInterval(clientIntervalRef.current);
+        clientIntervalRef.current = null;
+      }
       disconnect();
     };
-  }, [currentRoomId, connect, disconnect]);
+  }, [currentRoomId, user?.id]); // connect, disconnect 의존성 제거
 
   // 주기적 동기화 (연결 끊김 시 복구용)
   useEffect(() => {
