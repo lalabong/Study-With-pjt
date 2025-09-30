@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import { ControllerFn } from '../types/index.js';
 import prisma from '../lib/prisma.js';
 import { createErrorResponse, createSuccessResponse } from '../utils/responseUtils.js';
-import { ERROR_CODES, ROOM_ERROR, ROOM_SUCCESS } from '../constants/index.js';
+import { ERROR_CODES, ROOM_ERROR, ROOM_SUCCESS, FRIEND_ERROR } from '../constants/index.js';
 import { AuthRequest } from '../types/index.js';
+import { WebSocketTimerService } from '../services/webSocketTimer.js';
 
 export const getParticipants: ControllerFn = async (
   req: Request,
@@ -332,6 +333,334 @@ export const getRoomInfo: ControllerFn = async (
     });
   } catch (error) {
     console.error('방 정보 조회 에러:', error);
+    next(error);
+  }
+};
+
+export const sendRoomInvite: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { roomId } = req.params;
+    const { inviteeCuid } = req.body;
+    const inviterCuid = req.user?.id;
+
+    if (!inviterCuid) {
+      createErrorResponse(res, 401, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
+      return;
+    }
+
+    if (!inviteeCuid) {
+      createErrorResponse(res, 400, FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD, ERROR_CODES.FRIEND_REQUEST_REQUIRED_FIELD);
+      return;
+    }
+
+    if (inviterCuid === inviteeCuid) {
+      createErrorResponse(res, 400, ROOM_ERROR.INVITE_SELF_INVITE, ERROR_CODES.ROOM_INVITE_SELF_INVITE);
+      return;
+    }
+
+    // 방 존재 여부 확인 및 초대자가 방에 참여 중인지 확인
+    const roomParticipation = await prisma.roomParticipation.findUnique({
+      where: {
+        userCuid_roomCuid: {
+          userCuid: inviterCuid,
+          roomCuid: roomId,
+        },
+      },
+      include: {
+        room: true,
+      },
+    });
+
+    if (!roomParticipation) {
+      createErrorResponse(res, 403, ROOM_ERROR.PARTICIPANT_NOT_FOUND, ERROR_CODES.ROOM_PARTICIPANT_NOT_FOUND);
+      return;
+    }
+
+    // 초대받을 사용자 존재 여부 확인
+    const inviteeUser = await prisma.user.findUnique({
+      where: { id: inviteeCuid },
+      select: { id: true, nickname: true },
+    });
+
+    if (!inviteeUser) {
+      createErrorResponse(res, 404, FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD, ERROR_CODES.USER_NOT_FOUND);
+      return;
+    }
+
+    // 이미 방에 참여 중인지 확인
+    const existingParticipation = await prisma.roomParticipation.findUnique({
+      where: {
+        userCuid_roomCuid: {
+          userCuid: inviteeCuid,
+          roomCuid: roomId,
+        },
+      },
+    });
+
+    if (existingParticipation) {
+      createErrorResponse(res, 400, ROOM_ERROR.INVITE_ALREADY_PARTICIPANT, ERROR_CODES.ROOM_INVITE_ALREADY_PARTICIPANT);
+      return;
+    }
+
+    // 이미 초대가 존재하는지 확인
+    const existingInvite = await prisma.roomInvite.findUnique({
+      where: {
+        roomCuid_inviteeCuid: {
+          roomCuid: roomId,
+          inviteeCuid: inviteeCuid,
+        },
+      },
+    });
+
+    if (existingInvite && existingInvite.status === 'pending') {
+      createErrorResponse(res, 400, ROOM_ERROR.INVITE_ALREADY_EXISTS, ERROR_CODES.ROOM_INVITE_ALREADY_EXISTS);
+      return;
+    }
+
+    // 기존 초대가 거절되었거나 수락되었다면 새로운 초대 생성
+    let inviteId: string;
+    if (existingInvite) {
+      const updatedInvite = await prisma.roomInvite.update({
+        where: { id: existingInvite.id },
+        data: {
+          status: 'pending',
+          inviterCuid,
+          updatedAt: new Date(),
+        },
+      });
+      inviteId = updatedInvite.id;
+    } else {
+      const newInvite = await prisma.roomInvite.create({
+        data: {
+          roomCuid: roomId,
+          inviterCuid,
+          inviteeCuid,
+          status: 'pending',
+        },
+      });
+      inviteId = newInvite.id;
+    }
+
+    // 초대받은 사용자에게 웹소켓 알림 전송
+    const inviterUser = await prisma.user.findUnique({
+      where: { id: inviterCuid },
+      select: { nickname: true, userId: true },
+    });
+
+    if (inviterUser) {
+      WebSocketTimerService.sendRoomInviteNotification(inviteeCuid, {
+        inviteId,
+        roomId,
+        roomName: roomParticipation.room.name,
+        inviterName: inviterUser.nickname,
+        inviterUserId: inviterUser.userId,
+      });
+    }
+
+    createSuccessResponse(res, 200, undefined, ROOM_SUCCESS.SEND_INVITE);
+  } catch (error) {
+    console.error('방 초대 전송 에러:', error);
+    next(error);
+  }
+};
+
+export const acceptRoomInvite: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { inviteId } = req.params;
+    const userCuid = req.user?.id;
+
+    if (!userCuid) {
+      createErrorResponse(res, 401, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
+      return;
+    }
+
+    const invite = await prisma.roomInvite.findUnique({
+      where: { id: inviteId },
+      include: {
+        room: true,
+      },
+    });
+
+    if (!invite) {
+      createErrorResponse(res, 404, ROOM_ERROR.INVITE_NOT_FOUND, ERROR_CODES.ROOM_INVITE_NOT_FOUND);
+      return;
+    }
+
+    // 초대받은 본인인지 확인
+    if (invite.inviteeCuid !== userCuid) {
+      createErrorResponse(res, 403, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.ROOM_INVITE_UNAUTHORIZED);
+      return;
+    }
+
+    // 이미 처리된 초대인지 확인
+    if (invite.status !== 'pending') {
+      createErrorResponse(res, 400, ROOM_ERROR.INVITE_NOT_FOUND, ERROR_CODES.ROOM_INVITE_NOT_FOUND);
+      return;
+    }
+
+    // 이미 방에 참여 중인지 재확인
+    const existingParticipation = await prisma.roomParticipation.findUnique({
+      where: {
+        userCuid_roomCuid: {
+          userCuid,
+          roomCuid: invite.roomCuid,
+        },
+      },
+    });
+
+    if (existingParticipation) {
+      createErrorResponse(res, 400, ROOM_ERROR.INVITE_ALREADY_PARTICIPANT, ERROR_CODES.ROOM_INVITE_ALREADY_PARTICIPANT);
+      return;
+    }
+
+    // 트랜잭션으로 초대 수락 및 방 참여 처리
+    await prisma.$transaction(async (tx) => {
+      // 기존에 참여 중인 방에서 나가기
+      const existingParticipations = await tx.roomParticipation.findMany({
+        where: { userCuid },
+        select: { roomCuid: true },
+      });
+
+      if (existingParticipations.length > 0) {
+        await tx.roomParticipation.deleteMany({
+          where: { userCuid },
+        });
+
+        // 각 방에서 남은 참여자 수를 확인하고 빈 방은 삭제
+        for (const participation of existingParticipations) {
+          const remainingParticipants = await tx.roomParticipation.count({
+            where: { roomCuid: participation.roomCuid },
+          });
+
+          if (remainingParticipants === 0) {
+            await tx.room.delete({
+              where: { id: participation.roomCuid },
+            });
+          }
+        }
+      }
+
+      // 새 방에 참여
+      await tx.roomParticipation.create({
+        data: {
+          userCuid,
+          roomCuid: invite.roomCuid,
+        },
+      });
+
+      // 초대 상태 업데이트
+      await tx.roomInvite.update({
+        where: { id: inviteId },
+        data: { status: 'accepted' },
+      });
+    });
+
+    createSuccessResponse(res, 200, { room: invite.room }, ROOM_SUCCESS.ACCEPT_INVITE);
+  } catch (error) {
+    console.error('방 초대 수락 에러:', error);
+    next(error);
+  }
+};
+
+export const declineRoomInvite: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { inviteId } = req.params;
+    const userCuid = req.user?.id;
+
+    if (!userCuid) {
+      createErrorResponse(res, 401, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
+      return;
+    }
+
+    const invite = await prisma.roomInvite.findUnique({
+      where: { id: inviteId },
+    });
+
+    if (!invite) {
+      createErrorResponse(res, 404, ROOM_ERROR.INVITE_NOT_FOUND, ERROR_CODES.ROOM_INVITE_NOT_FOUND);
+      return;
+    }
+
+    // 초대받은 본인인지 확인
+    if (invite.inviteeCuid !== userCuid) {
+      createErrorResponse(res, 403, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.ROOM_INVITE_UNAUTHORIZED);
+      return;
+    }
+
+    // 이미 처리된 초대인지 확인
+    if (invite.status !== 'pending') {
+      createErrorResponse(res, 400, ROOM_ERROR.INVITE_NOT_FOUND, ERROR_CODES.ROOM_INVITE_NOT_FOUND);
+      return;
+    }
+
+    // 초대 거절
+    await prisma.roomInvite.update({
+      where: { id: inviteId },
+      data: { status: 'declined' },
+    });
+
+    createSuccessResponse(res, 200, undefined, ROOM_SUCCESS.DECLINE_INVITE);
+  } catch (error) {
+    console.error('방 초대 거절 에러:', error);
+    next(error);
+  }
+};
+
+export const getReceivedRoomInvites: ControllerFn = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userCuid = req.user?.id;
+
+    if (!userCuid) {
+      createErrorResponse(res, 401, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.USER_UNAUTHORIZED);
+      return;
+    }
+
+    const receivedInvites = await prisma.roomInvite.findMany({
+      where: {
+        inviteeCuid: userCuid,
+        status: 'pending',
+      },
+      include: {
+        room: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+          },
+        },
+        inviter: {
+          select: {
+            id: true,
+            userId: true,
+            nickname: true,
+            profileImg: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    createSuccessResponse(res, 200, { receivedInvites }, ROOM_SUCCESS.GET_RECEIVED_INVITES);
+  } catch (error) {
+    console.error('받은 방 초대 목록 조회 에러:', error);
     next(error);
   }
 };
