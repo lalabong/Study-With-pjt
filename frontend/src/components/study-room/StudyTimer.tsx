@@ -3,34 +3,28 @@
 import { useEffect } from 'react';
 
 import { useStudyTimeSync } from '@hooks/useStudyTimeSync';
-import { useWebSocketTimer } from '@hooks/useWebSocketTimer';
+import { WebSocketTimerReturn } from '@hooks/useWebSocketTimer';
 
 import { formatToTwoDigits } from '@utils/date';
 
 interface StudyTimerProps {
-  isRunning: boolean;
+  timer: WebSocketTimerReturn;
   onTimerStateChange?: (state: { isRunning: boolean; totalMinutes: number }) => void;
 }
 
-const StudyTimer = ({ isRunning, onTimerStateChange }: StudyTimerProps) => {
-  const timer = useWebSocketTimer();
+const StudyTimer = ({ timer, onTimerStateChange }: StudyTimerProps) => {
   const sync = useStudyTimeSync({
     getTotalMinutes: timer.getTotalMinutes,
     reset: timer.reset,
     isRunning: timer.isRunning,
   });
 
-  // 외부에서 받은 isRunning prop에 따라 타이머 제어 (웹소켓 기반)
+  // 타이머 정지 시 동기화 처리
   useEffect(() => {
-    if (isRunning && !timer.isRunning) {
-      console.log('🟢 웹소켓 타이머 시작');
-      timer.start();
-    } else if (!isRunning && timer.isRunning) {
-      console.log('🔴 웹소켓 타이머 정지');
-      timer.stop();
+    if (!timer.isRunning) {
       sync.handleTimerStop();
     }
-  }, [isRunning, timer.isRunning]);
+  }, [timer.isRunning, sync]);
 
   // 타이머 상태 변화를 부모 컴포넌트에 알림
   useEffect(() => {

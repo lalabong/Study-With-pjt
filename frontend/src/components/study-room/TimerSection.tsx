@@ -1,22 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-
 import { HiPlay, HiStop } from 'react-icons/hi';
 
 import StudyTimer from '@components/study-room/StudyTimer';
 
+import { useWebSocketTimer } from '@hooks/useWebSocketTimer';
+
 const TimerSection = () => {
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const timer = useWebSocketTimer();
 
   const handleToggleTimer = () => {
-    setIsTimerRunning((prev) => !prev);
+    if (timer.isRunning) {
+      timer.stop();
+    } else {
+      timer.start();
+    }
   };
   return (
     <section className="flex flex-row justify-center items-center gap-3">
-      <StudyTimer isRunning={isTimerRunning} />
+      <StudyTimer timer={timer} />
       <div className="flex flex-row justify-center items-center gap-4">
-        {isTimerRunning ? (
+        {timer.isRunning ? (
           <HiStop
             className="h-15 w-15 text-red-500 hover:text-red-600 rounded-full transition-colors cursor-pointer"
             onClick={handleToggleTimer}
