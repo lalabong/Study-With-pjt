@@ -109,6 +109,21 @@ export interface RunningScheduleUpdateMessage extends WebSocketMessage {
   };
 }
 
+// heartbeat 메시지
+export interface PingMessage extends WebSocketMessage {
+  type: 'PING';
+  data: {
+    timestamp: number;
+  };
+}
+
+export interface PongMessage extends WebSocketMessage {
+  type: 'PONG';
+  data: {
+    timestamp: number;
+  };
+}
+
 // 전체 웹소켓 메시지 유니온 타입
 export type RoomWebSocketMessage =
   | TimerActionMessage
@@ -119,4 +134,6 @@ export type RoomWebSocketMessage =
   | RoomInviteMessage
   | RoomParticipantMessage
   | ScheduleUpdateMessage
-  | RunningScheduleUpdateMessage;
+  | RunningScheduleUpdateMessage
+  | PingMessage
+  | PongMessage;

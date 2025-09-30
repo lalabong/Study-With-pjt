@@ -54,6 +54,8 @@ export interface StudyTimerActions {
 
 const WEBSOCKET_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000';
 const FALLBACK_SYNC_INTERVAL = 5000; // 5초마다 동기화 요청 (더 빠른 동기화)
+const HEARTBEAT_INTERVAL = 30000; // 30초마다 heartbeat
+const CONNECTION_TIMEOUT = 10000; // 10초 연결 타임아웃
 
 export const useWebSocketTimer = (): WebSocketTimerReturn => {
   // 표시용 상태 (서버 상태 반영)
@@ -78,7 +80,10 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
   const clientIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const syncIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const connectionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastServerTimeRef = useRef<number>(0);
+  const lastHeartbeatRef = useRef<number>(0);
 
   const { currentRoomId } = useRoomStore();
   const { user } = useAuthStore();
@@ -194,6 +199,55 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
     };
   }, [isConnected, backupIsRunning, parseTime]);
 
+  // heartbeat 시작
+  const startHeartbeat = useCallback(() => {
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+    }
+
+    heartbeatIntervalRef.current = setInterval(() => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        // ping 메시지 전송
+        wsRef.current.send(JSON.stringify({ type: 'PING', timestamp: Date.now() }));
+        lastHeartbeatRef.current = Date.now();
+        console.log('💓 Heartbeat ping 전송');
+
+        // 응답 타임아웃 시작
+        startConnectionTimeout();
+      }
+    }, HEARTBEAT_INTERVAL);
+  }, []);
+
+  // heartbeat 정지
+  const stopHeartbeat = useCallback(() => {
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = null;
+    }
+  }, []);
+
+  // 연결 타임아웃 체크
+  const startConnectionTimeout = useCallback(() => {
+    if (connectionTimeoutRef.current) {
+      clearTimeout(connectionTimeoutRef.current);
+    }
+
+    connectionTimeoutRef.current = setTimeout(() => {
+      console.log('⏰ 연결 타임아웃 - 강제 재연결');
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    }, CONNECTION_TIMEOUT);
+  }, []);
+
+  // 연결 타임아웃 정지
+  const stopConnectionTimeout = useCallback(() => {
+    if (connectionTimeoutRef.current) {
+      clearTimeout(connectionTimeoutRef.current);
+      connectionTimeoutRef.current = null;
+    }
+  }, []);
+
   // 웹소켓 메시지 처리
   const handleWebSocketMessage = useCallback(
     (event: MessageEvent) => {
@@ -202,6 +256,12 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
         console.log('📨 웹소켓 메시지 수신:', message.type, message.data);
 
         switch (message.type) {
+          case 'PONG':
+            // heartbeat 응답 수신
+            console.log('💓 Heartbeat pong 수신');
+            stopConnectionTimeout();
+            break;
+
           case 'TIMER_STATE':
           case 'TIMER_SYNC':
             if (message.data.roomId === currentRoomId) {
@@ -337,6 +397,9 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
         setIsConnected(true);
         console.log('✅ 웹소켓 연결됨');
 
+        // heartbeat 시작
+        startHeartbeat();
+
         // 연결 후 즉시 현재 타이머 상태 요청
         wsRef.current?.send(
           JSON.stringify({
@@ -377,6 +440,10 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
   const disconnect = useCallback(() => {
     console.log('🔌 웹소켓 연결 해제');
 
+    // 타이머들 정리
+    stopHeartbeat();
+    stopConnectionTimeout();
+
     // 재연결 타이머 정리
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
@@ -392,7 +459,7 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
     }
 
     setIsConnected(false);
-  }, []);
+  }, [stopHeartbeat, stopConnectionTimeout]);
 
   // 타이머 액션 전송
   const sendTimerAction = useCallback(
@@ -532,6 +599,40 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
       }
     };
   }, [isConnected, currentRoomId]);
+
+  // 컴포넌트 언마운트 시 정리
+  useEffect(() => {
+    return () => {
+      console.log('🧹 useWebSocketTimer 정리');
+
+      // 모든 타이머 정리
+      stopHeartbeat();
+      stopConnectionTimeout();
+
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+
+      if (backupIntervalRef.current) {
+        clearInterval(backupIntervalRef.current);
+      }
+
+      if (clientIntervalRef.current) {
+        clearInterval(clientIntervalRef.current);
+      }
+
+      if (syncIntervalRef.current) {
+        clearInterval(syncIntervalRef.current);
+      }
+
+      // 웹소켓 연결 해제
+      if (wsRef.current) {
+        if (wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.close(1000, 'Component unmounted');
+        }
+      }
+    };
+  }, [stopHeartbeat, stopConnectionTimeout]);
 
   return {
     seconds,

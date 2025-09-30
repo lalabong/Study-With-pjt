@@ -134,6 +134,13 @@ export class WebSocketTimerService {
       roomClients.delete(userId);
       console.log(`👋 클라이언트 ${userId} 룸 ${roomId}에서 연결 해제됨`);
 
+      // 데이터베이스에서도 방 참여 정보 제거
+      try {
+        await this.removeUserFromRoomInDB(roomId, userId);
+      } catch (error) {
+        console.error(`❌ DB에서 사용자 ${userId} 룸 ${roomId} 퇴장 처리 실패:`, error);
+      }
+
       // 다른 참가자들에게 퇴장 알림 (룸에 다른 사람이 있는 경우)
       if (roomClients.size > 0) {
         await this.broadcastParticipantLeft(roomId, userId);
@@ -354,38 +361,6 @@ export class WebSocketTimerService {
     });
   }
 
-  // 룸의 모든 클라이언트에게 메시지 브로드캐스트
-  static broadcastToRoom(roomId: string, message: WebSocketMessage): void {
-    const roomClients = roomConnections.get(roomId);
-    if (!roomClients) {
-      console.log(`❌ 룸 ${roomId}에 연결된 클라이언트가 없습니다`);
-      return;
-    }
-
-    const messageStr = JSON.stringify(message);
-    let sentCount = 0;
-    let totalClients = roomClients.size;
-
-    roomClients.forEach((ws, userId) => {
-      if (ws.readyState === WebSocket.OPEN) {
-        try {
-          ws.send(messageStr);
-          sentCount++;
-        } catch (error) {
-          console.error(`❌ 클라이언트 ${userId}에게 메시지 전송 실패:`, error);
-        }
-      } else {
-        // 연결이 끊어진 클라이언트 정리
-        roomClients.delete(userId);
-        console.log(`🧹 연결 끊어진 클라이언트 ${userId} 정리됨`);
-      }
-    });
-
-    // 타이머 상태는 너무 자주 발생하므로 로그 최소화
-    if (message.type !== 'TIMER_STATE' && sentCount > 0) {
-      console.log(`📡 룸 ${roomId}에 ${message.type} 메시지 브로드캐스트 (${sentCount}명)`);
-    }
-  }
 
   // 특정 클라이언트에게 메시지 전송
   static sendToClient(ws: any, message: WebSocketMessage): void {
@@ -776,6 +751,114 @@ export class WebSocketTimerService {
       }
     } catch (error) {
       console.error(`❌ 룸별 일정 변경 알림 실패: ${scheduleOwnerId}`, error);
+    }
+  }
+
+  // 데이터베이스에서 사용자를 방에서 제거
+  static async removeUserFromRoomInDB(roomId: string, userId: string): Promise<void> {
+    try {
+      console.log(`🗃️ DB에서 사용자 ${userId}를 룸 ${roomId}에서 제거 시도`);
+
+      // 방 참여 정보 삭제
+      const deletedParticipation = await prisma.roomParticipation.delete({
+        where: {
+          userCuid_roomCuid: {
+            userCuid: userId,
+            roomCuid: roomId,
+          },
+        },
+      });
+
+      console.log(`✅ DB에서 사용자 ${userId} 룸 ${roomId} 퇴장 처리 완료`);
+
+      // 방에 남은 참여자가 있는지 확인
+      const remainingParticipants = await prisma.roomParticipation.count({
+        where: { roomCuid: roomId },
+      });
+
+      console.log(`📊 룸 ${roomId}에 남은 참여자 수: ${remainingParticipants}명`);
+
+      // 방에 아무도 없으면 방 삭제
+      if (remainingParticipants === 0) {
+        await prisma.room.delete({
+          where: { id: roomId },
+        });
+        console.log(`🗑️ 빈 방 ${roomId} 삭제 완료`);
+      }
+    } catch (error) {
+      // 이미 삭제된 경우나 존재하지 않는 경우는 에러가 아님
+      if (error.code === 'P2025') {
+        console.log(`ℹ️ 사용자 ${userId}가 이미 룸 ${roomId}에서 제거되었거나 존재하지 않음`);
+      } else {
+        console.error(`❌ DB에서 사용자 ${userId} 룸 ${roomId} 제거 실패:`, error);
+        throw error;
+      }
+    }
+  }
+
+  // 연결 끊김 감지 시 자동 퇴장 처리
+  static async handleDisconnectedClient(userId: string): Promise<void> {
+    try {
+      console.log(`🔌 사용자 ${userId} 연결 끊김 감지 - 자동 퇴장 처리 시작`);
+
+      // 해당 사용자가 참여 중인 모든 방 조회
+      const userRooms = await prisma.roomParticipation.findMany({
+        where: { userCuid: userId },
+        select: { roomCuid: true },
+      });
+
+      console.log(`🏠 사용자 ${userId}가 참여 중인 방: ${userRooms.length}개`);
+
+      // 각 방에서 자동 퇴장 처리
+      for (const room of userRooms) {
+        await this.removeClientFromRoom(room.roomCuid, userId);
+      }
+
+      console.log(`✅ 사용자 ${userId} 자동 퇴장 처리 완료`);
+    } catch (error) {
+      console.error(`❌ 사용자 ${userId} 자동 퇴장 처리 실패:`, error);
+    }
+  }
+
+  // 브로드캐스트 시 연결 끊어진 클라이언트 자동 정리
+  static broadcastToRoom(roomId: string, message: WebSocketMessage): void {
+    const roomClients = roomConnections.get(roomId);
+    if (!roomClients) {
+      console.log(`❌ 룸 ${roomId}에 연결된 클라이언트가 없습니다`);
+      return;
+    }
+
+    const messageStr = JSON.stringify(message);
+    let sentCount = 0;
+    let totalClients = roomClients.size;
+    const disconnectedClients: string[] = [];
+
+    roomClients.forEach((ws, userId) => {
+      if (ws.readyState === WebSocket.OPEN) {
+        try {
+          ws.send(messageStr);
+          sentCount++;
+        } catch (error) {
+          console.error(`❌ 클라이언트 ${userId}에게 메시지 전송 실패:`, error);
+          disconnectedClients.push(userId);
+        }
+      } else {
+        // 연결이 끊어진 클라이언트 추가
+        disconnectedClients.push(userId);
+      }
+    });
+
+    // 연결 끊어진 클라이언트들 자동 정리
+    for (const userId of disconnectedClients) {
+      console.log(`🧹 연결 끊어진 클라이언트 ${userId} 자동 정리 시작`);
+      this.handleDisconnectedClient(userId).catch(error => {
+        console.error(`❌ 클라이언트 ${userId} 자동 정리 실패:`, error);
+      });
+    }
+
+    // 타이머 상태는 너무 자주 발생하므로 로그 최소화
+    if (message.type !== 'TIMER_STATE' && sentCount > 0) {
+      console.log(`📡 룸 ${roomId}에 ${message.type} 메시지 브로드캐스트 (${sentCount}명, ${disconnectedClients.length}명 정리)`);
     }
   }
 

@@ -130,6 +130,15 @@ wss.on('connection', (ws: WebSocket, request: Request) => {
           });
           break;
 
+        case 'PING':
+          // heartbeat ping에 대한 pong 응답
+          WebSocketTimerService.sendToClient(ws, {
+            type: 'PONG',
+            data: { timestamp: Date.now() },
+            timestamp: Date.now(),
+          });
+          break;
+
         default:
           console.log('알 수 없는 메시지 타입:', data.type);
       }
