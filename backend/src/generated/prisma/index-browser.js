@@ -178,6 +178,16 @@ exports.Prisma.RefreshTokenScalarFieldEnum = {
   userCuid: 'userCuid'
 };
 
+exports.Prisma.RoomInviteScalarFieldEnum = {
+  id: 'id',
+  roomCuid: 'roomCuid',
+  inviterCuid: 'inviterCuid',
+  inviteeCuid: 'inviteeCuid',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -230,6 +240,13 @@ exports.Prisma.RefreshTokenOrderByRelevanceFieldEnum = {
   token: 'token',
   userCuid: 'userCuid'
 };
+
+exports.Prisma.RoomInviteOrderByRelevanceFieldEnum = {
+  id: 'id',
+  roomCuid: 'roomCuid',
+  inviterCuid: 'inviterCuid',
+  inviteeCuid: 'inviteeCuid'
+};
 exports.ScheduleStatus = exports.$Enums.ScheduleStatus = {
   대기중: '대기중',
   진행중: '진행중',
@@ -242,6 +259,12 @@ exports.FriendStatus = exports.$Enums.FriendStatus = {
   accepted: 'accepted'
 };
 
+exports.RoomInviteStatus = exports.$Enums.RoomInviteStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Room: 'Room',
@@ -249,7 +272,8 @@ exports.Prisma.ModelName = {
   Schedule: 'Schedule',
   TimeLog: 'TimeLog',
   Friend: 'Friend',
-  RefreshToken: 'RefreshToken'
+  RefreshToken: 'RefreshToken',
+  RoomInvite: 'RoomInvite'
 };
 
 /**

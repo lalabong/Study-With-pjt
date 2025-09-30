@@ -92,8 +92,10 @@ wss.on('connection', (ws: WebSocket, request: Request) => {
 
   console.log(`🔌 웹소켓 연결: 룸 ${roomId}, 사용자 ${userId}`);
 
-  // 룸에 클라이언트 추가
-  WebSocketTimerService.addClientToRoom(roomId, userId, ws);
+  // 사용자 정보를 포함하여 룸에 클라이언트 추가
+  WebSocketTimerService.addClientToRoom(roomId, userId, ws).catch(error => {
+    console.error('클라이언트 추가 중 오류:', error);
+  });
 
   // 메시지 처리
   ws.on('message', (message) => {
@@ -139,7 +141,9 @@ wss.on('connection', (ws: WebSocket, request: Request) => {
   // 연결 해제 처리
   ws.on('close', () => {
     console.log(`🔌 웹소켓 연결 해제: 룸 ${roomId}, 사용자 ${userId}`);
-    WebSocketTimerService.removeClientFromRoom(roomId, userId);
+    WebSocketTimerService.removeClientFromRoom(roomId, userId).catch(error => {
+      console.error('클라이언트 제거 중 오류:', error);
+    });
   });
 
   // 에러 처리

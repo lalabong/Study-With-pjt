@@ -6,6 +6,7 @@ import { createErrorResponse, createSuccessResponse } from '../utils/responseUti
 import { AUTH_ERROR, SCHEDULE_ERROR, USER_ERROR, ERROR_CODES } from '../constants/errorMessages.js';
 import { SCHEDULE_SUCCESS } from '../constants/successMessages.js';
 import { DAILY_SCHEDULE_LIMIT } from '../constants/schedule.js';
+import { WebSocketTimerService } from '../services/webSocketTimer.js';
 
 // 사용자의 일정 날짜만 조회(선택한 달 +-1달)
 export const getUserScheduleDates: ControllerFn = async (
@@ -146,7 +147,6 @@ export const getTopRunningSchedule: ControllerFn = async (
         order: 'asc',
       },
     });
-
 
     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.GET_TOP_RUNNING_SCHEDULE, {
       data: { topRunningSchedule },
@@ -325,6 +325,38 @@ export const updateSchedule: ControllerFn = async (
       data: updateData,
     });
 
+    // 일정 상태가 "진행중"으로 변경되거나 "진행중"에서 다른 상태로 변경되는 경우 실시간 알림
+    const oldStatus = existingSchedule.status as string;
+    const newStatus = updatedSchedule.status as string;
+
+    if (oldStatus !== newStatus) {
+      if (newStatus === '진행중') {
+        // 진행중으로 변경됨
+        try {
+          await WebSocketTimerService.broadcastRunningScheduleUpdateToRoom(
+            authUser.userId, // authUser.id 대신 authUser.userId 사용
+            updatedSchedule.title,
+            'started'
+          );
+        } catch (wsError) {
+          console.error('❌ 진행중 일정 시작 웹소켓 알림 전송 실패:', wsError);
+        }
+      } else if (oldStatus === '진행중' && newStatus !== '진행중') {
+        // 진행중에서 다른 상태로 변경됨
+        try {
+          await WebSocketTimerService.broadcastRunningScheduleUpdateToRoom(
+            authUser.userId, // authUser.id 대신 authUser.userId 사용
+            updatedSchedule.title,
+            'stopped',
+            newStatus // 새로운 상태 전달
+          );
+        } catch (wsError) {
+          console.error('❌ 진행중 일정 완료 웹소켓 알림 전송 실패:', wsError);
+        }
+      }
+    }
+
+    const action = status && status !== existingSchedule.status ? 'status_changed' : 'updated';
     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.UPDATE_SCHEDULE, {
       data: { schedule: updatedSchedule },
     });
@@ -436,6 +468,22 @@ export const updateScheduleOrder: ControllerFn = async (
       }
     }
 
+    // 순서 변경 전 최상단 진행중 일정 확인
+    const beforeTopRunningSchedule = await prisma.schedule.findFirst({
+      where: {
+        userCuid: authUser.id,
+        date: date,
+        status: '진행중',
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+      orderBy: {
+        order: 'asc',
+      },
+    });
+
     // 트랜잭션으로 모든 일정 순서 업데이트
     const updateOperations = schedules.map((scheduleId, index) => {
       return prisma.schedule.update({
@@ -445,6 +493,34 @@ export const updateScheduleOrder: ControllerFn = async (
     });
 
     await prisma.$transaction(updateOperations);
+
+    // 순서 변경 후 최상단 진행중 일정 확인
+    const afterTopRunningSchedule = await prisma.schedule.findFirst({
+      where: {
+        userCuid: authUser.id,
+        date: date,
+        status: '진행중',
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+      orderBy: {
+        order: 'asc',
+      },
+    });
+
+    // 최상단 진행중 일정이 변경되었다면 알림 전송
+    const beforeTopId = beforeTopRunningSchedule?.id;
+    const afterTopId = afterTopRunningSchedule?.id;
+
+    if (beforeTopId !== afterTopId && afterTopRunningSchedule) {
+      await WebSocketTimerService.broadcastRunningScheduleUpdateToRoom(
+        authUser.userId,
+        afterTopRunningSchedule.title,
+        'reordered' // 순서가 변경되어 새로운 최상단 일정이 됨
+      );
+    }
 
     createSuccessResponse(res, 200, undefined, SCHEDULE_SUCCESS.UPDATE_ORDER);
   } catch (error) {
