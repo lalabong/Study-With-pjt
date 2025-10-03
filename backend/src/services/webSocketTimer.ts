@@ -85,6 +85,38 @@ export interface RunningScheduleUpdateMessage extends WebSocketMessage {
   };
 }
 
+// 채팅 메시지 관련 메시지 타입들
+export interface ChatMessage {
+  id: string;
+  content: string;
+  messageType: 'message' | 'system';
+  createdAt: Date;
+  user: {
+    id: string;
+    userId: string;
+    nickname: string;
+    profileImg?: string | null;
+  };
+}
+
+export interface ChatMessageReceived extends WebSocketMessage {
+  type: 'CHAT_MESSAGE_RECEIVED';
+  data: {
+    roomId: string;
+    message: ChatMessage;
+  };
+}
+
+export interface ChatMessageSent extends WebSocketMessage {
+  type: 'CHAT_MESSAGE_SENT';
+  data: {
+    roomId: string;
+    content: string;
+    userCuid: string;
+    tempId?: string; // 클라이언트에서 생성한 임시 ID (Optimistic Update용)
+  };
+}
+
 // 룸별 타이머 상태 저장소
 const roomTimerStates = new Map<string, RoomTimerState>();
 
@@ -97,9 +129,22 @@ const userConnections = new Map<string, any>();
 // 타이머 인터벌 관리
 const roomIntervals = new Map<string, NodeJS.Timeout>();
 
+// 지연된 방 퇴장 처리를 위한 타이머 (userId -> timeout)
+const delayedRemovalTimers = new Map<string, NodeJS.Timeout>();
+
+// 방 퇴장 지연 시간 (밀리초) - 30초
+const ROOM_REMOVAL_DELAY = 30000;
+
 export class WebSocketTimerService {
   // 룸에 클라이언트 연결 추가
   static async addClientToRoom(roomId: string, userId: string, ws: any): Promise<void> {
+    // 지연된 제거 타이머가 있다면 취소 (재연결된 경우)
+    if (delayedRemovalTimers.has(userId)) {
+      clearTimeout(delayedRemovalTimers.get(userId)!);
+      delayedRemovalTimers.delete(userId);
+      console.log(`⏰ 사용자 ${userId}의 지연된 방 퇴장 타이머 취소됨 (재연결)`);
+    }
+
     if (!roomConnections.has(roomId)) {
       roomConnections.set(roomId, new Map());
     }
@@ -134,12 +179,8 @@ export class WebSocketTimerService {
       roomClients.delete(userId);
       console.log(`👋 클라이언트 ${userId} 룸 ${roomId}에서 연결 해제됨`);
 
-      // 데이터베이스에서도 방 참여 정보 제거
-      try {
-        await this.removeUserFromRoomInDB(roomId, userId);
-      } catch (error) {
-        console.error(`❌ DB에서 사용자 ${userId} 룸 ${roomId} 퇴장 처리 실패:`, error);
-      }
+      // 즉시 DB에서 제거하지 않고 지연된 제거 타이머 설정
+      this.scheduleDelayedRemoval(roomId, userId);
 
       // 다른 참가자들에게 퇴장 알림 (룸에 다른 사람이 있는 경우)
       if (roomClients.size > 0) {
@@ -156,6 +197,62 @@ export class WebSocketTimerService {
     userConnections.delete(userId);
   }
 
+  // 지연된 방 퇴장 처리 스케줄링
+  static scheduleDelayedRemoval(roomId: string, userId: string): void {
+    // 기존 타이머가 있다면 취소
+    if (delayedRemovalTimers.has(userId)) {
+      clearTimeout(delayedRemovalTimers.get(userId)!);
+    }
+
+    console.log(
+      `⏰ 사용자 ${userId}의 방 ${roomId} 퇴장을 ${ROOM_REMOVAL_DELAY / 1000}초 후 처리 예정`
+    );
+
+    const timer = setTimeout(async () => {
+      try {
+        console.log(`🕐 지연된 퇴장 처리 실행: 사용자 ${userId}, 방 ${roomId}`);
+        await this.removeUserFromRoomInDB(roomId, userId);
+        delayedRemovalTimers.delete(userId);
+      } catch (error) {
+        console.error(`❌ 지연된 퇴장 처리 실패: 사용자 ${userId}, 방 ${roomId}`, error);
+      }
+    }, ROOM_REMOVAL_DELAY);
+
+    delayedRemovalTimers.set(userId, timer);
+  }
+
+  // 즉시 방 퇴장 처리 (실제 방 나가기 버튼 클릭 시)
+  static async forceRemoveUserFromRoom(roomId: string, userId: string): Promise<void> {
+    // 지연된 제거 타이머가 있다면 취소
+    if (delayedRemovalTimers.has(userId)) {
+      clearTimeout(delayedRemovalTimers.get(userId)!);
+      delayedRemovalTimers.delete(userId);
+      console.log(`⏰ 사용자 ${userId}의 지연된 방 퇴장 타이머 취소됨 (강제 퇴장)`);
+    }
+
+    // 웹소켓 연결 제거
+    const roomClients = roomConnections.get(roomId);
+    if (roomClients && roomClients.has(userId)) {
+      roomClients.delete(userId);
+    }
+    userConnections.delete(userId);
+
+    // 즉시 DB에서 제거
+    await this.removeUserFromRoomInDB(roomId, userId);
+
+    // 다른 참가자들에게 퇴장 알림
+    if (roomClients && roomClients.size > 0) {
+      await this.broadcastParticipantLeft(roomId, userId);
+    }
+
+    // 룸에 클라이언트가 없으면 타이머 정리
+    if (!roomClients || roomClients.size === 0) {
+      this.cleanupRoom(roomId);
+    }
+
+    console.log(`✅ 사용자 ${userId} 방 ${roomId}에서 즉시 퇴장 처리 완료`);
+  }
+
   // 룸 타이머 상태 가져오기
   static getRoomTimerState(roomId: string): RoomTimerState {
     if (!roomTimerStates.has(roomId)) {
@@ -168,14 +265,14 @@ export class WebSocketTimerService {
       };
       roomTimerStates.set(roomId, initialState);
     }
-    
+
     const state = roomTimerStates.get(roomId)!;
-    
+
     // 타이머가 실행 중이면 현재까지의 경과 시간을 계산
     if (state.isRunning && state.startedAt) {
       const currentTime = Date.now();
       const elapsedSeconds = Math.floor((currentTime - state.startedAt) / 1000);
-      
+
       // 현재 상태를 복사하여 실시간 totalSeconds 반영
       return {
         ...state,
@@ -183,7 +280,7 @@ export class WebSocketTimerService {
         lastUpdated: currentTime,
       };
     }
-    
+
     return state;
   }
 
@@ -201,7 +298,7 @@ export class WebSocketTimerService {
       };
       roomTimerStates.set(roomId, initialState);
     }
-    
+
     const state = roomTimerStates.get(roomId)!;
 
     if (state.isRunning) {
@@ -226,7 +323,7 @@ export class WebSocketTimerService {
 
       // getRoomTimerState를 사용하여 실시간 계산된 상태를 브로드캐스트
       const liveState = this.getRoomTimerState(roomId);
-      
+
       this.broadcastToRoom(roomId, {
         type: 'TIMER_STATE',
         data: liveState,
@@ -361,7 +458,6 @@ export class WebSocketTimerService {
     });
   }
 
-
   // 특정 클라이언트에게 메시지 전송
   static sendToClient(ws: any, message: WebSocketMessage): void {
     if (ws.readyState === WebSocket.OPEN) {
@@ -387,7 +483,9 @@ export class WebSocketTimerService {
       state.isRunning = false;
       state.startedAt = undefined;
       state.lastUpdated = currentTime;
-      console.log(`⏸️ 룸 ${roomId} 자동 정지됨 - 누적 시간: ${this.formatTime(state.totalSeconds)}`);
+      console.log(
+        `⏸️ 룸 ${roomId} 자동 정지됨 - 누적 시간: ${this.formatTime(state.totalSeconds)}`
+      );
     }
 
     // 연결만 정리, 타이머 상태는 보존
@@ -421,7 +519,7 @@ export class WebSocketTimerService {
     }
   ): void {
     const userWs = userConnections.get(inviteeCuid);
-    
+
     if (userWs && userWs.readyState === WebSocket.OPEN) {
       const message: RoomInviteMessage = {
         type: 'ROOM_INVITE',
@@ -445,7 +543,7 @@ export class WebSocketTimerService {
       // 데이터베이스에서 사용자 정보 조회
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { nickname: true, profileImg: true }
+        select: { nickname: true, profileImg: true },
       });
 
       const nickname = user?.nickname || `User-${userId}`;
@@ -476,7 +574,7 @@ export class WebSocketTimerService {
       // 데이터베이스에서 사용자 정보 조회
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { nickname: true, profileImg: true }
+        select: { nickname: true, profileImg: true },
       });
 
       const nickname = user?.nickname || `User-${userId}`;
@@ -503,32 +601,32 @@ export class WebSocketTimerService {
 
   // 일정 변경 알림 브로드캐스트
   static async broadcastScheduleUpdate(
-    roomId: string, 
-    userId: string, 
-    scheduleId: string, 
-    scheduleTitle: string, 
+    roomId: string,
+    userId: string,
+    scheduleId: string,
+    scheduleTitle: string,
     action: 'created' | 'updated' | 'deleted' | 'status_changed'
   ): Promise<void> {
     try {
       console.log(`🔍 일정 변경 알림 준비: 룸=${roomId}, 사용자=${userId}, 액션=${action}`);
-      
+
       // 해당 룸에 연결된 클라이언트 확인
       const roomClients = roomConnections.get(roomId);
       if (!roomClients || roomClients.size === 0) {
         console.log(`⚠️ 룸 ${roomId}에 연결된 클라이언트가 없음 - 일정 알림 스킵`);
         return;
       }
-      
+
       console.log(`👥 룸 ${roomId}에 연결된 클라이언트 수: ${roomClients.size}`);
 
       // 데이터베이스에서 사용자 정보 조회
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { nickname: true }
+        select: { nickname: true },
       });
 
       const nickname = user?.nickname || `User-${userId}`;
-      
+
       let messageType: 'SCHEDULE_CREATED' | 'SCHEDULE_UPDATED' | 'SCHEDULE_DELETED';
       let messageText: string;
 
@@ -569,7 +667,9 @@ export class WebSocketTimerService {
       };
 
       this.broadcastToRoom(roomId, message);
-      console.log(`📅 일정 변경 알림 전송 완료: ${messageText} -> 룸 ${roomId} (${roomClients.size}명)`);
+      console.log(
+        `📅 일정 변경 알림 전송 완료: ${messageText} -> 룸 ${roomId} (${roomClients.size}명)`
+      );
     } catch (error) {
       console.error(`❌ 일정 변경 알림 전송 실패: ${userId}`, error);
     }
@@ -577,58 +677,61 @@ export class WebSocketTimerService {
 
   // 진행중 일정 상태 변경 알림 브로드캐스트
   static async broadcastRunningScheduleUpdate(
-    roomId: string, 
+    roomId: string,
     scheduleOwnerUserId: string, // userId 형태
     scheduleTitle: string | null,
     action: 'started' | 'stopped' | 'reordered',
     newStatus?: string // 새로운 상태 (stopped일 때만 사용)
   ): Promise<void> {
     try {
-      console.log(`🏃 진행중 일정 변경 알림 준비: 룸=${roomId}, 사용자=${scheduleOwnerUserId}, 액션=${action}`);
-      
+      console.log(
+        `🏃 진행중 일정 변경 알림 준비: 룸=${roomId}, 사용자=${scheduleOwnerUserId}, 액션=${action}`
+      );
+
       // 해당 룸에 연결된 클라이언트 확인
       const roomClients = roomConnections.get(roomId);
       if (!roomClients || roomClients.size === 0) {
         console.log(`⚠️ 룸 ${roomId}에 연결된 클라이언트가 없음 - 진행중 일정 알림 스킵`);
         return;
       }
-      
+
       console.log(`👥 룸 ${roomId}에 연결된 클라이언트 수: ${roomClients.size}`);
 
       // 데이터베이스에서 사용자 정보 조회 (userId로 조회)
       const user = await prisma.user.findUnique({
         where: { userId: scheduleOwnerUserId },
-        select: { nickname: true }
+        select: { nickname: true },
       });
 
       const nickname = user?.nickname || `User-${scheduleOwnerUserId}`;
-      
+
       let messageText: string;
       if (action === 'started') {
-        messageText = scheduleTitle 
+        messageText = scheduleTitle
           ? `${nickname}님이 일정 "${scheduleTitle}"을(를) 시작했습니다.`
           : `${nickname}님이 일정을 시작했습니다.`;
       } else if (action === 'stopped') {
         // newStatus에 따라 다른 메시지 표시
         if (newStatus === '완료') {
-          messageText = scheduleTitle 
+          messageText = scheduleTitle
             ? `${nickname}님이 일정 "${scheduleTitle}"을(를) 완료했습니다.`
             : `${nickname}님이 진행중이던 일정을 완료했습니다.`;
         } else if (newStatus === '취소') {
-          messageText = scheduleTitle 
+          messageText = scheduleTitle
             ? `${nickname}님이 일정 "${scheduleTitle}"을(를) 취소했습니다.`
             : `${nickname}님이 진행중이던 일정을 취소했습니다.`;
         } else if (newStatus === '대기중') {
-          messageText = scheduleTitle 
+          messageText = scheduleTitle
             ? `${nickname}님이 일정 "${scheduleTitle}"을(를) 대기중으로 변경했습니다.`
             : `${nickname}님이 진행중이던 일정을 대기중으로 변경했습니다.`;
         } else {
-          messageText = scheduleTitle 
+          messageText = scheduleTitle
             ? `${nickname}님이 일정 "${scheduleTitle}"의 진행을 중단했습니다.`
             : `${nickname}님이 진행중이던 일정을 중단했습니다.`;
         }
-      } else { // action === 'reordered'
-        messageText = scheduleTitle 
+      } else {
+        // action === 'reordered'
+        messageText = scheduleTitle
           ? `${nickname}님의 최상단 진행중 일정이 "${scheduleTitle}"로 변경되었습니다.`
           : `${nickname}님의 진행중 일정 순서가 변경되었습니다.`;
       }
@@ -647,7 +750,9 @@ export class WebSocketTimerService {
       };
 
       this.broadcastToRoom(roomId, message);
-      console.log(`🏃 진행중 일정 변경 알림 전송 완료: ${messageText} -> 룸 ${roomId} (${roomClients.size}명)`);
+      console.log(
+        `🏃 진행중 일정 변경 알림 전송 완료: ${messageText} -> 룸 ${roomId} (${roomClients.size}명)`
+      );
     } catch (error) {
       console.error(`❌ 진행중 일정 변경 알림 전송 실패: ${scheduleOwnerUserId}`, error);
     }
@@ -661,12 +766,14 @@ export class WebSocketTimerService {
     newStatus?: string // 새로운 상태 (stopped일 때만 사용)
   ): Promise<void> {
     try {
-      console.log(`🏃 진행중 일정 변경 브로드캐스트 시작: ${scheduleOwnerUserId}, 액션: ${action}, 제목: ${scheduleTitle}`);
-      
+      console.log(
+        `🏃 진행중 일정 변경 브로드캐스트 시작: ${scheduleOwnerUserId}, 액션: ${action}, 제목: ${scheduleTitle}`
+      );
+
       // userId로 사용자 찾기
       const user = await prisma.user.findUnique({
         where: { userId: scheduleOwnerUserId },
-        select: { id: true }
+        select: { id: true },
       });
 
       if (!user) {
@@ -678,27 +785,32 @@ export class WebSocketTimerService {
 
       // 일정 소유자가 참여중인 모든 룸 조회
       const userRooms = await prisma.roomParticipation.findMany({
-        where: { 
-          userCuid: scheduleOwnerId
+        where: {
+          userCuid: scheduleOwnerId,
         },
-        select: { 
+        select: {
           roomCuid: true,
           room: {
-            select: { 
+            select: {
               id: true,
-              name: true 
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
 
-      console.log(`🏃 사용자 ${scheduleOwnerId}가 참여중인 룸들:`, userRooms.map(r => ({ roomId: r.roomCuid, name: r.room.name })));
+      console.log(
+        `🏃 사용자 ${scheduleOwnerId}가 참여중인 룸들:`,
+        userRooms.map((r) => ({ roomId: r.roomCuid, name: r.room.name }))
+      );
 
       // 각 룸에 알림 전송
       for (const userRoom of userRooms) {
-        console.log(`🏃 룸 ${userRoom.roomCuid} (${userRoom.room.name})에 진행중 일정 변경 알림 전송`);
+        console.log(
+          `🏃 룸 ${userRoom.roomCuid} (${userRoom.room.name})에 진행중 일정 변경 알림 전송`
+        );
         await this.broadcastRunningScheduleUpdate(
-          userRoom.roomCuid, 
+          userRoom.roomCuid,
           scheduleOwnerUserId, // userId 형태로 전송
           scheduleTitle,
           action,
@@ -718,34 +830,39 @@ export class WebSocketTimerService {
     action: 'created' | 'updated' | 'deleted' | 'status_changed'
   ): Promise<void> {
     try {
-      console.log(`📅 일정 변경 브로드캐스트 시작: ${scheduleOwnerId}, 액션: ${action}, 제목: ${scheduleTitle}`);
-      
+      console.log(
+        `📅 일정 변경 브로드캐스트 시작: ${scheduleOwnerId}, 액션: ${action}, 제목: ${scheduleTitle}`
+      );
+
       // 일정 소유자가 참여중인 모든 룸 조회
       const userRooms = await prisma.roomParticipation.findMany({
-        where: { 
-          userCuid: scheduleOwnerId
+        where: {
+          userCuid: scheduleOwnerId,
         },
-        select: { 
+        select: {
           roomCuid: true,
           room: {
-            select: { 
+            select: {
               id: true,
-              name: true 
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
 
-      console.log(`📋 사용자 ${scheduleOwnerId}가 참여중인 룸들:`, userRooms.map(r => ({ roomId: r.roomCuid, name: r.room.name })));
+      console.log(
+        `📋 사용자 ${scheduleOwnerId}가 참여중인 룸들:`,
+        userRooms.map((r) => ({ roomId: r.roomCuid, name: r.room.name }))
+      );
 
       // 각 룸에 알림 전송
       for (const userRoom of userRooms) {
         console.log(`🔔 룸 ${userRoom.roomCuid} (${userRoom.room.name})에 일정 변경 알림 전송`);
         await this.broadcastScheduleUpdate(
-          userRoom.roomCuid, 
-          scheduleOwnerId, 
-          scheduleId, 
-          scheduleTitle, 
+          userRoom.roomCuid,
+          scheduleOwnerId,
+          scheduleId,
+          scheduleTitle,
           action
         );
       }
@@ -851,14 +968,132 @@ export class WebSocketTimerService {
     // 연결 끊어진 클라이언트들 자동 정리
     for (const userId of disconnectedClients) {
       console.log(`🧹 연결 끊어진 클라이언트 ${userId} 자동 정리 시작`);
-      this.handleDisconnectedClient(userId).catch(error => {
+      this.handleDisconnectedClient(userId).catch((error) => {
         console.error(`❌ 클라이언트 ${userId} 자동 정리 실패:`, error);
       });
     }
 
     // 타이머 상태는 너무 자주 발생하므로 로그 최소화
     if (message.type !== 'TIMER_STATE' && sentCount > 0) {
-      console.log(`📡 룸 ${roomId}에 ${message.type} 메시지 브로드캐스트 (${sentCount}명, ${disconnectedClients.length}명 정리)`);
+      console.log(
+        `📡 룸 ${roomId}에 ${message.type} 메시지 브로드캐스트 (${sentCount}명, ${disconnectedClients.length}명 정리)`
+      );
+    }
+  }
+
+  // 채팅 메시지 브로드캐스트
+  static broadcastChatMessage(roomId: string, message: ChatMessage): void {
+    const chatMessage: ChatMessageReceived = {
+      type: 'CHAT_MESSAGE_RECEIVED',
+      data: {
+        roomId,
+        message,
+      },
+      timestamp: Date.now(),
+    };
+
+    this.broadcastToRoom(roomId, chatMessage);
+    console.log(
+      `💬 채팅 메시지 브로드캐스트: "${message.content}" -> 룸 ${roomId} (${message.user.nickname})`
+    );
+  }
+
+  // 채팅 메시지 전송 처리 (웹소켓에서 받은 메시지 처리)
+  static async handleChatMessageSent(
+    roomId: string,
+    userCuid: string,
+    content: string,
+    tempId?: string
+  ): Promise<void> {
+    try {
+      console.log(`💬 채팅 메시지 전송 처리: 룸=${roomId}, 사용자=${userCuid}`);
+
+      // 사용자가 해당 방에 참여하고 있는지 확인
+      const participation = await prisma.roomParticipation.findUnique({
+        where: {
+          userCuid_roomCuid: {
+            userCuid,
+            roomCuid: roomId,
+          },
+        },
+      });
+
+      if (!participation) {
+        console.log(`❌ 사용자 ${userCuid}가 방 ${roomId}에 참여하지 않음`);
+        return;
+      }
+
+      // 메시지 내용 검증
+      if (!content || content.trim().length === 0) {
+        console.log(`❌ 빈 메시지 내용: ${userCuid}`);
+        return;
+      }
+
+      if (content.length > 1000) {
+        console.log(`❌ 너무 긴 메시지: ${content.length}자 (${userCuid})`);
+        return;
+      }
+
+      // 채팅 메시지 데이터베이스에 저장
+      const chatMessage = await prisma.chatMessage.create({
+        data: {
+          content: content.trim(),
+          userCuid,
+          roomCuid: roomId,
+          messageType: 'message',
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              userId: true,
+              nickname: true,
+              profileImg: true,
+            },
+          },
+        },
+      });
+
+      // 실시간 브로드캐스트
+      this.broadcastChatMessage(roomId, {
+        id: chatMessage.id,
+        content: chatMessage.content,
+        messageType: chatMessage.messageType as 'message' | 'system',
+        createdAt: chatMessage.createdAt,
+        user: chatMessage.user,
+      });
+
+      console.log(`✅ 채팅 메시지 저장 및 브로드캐스트 완료: ${chatMessage.id}`);
+    } catch (error) {
+      console.error(`❌ 채팅 메시지 처리 실패: ${userCuid}`, error);
+    }
+  }
+
+  // 시스템 메시지 브로드캐스트 (입장/퇴장 등)
+  static async broadcastSystemMessage(
+    roomId: string,
+    content: string,
+    messageType: 'system' = 'system'
+  ): Promise<void> {
+    try {
+      // 시스템 메시지는 별도의 사용자 없이 브로드캐스트만
+      const systemMessage: ChatMessage = {
+        id: `system-${Date.now()}`,
+        content,
+        messageType,
+        createdAt: new Date(),
+        user: {
+          id: 'system',
+          userId: 'system',
+          nickname: '시스템',
+          profileImg: undefined,
+        },
+      };
+
+      this.broadcastChatMessage(roomId, systemMessage);
+      console.log(`🤖 시스템 메시지 브로드캐스트: "${content}" -> 룸 ${roomId}`);
+    } catch (error) {
+      console.error(`❌ 시스템 메시지 브로드캐스트 실패:`, error);
     }
   }
 
