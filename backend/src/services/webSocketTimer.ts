@@ -902,7 +902,7 @@ export class WebSocketTimerService {
         });
         console.log(`🗑️ 빈 방 ${roomId} 삭제 완료`);
       }
-    } catch (error) {
+    } catch (error: any) {
       // 이미 삭제된 경우나 존재하지 않는 경우는 에러가 아님
       if (error.code === 'P2025') {
         console.log(`ℹ️ 사용자 ${userId}가 이미 룸 ${roomId}에서 제거되었거나 존재하지 않음`);
