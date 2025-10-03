@@ -22,14 +22,30 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       accessToken: null,
       user: null,
       isAuthenticated: false,
 
-      setAccessToken: (token: string) => set({ accessToken: token }),
+      setAccessToken: (token: string) => {
+        set({ accessToken: token });
+        // 토큰과 사용자 정보가 모두 있으면 인증됨으로 설정
+        const { user } = get();
+        if (user) {
+          set({ isAuthenticated: true });
+        }
+      },
       removeAccessToken: () => set({ accessToken: null, isAuthenticated: false }),
-      setUser: (user: User | null) => set({ user }),
+      setUser: (user: User | null) => {
+        set({ user });
+        // 사용자 정보와 토큰이 모두 있으면 인증됨으로 설정
+        const { accessToken } = get();
+        if (user && accessToken) {
+          set({ isAuthenticated: true });
+        } else if (!user) {
+          set({ isAuthenticated: false });
+        }
+      },
       clearAuthState: () => set({ accessToken: null, user: null, isAuthenticated: false }),
     }),
     {
