@@ -21,6 +21,7 @@ const StoreHydrationProvider = ({ children }: { children: React.ReactNode }) => 
           if (authData) {
             const parsedData = JSON.parse(authData);
 
+            // 사용자 정보와 토큰을 순서대로 복원
             if (parsedData.state?.user) {
               useAuthStore.getState().setUser(parsedData.state.user);
             }
@@ -29,7 +30,9 @@ const StoreHydrationProvider = ({ children }: { children: React.ReactNode }) => 
               useAuthStore.getState().setAccessToken(parsedData.state.accessToken);
             }
 
-            if (parsedData.state?.isAuthenticated) {
+            // 토큰과 사용자 정보가 모두 있으면 인증 상태로 설정
+            const { user, accessToken } = useAuthStore.getState();
+            if (user && accessToken) {
               useAuthStore.setState({ isAuthenticated: true });
             }
           }
