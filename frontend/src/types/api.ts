@@ -60,3 +60,18 @@ export interface ReceivedFriendRequest {
   status: 'pending';
   user: FriendUser;
 }
+
+// 페이지네이션 공통 인터페이스
+export interface Pagination {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+// 페이지네이션이 포함된 데이터 응답
+export interface PaginatedResponse<T> {
+  items: T[];
+  pagination: Pagination;
+}

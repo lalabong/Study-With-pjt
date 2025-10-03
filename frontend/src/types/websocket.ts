@@ -35,7 +35,40 @@ export interface TimerSyncMessage extends WebSocketMessage {
   data: RoomTimerState;
 }
 
-// 채팅 메시지 (기존 채팅 기능과 호환)
+// 새로운 채팅 메시지 타입들
+export interface ChatMessageData {
+  id: string;
+  content: string;
+  messageType: 'message' | 'system';
+  createdAt: string;
+  tempId?: string;
+  user: {
+    id: string;
+    userId: string;
+    nickname: string;
+    profileImg?: string;
+  };
+}
+
+export interface ChatMessageReceived extends WebSocketMessage {
+  type: 'CHAT_MESSAGE_RECEIVED';
+  data: {
+    roomId: string;
+    message: ChatMessageData;
+  };
+}
+
+export interface ChatMessageSent extends WebSocketMessage {
+  type: 'CHAT_MESSAGE_SENT';
+  data: {
+    roomId: string;
+    content: string;
+    userCuid: string;
+    tempId?: string;
+  };
+}
+
+// 채팅 메시지 (기존 채팅 기능과 호환 - 레거시)
 export interface ChatMessage extends WebSocketMessage {
   type: 'CHAT_MESSAGE';
   data: {
@@ -130,6 +163,8 @@ export type RoomWebSocketMessage =
   | TimerStateMessage
   | TimerSyncMessage
   | ChatMessage
+  | ChatMessageReceived
+  | ChatMessageSent
   | TimerNotificationMessage
   | RoomInviteMessage
   | RoomParticipantMessage
