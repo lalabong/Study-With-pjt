@@ -27,6 +27,7 @@ model User {
   ownedRooms          Room[]              @relation("RoomOwner") // 소유한 방들
   sentRoomInvites     RoomInvite[]        @relation("InviterToRoomInvite") // 보낸 방 초대들
   receivedRoomInvites RoomInvite[]        @relation("InviteeToRoomInvite") // 받은 방 초대들
+  chatMessages        ChatMessage[]       @relation("UserToChatMessage") // 보낸 채팅 메시지들
 
   @@map("user")
 }
@@ -40,6 +41,7 @@ model Room {
   participants RoomParticipation[] // 참여자들
   timeLogs     TimeLog[]
   invites      RoomInvite[] // 방 초대들
+  chatMessages ChatMessage[]       @relation("RoomToChatMessage") // 채팅 메시지들
 
   @@index([ownerCuid], map: "room_ownerCuid_fkey")
   @@map("room")
@@ -132,6 +134,22 @@ model RoomInvite {
   @@map("room_invite")
 }
 
+model ChatMessage {
+  id          String          @id @default(cuid()) @db.VarChar(36)
+  content     String          @db.Text
+  userCuid    String
+  roomCuid    String
+  messageType ChatMessageType @default(message)
+  createdAt   DateTime        @default(now()) @db.Timestamp(0)
+
+  user User @relation("UserToChatMessage", fields: [userCuid], references: [id], onDelete: Cascade)
+  room Room @relation("RoomToChatMessage", fields: [roomCuid], references: [id], onDelete: Cascade)
+
+  @@index([roomCuid, createdAt], map: "chat_message_room_time_idx")
+  @@index([userCuid], map: "chat_message_userCuid_fkey")
+  @@map("chat_message")
+}
+
 enum RoomInviteStatus {
   pending
   accepted
@@ -148,4 +166,9 @@ enum ScheduleStatus {
   진행중
   완료
   취소
+}
+
+enum ChatMessageType {
+  message // 일반 채팅 메시지
+  system // 시스템 메시지 (입장/퇴장 등)
 }
