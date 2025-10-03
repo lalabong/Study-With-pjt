@@ -19,6 +19,8 @@ import friendRoutes from './friendRoutes.js';
  *     description: 방 관리 관련 API
  *   - name: Friends
  *     description: 친구 관리 관련 API
+ *   - name: Chat
+ *     description: 채팅 관련 API
  *   - name: System
  *     description: 시스템 관련 API
  */

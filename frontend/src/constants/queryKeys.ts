@@ -13,6 +13,8 @@ export const ROOM_QUERY_KEYS = {
   CHECK_LAST_PARTICIPANT: 'check-last-participant',
   CURRENT_ROOM: 'current-room',
   RECEIVED_ROOM_INVITES: 'receivedRoomInvites',
+  CHAT_MESSAGES: 'chat-messages',
+  RECENT_CHAT_MESSAGES: 'recent-chat-messages',
 };
 
 export const FRIEND_QUERY_KEYS = {

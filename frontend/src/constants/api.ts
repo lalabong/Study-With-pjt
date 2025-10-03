@@ -41,6 +41,9 @@ export const ROOM_ENDPOINTS = {
   GET_RECEIVED_INVITES: `${API_PREFIX}/rooms/invites/received`,
   ACCEPT_INVITE: (inviteId: string) => `${API_PREFIX}/rooms/invites/${inviteId}/accept`,
   DECLINE_INVITE: (inviteId: string) => `${API_PREFIX}/rooms/invites/${inviteId}/decline`,
+  SEND_CHAT_MESSAGE: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/chat/messages`,
+  GET_ROOM_CHAT_MESSAGES: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/chat/messages`,
+  GET_RECENT_CHAT_MESSAGES: (roomId: string) => `${API_PREFIX}/rooms/${roomId}/chat/recent`,
 };
 
 export const FRIEND_ENDPOINTS = {

@@ -11,6 +11,7 @@ import {
   declineRoomInvite,
   getReceivedRoomInvites,
 } from '../controllers/roomController.js';
+import { sendMessage, getRoomMessages, getRecentMessages } from '../controllers/chatController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -571,5 +572,125 @@ router.post('/invites/:inviteId/accept', authMiddleware, acceptRoomInvite);
  *                   example: 방 초대를 거절했습니다.
  */
 router.post('/invites/:inviteId/decline', authMiddleware, declineRoomInvite);
+
+// ===== 채팅 관련 라우트 =====
+
+/**
+ * @swagger
+ * /api/rooms/{roomId}/chat/messages:
+ *   post:
+ *     summary: 채팅 메시지 전송
+ *     description: 특정 방에 채팅 메시지를 전송합니다.
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roomId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 방 ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - content
+ *             properties:
+ *               content:
+ *                 type: string
+ *                 minLength: 1
+ *                 maxLength: 1000
+ *                 description: 메시지 내용
+ *                 example: "안녕하세요! 함께 공부해요"
+ *     responses:
+ *       201:
+ *         description: 메시지 전송 성공
+ *       400:
+ *         description: 잘못된 요청 (빈 메시지, 너무 긴 메시지 등)
+ *       401:
+ *         description: 인증 필요
+ *       403:
+ *         description: 방 접근 권한 없음
+ */
+router.post('/:roomId/chat/messages', authMiddleware, sendMessage);
+
+/**
+ * @swagger
+ * /api/rooms/{roomId}/chat/messages:
+ *   get:
+ *     summary: 방의 채팅 메시지 목록 조회 (페이지네이션)
+ *     description: 특정 방의 채팅 메시지를 페이지네이션으로 조회합니다.
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roomId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 방 ID
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: 페이지 번호
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 50
+ *         description: 페이지당 메시지 수
+ *     responses:
+ *       200:
+ *         description: 채팅 메시지 조회 성공
+ *       401:
+ *         description: 인증 필요
+ *       403:
+ *         description: 방 접근 권한 없음
+ */
+router.get('/:roomId/chat/messages', authMiddleware, getRoomMessages);
+
+/**
+ * @swagger
+ * /api/rooms/{roomId}/chat/recent:
+ *   get:
+ *     summary: 최근 채팅 메시지 조회
+ *     description: 특정 방의 최근 채팅 메시지를 조회합니다. (페이지네이션 없이)
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roomId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: 방 ID
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 50
+ *         description: 조회할 메시지 수
+ *     responses:
+ *       200:
+ *         description: 최근 채팅 메시지 조회 성공
+ *       401:
+ *         description: 인증 필요
+ *       403:
+ *         description: 방 접근 권한 없음
+ */
+router.get('/:roomId/chat/recent', authMiddleware, getRecentMessages);
 
 export default router;

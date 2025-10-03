@@ -176,6 +176,9 @@ export const leaveRoom: ControllerFn = async (
       return { roomDeleted: false };
     });
 
+    // 웹소켓 연결 및 지연된 제거 타이머 정리
+    await WebSocketTimerService.forceRemoveUserFromRoom(roomId, userCuid);
+
     createSuccessResponse(res, 200, undefined, ROOM_SUCCESS.LEAVE_ROOM, {
       data: { roomDeleted: result.roomDeleted },
     });
@@ -353,12 +356,22 @@ export const sendRoomInvite: ControllerFn = async (
     }
 
     if (!inviteeCuid) {
-      createErrorResponse(res, 400, FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD, ERROR_CODES.FRIEND_REQUEST_REQUIRED_FIELD);
+      createErrorResponse(
+        res,
+        400,
+        FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD,
+        ERROR_CODES.FRIEND_REQUEST_REQUIRED_FIELD
+      );
       return;
     }
 
     if (inviterCuid === inviteeCuid) {
-      createErrorResponse(res, 400, ROOM_ERROR.INVITE_SELF_INVITE, ERROR_CODES.ROOM_INVITE_SELF_INVITE);
+      createErrorResponse(
+        res,
+        400,
+        ROOM_ERROR.INVITE_SELF_INVITE,
+        ERROR_CODES.ROOM_INVITE_SELF_INVITE
+      );
       return;
     }
 
@@ -376,7 +389,12 @@ export const sendRoomInvite: ControllerFn = async (
     });
 
     if (!roomParticipation) {
-      createErrorResponse(res, 403, ROOM_ERROR.PARTICIPANT_NOT_FOUND, ERROR_CODES.ROOM_PARTICIPANT_NOT_FOUND);
+      createErrorResponse(
+        res,
+        403,
+        ROOM_ERROR.PARTICIPANT_NOT_FOUND,
+        ERROR_CODES.ROOM_PARTICIPANT_NOT_FOUND
+      );
       return;
     }
 
@@ -387,7 +405,12 @@ export const sendRoomInvite: ControllerFn = async (
     });
 
     if (!inviteeUser) {
-      createErrorResponse(res, 404, FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD, ERROR_CODES.USER_NOT_FOUND);
+      createErrorResponse(
+        res,
+        404,
+        FRIEND_ERROR.FRIEND_REQUEST_REQUIRED_FIELD,
+        ERROR_CODES.USER_NOT_FOUND
+      );
       return;
     }
 
@@ -402,7 +425,12 @@ export const sendRoomInvite: ControllerFn = async (
     });
 
     if (existingParticipation) {
-      createErrorResponse(res, 400, ROOM_ERROR.INVITE_ALREADY_PARTICIPANT, ERROR_CODES.ROOM_INVITE_ALREADY_PARTICIPANT);
+      createErrorResponse(
+        res,
+        400,
+        ROOM_ERROR.INVITE_ALREADY_PARTICIPANT,
+        ERROR_CODES.ROOM_INVITE_ALREADY_PARTICIPANT
+      );
       return;
     }
 
@@ -417,7 +445,12 @@ export const sendRoomInvite: ControllerFn = async (
     });
 
     if (existingInvite && existingInvite.status === 'pending') {
-      createErrorResponse(res, 400, ROOM_ERROR.INVITE_ALREADY_EXISTS, ERROR_CODES.ROOM_INVITE_ALREADY_EXISTS);
+      createErrorResponse(
+        res,
+        400,
+        ROOM_ERROR.INVITE_ALREADY_EXISTS,
+        ERROR_CODES.ROOM_INVITE_ALREADY_EXISTS
+      );
       return;
     }
 
@@ -496,7 +529,12 @@ export const acceptRoomInvite: ControllerFn = async (
 
     // 초대받은 본인인지 확인
     if (invite.inviteeCuid !== userCuid) {
-      createErrorResponse(res, 403, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.ROOM_INVITE_UNAUTHORIZED);
+      createErrorResponse(
+        res,
+        403,
+        ROOM_ERROR.INVITE_UNAUTHORIZED,
+        ERROR_CODES.ROOM_INVITE_UNAUTHORIZED
+      );
       return;
     }
 
@@ -517,7 +555,12 @@ export const acceptRoomInvite: ControllerFn = async (
     });
 
     if (existingParticipation) {
-      createErrorResponse(res, 400, ROOM_ERROR.INVITE_ALREADY_PARTICIPANT, ERROR_CODES.ROOM_INVITE_ALREADY_PARTICIPANT);
+      createErrorResponse(
+        res,
+        400,
+        ROOM_ERROR.INVITE_ALREADY_PARTICIPANT,
+        ERROR_CODES.ROOM_INVITE_ALREADY_PARTICIPANT
+      );
       return;
     }
 
@@ -595,7 +638,12 @@ export const declineRoomInvite: ControllerFn = async (
 
     // 초대받은 본인인지 확인
     if (invite.inviteeCuid !== userCuid) {
-      createErrorResponse(res, 403, ROOM_ERROR.INVITE_UNAUTHORIZED, ERROR_CODES.ROOM_INVITE_UNAUTHORIZED);
+      createErrorResponse(
+        res,
+        403,
+        ROOM_ERROR.INVITE_UNAUTHORIZED,
+        ERROR_CODES.ROOM_INVITE_UNAUTHORIZED
+      );
       return;
     }
 

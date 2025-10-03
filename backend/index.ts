@@ -13,7 +13,11 @@ import { setupSwagger } from './src/utils/swagger.js';
 import path from 'path';
 
 import { handleFileUploadErrors } from './src/middlewares/fileMiddleware.js';
-import { WebSocketTimerService, TimerActionMessage } from './src/services/webSocketTimer.js';
+import {
+  WebSocketTimerService,
+  TimerActionMessage,
+  ChatMessageSent,
+} from './src/services/webSocketTimer.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -51,15 +55,15 @@ app.get('/health', (_req: Request, res: Response) => {
   });
 });
 
+app.use(handleFileUploadErrors);
+app.use(errorHandler);
+
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     status: 'error',
     message: '요청한 페이지를 찾을 수 없습니다.',
   });
 });
-
-app.use(handleFileUploadErrors);
-app.use(errorHandler);
 
 const server: Server = app.listen(PORT, () => {
   console.log(`🚀 HTTP Server is running on port ${PORT}`);
@@ -93,7 +97,7 @@ wss.on('connection', (ws: WebSocket, request: Request) => {
   console.log(`🔌 웹소켓 연결: 룸 ${roomId}, 사용자 ${userId}`);
 
   // 사용자 정보를 포함하여 룸에 클라이언트 추가
-  WebSocketTimerService.addClientToRoom(roomId, userId, ws).catch(error => {
+  WebSocketTimerService.addClientToRoom(roomId, userId, ws).catch((error) => {
     console.error('클라이언트 추가 중 오류:', error);
   });
 
@@ -139,6 +143,19 @@ wss.on('connection', (ws: WebSocket, request: Request) => {
           });
           break;
 
+        case 'CHAT_MESSAGE_SENT':
+          // 채팅 메시지 전송 처리
+          const chatMessage = data as ChatMessageSent;
+          const { content, tempId } = chatMessage.data;
+
+          // 비동기 처리 (응답 지연 방지)
+          WebSocketTimerService.handleChatMessageSent(roomId, userId, content, tempId).catch(
+            (error) => {
+              console.error('채팅 메시지 처리 중 오류:', error);
+            }
+          );
+          break;
+
         default:
           console.log('알 수 없는 메시지 타입:', data.type);
       }
@@ -150,7 +167,7 @@ wss.on('connection', (ws: WebSocket, request: Request) => {
   // 연결 해제 처리
   ws.on('close', () => {
     console.log(`🔌 웹소켓 연결 해제: 룸 ${roomId}, 사용자 ${userId}`);
-    WebSocketTimerService.removeClientFromRoom(roomId, userId).catch(error => {
+    WebSocketTimerService.removeClientFromRoom(roomId, userId).catch((error) => {
       console.error('클라이언트 제거 중 오류:', error);
     });
   });

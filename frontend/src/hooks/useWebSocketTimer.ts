@@ -14,6 +14,8 @@ import {
   RoomInviteMessage,
   RoomParticipantMessage,
   RunningScheduleUpdateMessage,
+  ChatMessageReceived,
+  ChatMessageSent,
 } from '@/types/websocket';
 
 export interface WebSocketTimerState {
@@ -358,6 +360,25 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
             }
             break;
 
+          case 'CHAT_MESSAGE_RECEIVED':
+            // 채팅 메시지 수신 처리
+            const chatMessage = message as ChatMessageReceived;
+            if (chatMessage.data.roomId === currentRoomId) {
+              console.log(`💬 채팅 메시지 수신:`, chatMessage.data.message);
+
+              // 채팅 메시지 이벤트 발생
+              window.dispatchEvent(
+                new CustomEvent('chat-message-received', {
+                  detail: chatMessage,
+                }),
+              );
+            } else {
+              console.log(
+                `🔕 다른 룸의 채팅 메시지 무시: ${chatMessage.data.roomId} != ${currentRoomId}`,
+              );
+            }
+            break;
+
           // 일정 변경 웹소켓 알림 제거됨 - 자세히 버튼 클릭 시 최신 데이터 조회로 변경
         }
       } catch (error) {
@@ -555,6 +576,27 @@ export const useWebSocketTimer = (): WebSocketTimerReturn => {
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
     return totalSeconds / 60;
   }, [hours, minutes, seconds]);
+
+  // 웹소켓 메시지 전송 이벤트 리스너
+  useEffect(() => {
+    const handleSendWebSocketMessage = (event: CustomEvent<ChatMessageSent>) => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify(event.detail));
+        console.log('💬 채팅 메시지 웹소켓 전송:', event.detail);
+      } else {
+        console.log('❌ 웹소켓 연결이 없어 채팅 메시지 전송 실패');
+      }
+    };
+
+    window.addEventListener('send-websocket-message', handleSendWebSocketMessage as EventListener);
+
+    return () => {
+      window.removeEventListener(
+        'send-websocket-message',
+        handleSendWebSocketMessage as EventListener,
+      );
+    };
+  }, []);
 
   // 방 변경 시 웹소켓 재연결
   useEffect(() => {
