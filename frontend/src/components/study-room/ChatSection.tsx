@@ -40,9 +40,6 @@ const ChatSection = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading: isChatLoading,
-    isError: isChatError,
-    error: chatError,
   } = useInfiniteRoomChatMessagesQuery(
     currentRoomId || '',
     { limit: 20 }, // 페이지당 20개씩 로드
