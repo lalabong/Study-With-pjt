@@ -17,6 +17,7 @@ import TimerSection from '@components/study-room/TimerSection';
 
 import { useRoomInfoQuery } from '@hooks/api/useRoomInfoQuery';
 
+import { useAuthStore } from '@stores/authStore';
 import { useRoomStore } from '@stores/roomStore';
 
 interface StudyRoomPageProps {
@@ -29,6 +30,7 @@ const StudyRoomPage = ({ params }: StudyRoomPageProps) => {
   const { roomId } = use(params);
   const router = useRouter();
 
+  const { isAuthenticated, user } = useAuthStore();
   const {
     setCurrentRoomId,
     setCurrentRoomName,
@@ -43,7 +45,7 @@ const StudyRoomPage = ({ params }: StudyRoomPageProps) => {
     error,
   } = useRoomInfoQuery({
     roomId,
-    enabled: !!roomId,
+    enabled: !!roomId && isAuthenticated && !!user,
   });
 
   // 접근 권한이 없는 경우 리디렉션
@@ -69,7 +71,7 @@ const StudyRoomPage = ({ params }: StudyRoomPageProps) => {
     return () => {};
   }, [roomId, setCurrentRoomId, setCurrentRoomName, setCurrentRoomCreatedAt, roomInfoData]);
 
-  if (!roomId) {
+  if (!roomId || !isAuthenticated || !user) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
         <LoadingSpinner />
