@@ -144,6 +144,7 @@ const StatisticsChart = ({
 
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [totalHours, setTotalHours] = useState<number>(0);
+  const [totalMinutes, setTotalMinutes] = useState<number>(0);
 
   useEffect(() => {
     if (timelogsData) {
@@ -156,12 +157,24 @@ const StatisticsChart = ({
       }
 
       setChartData(newData);
-      setTotalHours(timelogsData.totalTime.decimalHours || 0);
+      setTotalHours(timelogsData.totalTime.hours || 0);
+      setTotalMinutes(timelogsData.totalTime.minutes || 0);
     }
   }, [mode, timelogsData]);
 
-  // 주간은 소수점 첫째자리까지, 월간은 반올림 -> 백엔드에서 처리할지 고민...
-  const formattedTotalHours = mode === 'week' ? totalHours.toFixed(1) : Math.round(totalHours);
+  // 시간 포맷팅: 1시간 미만이면 "N분", 1시간 이상이면 "N시간 M분"
+  const getFormattedTime = () => {
+    if (totalHours === 0 && totalMinutes === 0) {
+      return '0분';
+    }
+    if (totalHours === 0) {
+      return `${totalMinutes}분`;
+    }
+    if (totalMinutes === 0) {
+      return `${totalHours}시간`;
+    }
+    return `${totalHours}시간 ${totalMinutes}분`;
+  };
 
   if (isLoading) {
     return <StatusMessage status="loading" />;
@@ -176,7 +189,7 @@ const StatisticsChart = ({
       <div className="mb-2 flex items-center justify-between">
         <h3 className="text-lg font-medium">{title}</h3>
         <span className="font-medium">
-          {mode === 'week' ? `${formattedTotalHours}시간` : `총 ${formattedTotalHours}시간`}
+          {mode === 'week' ? getFormattedTime() : `총 ${getFormattedTime()}`}
         </span>
       </div>
       <div className="mb-2 flex items-center justify-between">

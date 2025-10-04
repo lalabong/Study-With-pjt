@@ -208,17 +208,27 @@ const getUserTimeLogs: ControllerFn = async (
         hours,
         minutes,
         decimalHours,
+        totalMinutes, // 분 단위 총 시간 추가
       },
       periodInfo,
     };
 
-    if (period === 'week' && weeklyLogsArray.length > 0) {
+    if (period === 'week') {
       responseData.weeklyData = weeklyLogsArray.map((log) => {
         const { totalMinutes, ...rest } = log;
-        return rest;
+        return {
+          ...rest,
+          totalMinutes, // 분 단위 추가
+        };
       });
-    } else if (period === 'month' && monthlyDataArray.length > 0) {
-      responseData.monthlyData = monthlyDataArray;
+    } else if (period === 'month') {
+      responseData.monthlyData = monthlyDataArray.map((data) => ({
+        ...data,
+        totalTime: {
+          ...data.totalTime,
+          totalMinutes: data.totalTime.hours * 60 + data.totalTime.minutes, // 분 단위 추가
+        },
+      }));
     }
 
     createSuccessResponse(res, 200, undefined, USER_SUCCESS.GET_TIMELOGS, { data: responseData });

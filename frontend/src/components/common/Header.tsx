@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
   return (
     <header className="w-full px-6 py-6 flex justify-between items-center">
       <Image
-        src={'/images/swith-logo.png'}
+        src={'/images/swith-logo.webp'}
         alt={'SWith Logo'}
         width={140}
         height={39}

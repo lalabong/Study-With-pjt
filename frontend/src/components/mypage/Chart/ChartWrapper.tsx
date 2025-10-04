@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  TooltipProps,
 } from 'recharts';
 
 interface ChartWrapperProps {
@@ -18,6 +19,35 @@ interface ChartWrapperProps {
   barColor: string;
   lineColor: string;
 }
+
+// 커스텀 툴팁 컴포넌트
+const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    const value = payload[0].value as number;
+    const totalMinutes = Math.round(value * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    let timeText = '';
+    if (hours === 0 && minutes === 0) {
+      timeText = '0분';
+    } else if (hours === 0) {
+      timeText = `${minutes}분`;
+    } else if (minutes === 0) {
+      timeText = `${hours}시간`;
+    } else {
+      timeText = `${hours}시간 ${minutes}분`;
+    }
+
+    return (
+      <div className="bg-white border border-gray-300 rounded-lg shadow-md p-3">
+        <p className="text-sm font-medium text-gray-900">{payload[0].payload.day}</p>
+        <p className="text-sm text-indigo-600 font-semibold">{timeText}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const ChartWrapper = ({ data, chartType, barColor, lineColor }: ChartWrapperProps) => {
   return (
@@ -36,7 +66,7 @@ const ChartWrapper = ({ data, chartType, barColor, lineColor }: ChartWrapperProp
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="hours" name="활동 시간" fill={barColor} />
           </BarChart>
         ) : (
@@ -52,7 +82,7 @@ const ChartWrapper = ({ data, chartType, barColor, lineColor }: ChartWrapperProp
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Line
               type="monotone"
               dataKey="hours"

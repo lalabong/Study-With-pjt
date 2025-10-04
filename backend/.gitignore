@@ -36,7 +36,6 @@ src/generated/prisma/query_engine-*.node.tmp*
 .yarn-integrity
 
 # Docker files
-Dockerfile.dev
 .dockerignore
 docker.env
 

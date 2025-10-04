@@ -80,9 +80,9 @@ model TimeLog {
   totalTime Int
   date      DateTime  @db.Date
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  roomCuid  String
+  roomCuid  String?
   userCuid  String
-  room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  room      Room?     @relation(fields: [roomCuid], references: [id], onDelete: SetNull)
   user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@index([roomCuid])

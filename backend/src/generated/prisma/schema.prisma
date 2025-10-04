@@ -18,16 +18,16 @@ model User {
   profileImg          String?             @db.VarChar(255)
   createdAt           DateTime?           @default(now()) @db.Timestamp(0)
   totalStudyTime      Int                 @default(0)
-  friendsFrom         Friend[]            @relation("FriendToUser") // 친구 요청을 받은 유저들
-  friendsTo           Friend[]            @relation("UserToFriend") // 내가 친구 요청을 한 유저들
+  chatMessages        ChatMessage[]       @relation("UserToChatMessage")
+  friendsFrom         Friend[]            @relation("FriendToUser")
+  friendsTo           Friend[]            @relation("UserToFriend")
   refreshTokens       RefreshToken[]
+  ownedRooms          Room[]              @relation("RoomOwner")
+  receivedRoomInvites RoomInvite[]        @relation("InviteeToRoomInvite")
+  sentRoomInvites     RoomInvite[]        @relation("InviterToRoomInvite")
+  roomParticipations  RoomParticipation[]
   schedules           Schedule[]
   timeLogs            TimeLog[]
-  roomParticipations  RoomParticipation[] // 참여한 방들
-  ownedRooms          Room[]              @relation("RoomOwner") // 소유한 방들
-  sentRoomInvites     RoomInvite[]        @relation("InviterToRoomInvite") // 보낸 방 초대들
-  receivedRoomInvites RoomInvite[]        @relation("InviteeToRoomInvite") // 받은 방 초대들
-  chatMessages        ChatMessage[]       @relation("UserToChatMessage") // 보낸 채팅 메시지들
 
   @@map("user")
 }
@@ -37,11 +37,11 @@ model Room {
   name         String              @db.VarChar(50)
   createdAt    DateTime?           @default(now()) @db.Timestamp(0)
   ownerCuid    String
+  chatMessages ChatMessage[]       @relation("RoomToChatMessage")
   owner        User                @relation("RoomOwner", fields: [ownerCuid], references: [id], onDelete: Cascade)
-  participants RoomParticipation[] // 참여자들
+  invites      RoomInvite[]
+  participants RoomParticipation[]
   timeLogs     TimeLog[]
-  invites      RoomInvite[] // 방 초대들
-  chatMessages ChatMessage[]       @relation("RoomToChatMessage") // 채팅 메시지들
 
   @@index([ownerCuid], map: "room_ownerCuid_fkey")
   @@map("room")
@@ -51,8 +51,8 @@ model RoomParticipation {
   userCuid String
   roomCuid String
   joinedAt DateTime @default(now()) @db.Timestamp(0)
-  user     User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)
   room     Room     @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@id([userCuid, roomCuid])
   @@index([roomCuid], map: "room_participation_roomCuid_fkey")
@@ -77,12 +77,12 @@ model Schedule {
 
 model TimeLog {
   id        String    @id @default(cuid()) @db.VarChar(36)
-  totalTime Int // 공부 시간(분 단위)
+  totalTime Int
   date      DateTime  @db.Date
   createdAt DateTime? @default(now()) @db.Timestamp(0)
-  roomCuid  String
+  roomCuid  String?
   userCuid  String
-  room      Room      @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
+  room      Room?     @relation(fields: [roomCuid], references: [id], onDelete: SetNull)
   user      User      @relation(fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@index([roomCuid])
@@ -91,8 +91,8 @@ model TimeLog {
 }
 
 model Friend {
-  friendCuid String // 수신자(친구 요청을 받은 유저)
-  userCuid   String // 요청자(친구 요청을 한 유저)
+  friendCuid String
+  userCuid   String
   status     FriendStatus @default(pending)
   friend     User         @relation("FriendToUser", fields: [friendCuid], references: [id], onDelete: Cascade)
   user       User         @relation("UserToFriend", fields: [userCuid], references: [id], onDelete: Cascade)
@@ -117,17 +117,16 @@ model RefreshToken {
 model RoomInvite {
   id          String           @id @default(cuid()) @db.VarChar(36)
   roomCuid    String
-  inviterCuid String // 초대를 보낸 사용자
-  inviteeCuid String // 초대를 받은 사용자
+  inviterCuid String
+  inviteeCuid String
   status      RoomInviteStatus @default(pending)
   createdAt   DateTime         @default(now()) @db.Timestamp(0)
   updatedAt   DateTime         @updatedAt @db.Timestamp(0)
+  invitee     User             @relation("InviteeToRoomInvite", fields: [inviteeCuid], references: [id], onDelete: Cascade)
+  inviter     User             @relation("InviterToRoomInvite", fields: [inviterCuid], references: [id], onDelete: Cascade)
+  room        Room             @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
 
-  room    Room @relation(fields: [roomCuid], references: [id], onDelete: Cascade)
-  inviter User @relation("InviterToRoomInvite", fields: [inviterCuid], references: [id], onDelete: Cascade)
-  invitee User @relation("InviteeToRoomInvite", fields: [inviteeCuid], references: [id], onDelete: Cascade)
-
-  @@unique([roomCuid, inviteeCuid]) // 같은 방에 같은 사용자를 중복 초대 방지
+  @@unique([roomCuid, inviteeCuid])
   @@index([inviteeCuid], map: "room_invite_inviteeCuid_fkey")
   @@index([inviterCuid], map: "room_invite_inviterCuid_fkey")
   @@index([roomCuid], map: "room_invite_roomCuid_fkey")
@@ -141,9 +140,8 @@ model ChatMessage {
   roomCuid    String
   messageType ChatMessageType @default(message)
   createdAt   DateTime        @default(now()) @db.Timestamp(0)
-
-  user User @relation("UserToChatMessage", fields: [userCuid], references: [id], onDelete: Cascade)
-  room Room @relation("RoomToChatMessage", fields: [roomCuid], references: [id], onDelete: Cascade)
+  room        Room            @relation("RoomToChatMessage", fields: [roomCuid], references: [id], onDelete: Cascade)
+  user        User            @relation("UserToChatMessage", fields: [userCuid], references: [id], onDelete: Cascade)
 
   @@index([roomCuid, createdAt], map: "chat_message_room_time_idx")
   @@index([userCuid], map: "chat_message_userCuid_fkey")
@@ -169,6 +167,6 @@ enum ScheduleStatus {
 }
 
 enum ChatMessageType {
-  message // 일반 채팅 메시지
-  system // 시스템 메시지 (입장/퇴장 등)
+  message
+  system
 }

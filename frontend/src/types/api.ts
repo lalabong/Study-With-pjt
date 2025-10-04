@@ -23,6 +23,7 @@ export interface TimeRecord {
   hours: number;
   minutes: number;
   decimalHours: number;
+  totalMinutes: number;
 }
 
 export interface WeeklyTimeLog {
@@ -30,6 +31,7 @@ export interface WeeklyTimeLog {
   hours: number;
   minutes: number;
   decimalHours: number;
+  totalMinutes: number;
 }
 
 export interface MonthlyTimeLog {
