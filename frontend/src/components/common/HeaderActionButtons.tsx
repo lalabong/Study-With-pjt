@@ -1,14 +1,12 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 
 import { HiBell, HiUserGroup } from 'react-icons/hi';
 
 import Button from '@components/common/Button';
-import FriendRequestModal from '@components/friends/FriendRequestModal';
-import FriendsModal from '@components/friends/FriendsModal';
 import LogoutButton from '@components/mypage/Profile/LogoutButton';
-import NotificationModal from '@components/notification/NotificationModal';
 
 import { useAuthStore } from '@stores/authStore';
 import { useModalStore } from '@stores/modalStore';
@@ -17,6 +15,15 @@ interface HeaderActionButtonsProps {
   isHome?: boolean;
 }
 
+const FriendRequestModal = dynamic(() => import('@components/friends/FriendRequestModal'), {
+  ssr: false,
+});
+const FriendsModal = dynamic(() => import('@components/friends/FriendsModal'), {
+  ssr: false,
+});
+const NotificationModal = dynamic(() => import('@components/notification/NotificationModal'), {
+  ssr: false,
+});
 const HeaderActionButtons = ({ isHome = false }: HeaderActionButtonsProps) => {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
