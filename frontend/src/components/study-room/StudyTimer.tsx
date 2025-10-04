@@ -56,17 +56,6 @@ const StudyTimer = ({ timer, onTimerStateChange }: StudyTimerProps) => {
             {timer.isConnected ? '실시간 동기화' : '오프라인 모드'}
           </span>
         </div>
-
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-2 text-gray-500">
-            <p>누적 시간: {timer.getTotalMinutes().toFixed(1)}분</p>
-            {timer.startedBy && <p>시작한 사람: {timer.startedBy}</p>}
-            <p>
-              마지막 동기화:{' '}
-              {timer.lastSync ? new Date(timer.lastSync).toLocaleTimeString() : '없음'}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
