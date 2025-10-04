@@ -32,7 +32,7 @@ const TotalStudyTime = () => {
 
       <div className="flex h-[300px] flex-col items-center justify-center">
         <div className="text-center text-7xl font-bold">{data.totalStudyTime}</div>
-        <div className="mt-2 text-gray-500">시간</div>
+        <div className="mt-2 text-gray-500">분</div>
       </div>
     </div>
   );
