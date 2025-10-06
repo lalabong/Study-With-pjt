@@ -102,7 +102,68 @@ Study-With-pjt/
 
 ## ✨ 상세 기능
 
+### 랜딩페이지
+<img width="1908" height="866" alt="랜딩" src="https://github.com/user-attachments/assets/70231ae4-a588-4dcb-8bf2-2dc508f8c8ef" />
 
+- 모든 페이지 반응형 ui 구현
+
+### 회원가입 페이지
+<img width="671" height="891" alt="회원가입" src="https://github.com/user-attachments/assets/7f00588f-3557-42b7-9ca5-95e787ccece7" />
+
+- 아이디, 닉네임, 비밀번호 입력해서 회원가입 가능
+- 브라우저에서 로그인 한 전적이 있으면 자동 로그인
+  
+### 마이페이지
+<img width="1895" height="894" alt="대시보드" src="https://github.com/user-attachments/assets/b4a514fb-a864-4146-9fdd-472ab52c791d" />
+<img width="1572" height="863" alt="일정추가" src="https://github.com/user-attachments/assets/f7b393d0-688a-4e6f-a8c1-856513eccbd9" />
+<img width="479" height="879" alt="반응형" src="https://github.com/user-attachments/assets/de359d8c-b7eb-48ac-82dd-31b575fd5367" />
+<img width="841" height="517" alt="참여중인 방 입장" src="https://github.com/user-attachments/assets/e08dbfb7-740c-4786-a284-3e8aeb7ad94b" />
+
+![드래그앤드롭](https://github.com/user-attachments/assets/0f3138f1-dda4-4e8e-a9ac-8dbaf4bd0f6c)
+![상태변경](https://github.com/user-attachments/assets/0722ee35-90e6-4f7f-a2b1-b56b134377e0)
+
+- 회원 정보 조회 가능
+- 회원 정보 변경 가능(프로필사진, 닉네임)
+- 주간, 월간, 총 누적 활동 시간 조회 가능
+- 주간은 오늘이 속한 주인 7일단위, 월간은 오늘이 속한 달 기준으로 이전 6개월단위로 조회 가능
+- 일정 달력 조회 가능(일정이 있는 날은 점 표시)
+- 날짜 선택하여 일정 목록 조회, 일정 추가, 일정 삭제, 일정 상태 변경, 일정 순서 변경 가능(드래그 앤 드롭)
+- 일정 상태에 따른 직관적인 컬러
+- 우측 상단 네비게이션 메뉴로 친구, 알림 관리 가능
+- 방 생성하기 버튼 클릭 시 방 이름 입력하여 방 생성 가능
+- 참여 중인 방이 있다면 재입장 가능
+
+### 알림 모달
+<img width="679" height="508" alt="초대2" src="https://github.com/user-attachments/assets/761c8f36-1615-47da-8214-8746e6a3cec5" />
+
+- 받은 친구 요청, 받은 초대 요청 조회 가능
+- 받은 친구 및 초대 요청은 수락 및 거절 가능
+
+### 친구 모달
+<img width="602" height="673" alt="친구찾기" src="https://github.com/user-attachments/assets/dcebe03c-cede-4010-906a-33646d000521" />
+
+- 친구 목록 조회 가능
+- 친구 삭제 가능
+- 닉네임으로 친구 검색 가능
+- 닉네임으로 유저 조회 및 친구 추가 가능
+
+### 스터디룸(방) 페이지
+<img width="1895" height="888" alt="메인" src="https://github.com/user-attachments/assets/6b5b8123-dc6f-4d06-8a8b-f516425907fc" />
+<img width="1902" height="896" alt="남의스케줄" src="https://github.com/user-attachments/assets/64f7038e-0847-4b38-a30a-0fe3dba9d50e" />
+<img width="1022" height="868" alt="초대" src="https://github.com/user-attachments/assets/5a68bbe4-aed5-4c6d-b1b6-cf88b44f6da0" />
+<img width="819" height="774" alt="방나가기" src="https://github.com/user-attachments/assets/1cb4a398-3038-4704-9df0-5da0e1ae0fb1" />
+<img width="479" height="826" alt="반응형2" src="https://github.com/user-attachments/assets/c491c22e-5186-4675-9502-5227ca25b74d" />
+
+- 로고 클릭 시 랜딩페이지로 이동
+- 스톱워치로 학습 및 업무 시간 기록 가능(실시간 동기화)
+- 오늘의 일정 목록 조회 및 일정 추가, 삭제, 순서변경, 상태변경 가능
+- 참가자 목록 조회 및 참가자의 일정 목록 조회 가능
+- 실시간 채팅 가능
+- 방을 나갔다 다시 들어가도 학습 시간 보존
+- 방 나가기 가능능
+- 친구 초대 가능
+- 방을 완전히 나가거나 스톱워치를 멈추면 분 단위로 학습(업무)시간 저장됨
+- 참여자들의 진행 중인 최상단 일정 조회 가능(실시간)
 -----
 
 ## 📊 데이터베이스 스키마
